@@ -18,7 +18,7 @@
 ## Overview
 [![NuGet](https://img.shields.io/badge/NuGet-latest-blue.svg)](https://www.nuget.org/packages/Basilisque.CommonBuild)
 [![License](https://img.shields.io/badge/License-Apache%20License%202.0-red.svg)](LICENSE.txt)  
-This repository provides __optional__ common build configuration for projects that use the Basilisque framework. But it also can be used without Basilique.  
+This project provides __optional__ common build configuration for projects that use the Basilisque framework. But it also can be used without Basilique.  
 So if you like the contained configuration feel free to use it, otherwise simply don't.
 
 ## Description
@@ -50,11 +50,14 @@ The configuration is based on conventions regarding the names of the target proj
 >- MyProject.DataAccess.[__Tests__](#testsConfig)  
 >_<sup>Containing automated tests. In this case for the MyProject.DataAccess-project<sup>_
 -->
-Obviously not all applications need all of those project types. So e.g. if you don't need data access, then just do not create a project named like it. But if you do need data access, then let the project name end with _.DataAccess_. That is the intention behind the configuration in this repository.
+Obviously not all applications need all of those project types. So e.g. if you don't need data access, then just do not create a project named like it. But if you do need data access, then let the project name end with _.DataAccess_. That is the intention behind the configuration in Basilisque.CommonBuild.
 
 ### Provided Configuration
 __.props / .targets__  
 <!--
+- <a name="generalConfig"></a>__General__ (for all project types)
+   - enable Nullable
+   - disable ImplicitUsings
 - <a name="servicesConfig"></a>Service
    - ???
 - <a name="apiConfig"></a>API
