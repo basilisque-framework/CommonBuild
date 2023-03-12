@@ -31,7 +31,6 @@ This will automatically include the contained .props and .targets files in the b
 ### Conventions
 The configuration is based on conventions regarding the names of the target projects. _(The folder structure of the solution is irrelevant.)_
 
->__ExampleSolution__
 <!--
 >- MyProject.[__Service__](#servicesConfig)  
 >_<sup>Containing the startup code of a backend (Windows) service<sup>_
@@ -50,24 +49,67 @@ The configuration is based on conventions regarding the names of the target proj
 >- MyProject.DataAccess.[__Tests__](#testsConfig)  
 >_<sup>Containing automated tests. In this case for the MyProject.DataAccess-project<sup>_
 -->
+>__ExampleSolution__
+>- MyProject.[__Benchmarks__](#benchmarksConfig)  
+>_<sup>Containing benchmarks for a project<sup>_
+>- MyProject.[__CodeAnalysis__](#codeAnalysisConfig)  
+>_<sup>Containing code analysis support for the project like source generators, analyzers and fixes<sup>_
 Obviously not all applications need all of those project types. So e.g. if you don't need data access, then just do not create a project named like it. But if you do need data access, then let the project name end with _.DataAccess_. That is the intention behind the configuration in Basilisque.CommonBuild.
 
 ### Provided Configuration
-__.props / .targets__  
-<!--
+__.props / .targets__
 - <a name="generalConfig"></a>__General__ (for all project types)
-   - enable Nullable
-   - disable ImplicitUsings
-- <a name="servicesConfig"></a>Service
+  | Property 	                | Value                       | Remark                                                    |
+  |-----------------          |---------------------------- | --------------------------------------------------------- |
+  | Nullable                  | enable                      |                                                           |
+  | ImplicitUsings            | disable                     |                                                           |
+  | NeutralLanguage           | en-US                       |                                                           |
+  | Title	                    | \<AssemblyName>             | will only be set when the title is empty                  |
+  | Copyright                 | Copyright © yyyy \<Company> | will only be set when the copyright is empty.<br/>When the company is empty, authors will be used instead.<br/>In addition you can set the property BAS_CB_Copyright_BeginYear to the begin year of the copyright to show a year range. |
+  | Company                   | \<Authors>                  | will only be set when the authors property is not empty   |
+  | Product	                  | \<AssemblyName>             |                                                           |
+  | PackageId	                | \<AssemblyName>             |                                                           |
+  | IsPackable                | false                       | will be set when Configuration != Release                 |
+  | GenerateDocumentationFile | true                        | not for .Tests-projects and .Benchmarks-projects          |
+  | Global Usings             | System<br/>System.Collections.Generic<br/>System.Linq<br/>System.Threading.Tasks  | The flag for this setting is named BAS_CB_Add_GlobalUsings   |
+<!--
+- <a name="servicesConfig"></a>__Service__
    - ???
-- <a name="apiConfig"></a>API
+- <a name="apiConfig"></a>__API__
    - ???
-- <a name="domainConfig"></a>Domain
+- <a name="domainConfig"></a>__Domain__
    - ???
-- <a name="dataAccessConfig"></a>DataAccess
-   - ???
-- <a name="testsConfig"></a>Tests
+- <a name="dataAccessConfig"></a>__DataAccess__
    - ???
 -->
+- <a name="testsConfig"></a>__Tests__
+  | Property   | Value  | Remark |
+  |----------- |------- |------- |
+  | IsPackable | false  |        |
+- <a name="benchmarksConfig"></a>__Benchmarks__
+  | Property   | Value  | Remark |
+  |----------- |------- |------- |
+  | IsPackable | false  |        |
+- <a name="codeAnalysisConfig"></a>__CodeAnalysis__
+  | Property 	    | Value                    | Remark                                                    |
+  |-------------- |------------------------- | --------------------------------------------------------- |
+  | LangVersion   | latest                   | will only be set when TargetFramework is netstandard2.0   |
+  | Global Usings | Microsoft.CodeAnalysis   |                                                           |
+
+If you don't want a specific property to be set, you can prevent it. For every property there is a corresponding flag that controls, if the property will be set or not.  
+The flags are named BAS_CB_Set_\<PropertyName\>.  
+For example if you don't want the NeutralLanguage to be set, add this to your project:
+
+    <PropertyGroup>
+      <BAS_CB_Set_NeutralLanguage>false</BAS_CB_Set_NeutralLanguage>
+    </PropertyGroup>
+
+### Logging
+If you want to log the properties, that are set by this project, you can set the property BAS_CB_Log_Properties to true. This will log the current value of all these properties after the _PrepareForBuild_ target.
+
+    <PropertyGroup>
+      <BAS_CB_Log_Properties>true</BAS_CB_Log_Properties>
+    </PropertyGroup>
+
 ## License
 The Basilisque framework (including this repository) is licensed under the [Apache License, Version 2.0](LICENSE.txt).
