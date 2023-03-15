@@ -71,6 +71,7 @@ __.props / .targets__
   | PackageId	                | \<AssemblyName>             |                                                           |
   | IsPackable                | false                       | will be set when Configuration != Release                 |
   | GenerateDocumentationFile | true                        | not for .Tests-projects and .Benchmarks-projects          |
+  | LangVersion               | 11.0                        | will only be set when TargetFramework is netstandard2.0<br/>(mainly for nullable reference types in C# 8 and raw string literals in C# 11)   |
   | Global Usings             | System<br/>System.Collections.Generic<br/>System.Linq<br/>System.Threading.Tasks  | The flag for this setting is named BAS_CB_Add_GlobalUsings   |
 <!--
 - <a name="servicesConfig"></a>__Service__
@@ -83,9 +84,9 @@ __.props / .targets__
    - ???
 -->
 - <a name="testsConfig"></a>__Tests__
-  | Property   | Value  | Remark |
-  |----------- |------- |------- |
-  | IsPackable | false  |        |
+  | Property            | Value                       | Remark                                              |
+  |-------------------- |---------------------------- |---------------------------------------------------- |
+  | IsPackable          | false                       |                                                     |
 - <a name="benchmarksConfig"></a>__Benchmarks__
   | Property   | Value  | Remark |
   |----------- |------- |------- |
@@ -93,7 +94,6 @@ __.props / .targets__
 - <a name="codeAnalysisConfig"></a>__CodeAnalysis__
   | Property 	    | Value                    | Remark                                                    |
   |-------------- |------------------------- | --------------------------------------------------------- |
-  | LangVersion   | latest                   | will only be set when TargetFramework is netstandard2.0   |
   | Global Usings | Microsoft.CodeAnalysis   |                                                           |
 
 If you don't want a specific property to be set, you can prevent it. For every property there is a corresponding flag that controls, if the property will be set or not.  
