@@ -87,6 +87,7 @@ __.props / .targets__
   | Property            | Value                       | Remark                                              |
   |-------------------- |---------------------------- |---------------------------------------------------- |
   | IsPackable          | false                       |                                                     |
+  | RunSettingsFilePath | [runsettings in this package](#msTestRunsettings) | will only be set when RunSettingsFilePath is empty  |
 - <a name="benchmarksConfig"></a>__Benchmarks__
   | Property   | Value  | Remark |
   |----------- |------- |------- |
@@ -103,6 +104,16 @@ For example if you don't want the NeutralLanguage to be set, add this to your pr
     <PropertyGroup>
       <BAS_CB_Set_NeutralLanguage>false</BAS_CB_Set_NeutralLanguage>
     </PropertyGroup>
+
+<a name="msTestRunsettings"></a>__MSTest runsettings__  
+Provides a default .runsettings-file for MSTest. This is automatically set to RunSettingsFilePath when RunSettingsFilePath is empty. So when you want to use your own runsettings, simply overwrite RunSettingsFilePath like you normally would do anyway.
+
+Included settings:
+- MaxCpuCount = 0  
+max process-level parallelization; but parallelization on thread level is not enforced within the test dll.
+- TreatNoTestsAsError = true  
+when no tests are found in the test project, it is treated as error. So e.g. when, due to an error, no tests are found in your test project, your test run will fail.
+- excludes \*.Tests.dll, \*.Benchmarks.dll and Microsoft.\*.dll projects from code coverage
 
 ### Logging
 If you want to log the properties, that are set by this project, you can set the property BAS_CB_Log_Properties to true. This will log the current value of all these properties after the _PrepareForBuild_ target.

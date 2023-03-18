@@ -30,6 +30,7 @@
         <BAS_CB_Set_GenerateDocumentationFile Condition="'$(BAS_CB_Set_GenerateDocumentationFile)' == '' AND '$(BAS_CB_ProjType_Tests)' != 'true' AND '$(BAS_CB_ProjType_Benchmarks)' != 'true'">true</BAS_CB_Set_GenerateDocumentationFile>
         <BAS_CB_Add_GlobalUsings Condition="'$(BAS_CB_Add_GlobalUsings)' == ''">true</BAS_CB_Add_GlobalUsings>
         <BAS_CB_Set_LangVersion Condition="'$(BAS_CB_Set_LangVersion)' == '' AND '$(TargetFramework)'=='netstandard2.0'">true</BAS_CB_Set_LangVersion>
+        <BAS_CB_Set_RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == '' AND '$(BAS_CB_ProjType_Tests)' == 'true'">true</BAS_CB_Set_RunSettingsFilePath>
     </PropertyGroup>
 
     <!-- XML documentation -->

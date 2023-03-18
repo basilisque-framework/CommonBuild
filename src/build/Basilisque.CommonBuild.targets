@@ -32,6 +32,7 @@
 		<Message Importance="High" Text="BAS_CB_Set_LangVersion = '$(BAS_CB_Set_LangVersion)'" />
 		<Message Importance="High" Text="BAS_CB_Set_Title = '$(BAS_CB_Set_Title)'" />
 		<Message Importance="High" Text="BAS_CB_Set_Copyright = '$(BAS_CB_Set_Copyright)'" />
+		<Message Importance="High" Text="BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'" />
 		<Message Importance="High" Text="GenerateDocumentationFile = '$(GenerateDocumentationFile)'" />
 		<Message Importance="High" Text="Nullable = '$(Nullable)'" />
 		<Message Importance="High" Text="ImplicitUsings = '$(ImplicitUsings)'" />
@@ -43,6 +44,7 @@
 		<Message Importance="High" Text="PackageId = '$(PackageId)'" />
 		<Message Importance="High" Text="IsPackable = '$(IsPackable)'" />
 		<Message Importance="High" Text="Copyright = '$(Copyright)'" />
+		<Message Importance="High" Text="RunSettingsFilePath = '$(RunSettingsFilePath)'" />
 		<Message Importance="High" Text="==BAS_CB_Properties==" />
 	</Target>
     
@@ -111,6 +113,7 @@
     <!-- .Tests projects -->
     <PropertyGroup Condition="'$(BAS_CB_ProjType_Tests)' == 'true'">
         <IsPackable>false</IsPackable>
+        <RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == 'true' AND '$(RunSettingsFilePath)' == ''">$(MSBuildThisFileDirectory)CommonBuild.MSTest.runsettings</RunSettingsFilePath>
     </PropertyGroup>
 
     <!-- .Benchmarks projects -->
