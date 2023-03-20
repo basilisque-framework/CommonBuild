@@ -94,9 +94,12 @@ __.props / .targets__
   |----------- |------- |------- |
   | IsPackable | false  |        |
 - <a name="codeAnalysisConfig"></a>__CodeAnalysis__
-  | Property 	    | Value                    | Remark                                                    |
-  |-------------- |------------------------- | --------------------------------------------------------- |
-  | Global Usings | Microsoft.CodeAnalysis   |                                                           |
+  | Property 	          | Value                     | Remark                                                    |
+  |-------------------- |-------------------------- | --------------------------------------------------------- |
+  | Global Usings       | Microsoft.CodeAnalysis    |                                                           |
+  | IncludeBuildOutput  | false                     | do not pack analyzers/source generators as lib dependency |
+
+  Analyzers and Source Generators will be packed to the analyzer directory of the NuGet package instead of being packed as normal lib dependency.
 
 If you don't want a specific property to be set, you can prevent it. For every property there is a corresponding flag that controls, if the property will be set or not.  
 The flags are named BAS_CB_Set_\<PropertyName\>.  

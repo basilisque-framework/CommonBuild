@@ -16,7 +16,7 @@
 <Project>
     <!-- Log all properties that are set by the Basilisque.CommonBuild project -->
     <Target Name="LogBasilisqueCommonBuildProperties" AfterTargets="PrepareForBuild" Condition="'$(BAS_CB_Log_Properties)' == 'true'">
-		<Message Importance="High" Text="==BAS_CB_Properties==" />
+		<Message Importance="High" Text="==BAS_CB_Properties ($(MSBuildProjectName))==" />
         <Message Importance="High" Text="BAS_CB_ProjType_CodeAnalysis = '$(BAS_CB_ProjType_CodeAnalysis)'" />
         <Message Importance="High" Text="BAS_CB_ProjType_Tests = '$(BAS_CB_ProjType_Tests)'" />
         <Message Importance="High" Text="BAS_CB_ProjType_Benchmarks = '$(BAS_CB_ProjType_Benchmarks)'" />
@@ -45,10 +45,12 @@
 		<Message Importance="High" Text="IsPackable = '$(IsPackable)'" />
 		<Message Importance="High" Text="Copyright = '$(Copyright)'" />
 		<Message Importance="High" Text="RunSettingsFilePath = '$(RunSettingsFilePath)'" />
-		<Message Importance="High" Text="==BAS_CB_Properties==" />
+		<Message Importance="High" Text="==BAS_CB_Properties ($(MSBuildProjectName))==" />
 	</Target>
 
 	<!-- Target for reading items and item metadata -->
+	<!-- properties vs items vs item metadata: https://stackoverflow.com/a/2816244 -->
+	<!-- item metadata can only be reliably accessed in a target when you want to use it in conditions for properties -->
 	<Target Name="ReadItemMetadata" AfterTargets="PrepareForBuild">
 		<PropertyGroup>
 			<BAS_CB_AllPackageReferences>;@(PackageReference->'%(Identity)');</BAS_CB_AllPackageReferences>
@@ -65,7 +67,7 @@
 	<PropertyGroup>
 		<Nullable Condition="'$(BAS_CB_Set_Nullable)' == 'true'">enable</Nullable>
 		<ImplicitUsings Condition="'$(BAS_CB_Set_ImplicitUsings)' == 'true'">disable</ImplicitUsings>
-        <LangVersion Condition="'$(BAS_CB_Set_LangVersion)' == 'true'">11.0</LangVersion>
+        <LangVersion Condition="'$(BAS_CB_Set_LangVersion)' == 'true' AND '$(TargetFramework)'=='netstandard2.0'">11.0</LangVersion>
 	</PropertyGroup>
 
     <!-- NuGet package properties and project info -->
@@ -127,6 +129,16 @@
     <PropertyGroup Condition="'$(BAS_CB_ProjType_Benchmarks)' == 'true'">
         <IsPackable>false</IsPackable>
     </PropertyGroup>
+
+	<!-- .CodeAnalysis projects -->
+	<PropertyGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'">
+		<!-- do not pack an analyzer project as normal lib dependency... -->
+		<IncludeBuildOutput Condition="'$(BAS_CB_Set_IncludeBuildOutput)' == 'true'">false</IncludeBuildOutput>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'">
+		<!-- ... pack it in the analyzer directory instead -->
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	</ItemGroup>
 
 	<!-- Target for handling items and item metadata -->
 	<Target Name="HandleItemMetadata" AfterTargets="PrepareForBuild">
