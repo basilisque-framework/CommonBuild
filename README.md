@@ -31,7 +31,7 @@ This will automatically include the contained .props and .targets files in the b
 ### Conventions
 The configuration is based on conventions regarding the names of the target projects. _(The folder structure of the solution is irrelevant.)_
 
-<!--
+>__ExampleSolution__
 >- MyProject.[__Service__](#servicesConfig)  
 >_<sup>Containing the startup code of a backend (Windows) service<sup>_
 >- MyProject.Service.[__Tests__](#testsConfig)  
@@ -48,8 +48,6 @@ The configuration is based on conventions regarding the names of the target proj
 >_<sup>Containing the data access layer (e.g. using Entity Framework)<sup>_
 >- MyProject.DataAccess.[__Tests__](#testsConfig)  
 >_<sup>Containing automated tests. In this case for the MyProject.DataAccess-project<sup>_
--->
->__ExampleSolution__
 >- MyProject.[__Benchmarks__](#benchmarksConfig)  
 >_<sup>Containing benchmarks for a project<sup>_
 >- MyProject.[__CodeAnalysis__](#codeAnalysisConfig)  
@@ -74,26 +72,26 @@ __.props / .targets__
   | LangVersion               | 11.0                        | will only be set when TargetFramework is netstandard2.0<br/>(mainly for nullable reference types in C# 8 and raw string literals in C# 11)   |
   | Global Usings             | System<br/>System.Collections.Generic<br/>System.Linq<br/>System.Threading.Tasks  | The flag for this setting is named BAS_CB_Add_GlobalUsings   |
 <!--
-- <a name="servicesConfig"></a>__Service__
+- <a name="servicesConfig"></a>__*.Service__
    - ???
-- <a name="apiConfig"></a>__API__
+- <a name="apiConfig"></a>__*.API__
    - ???
-- <a name="domainConfig"></a>__Domain__
+- <a name="domainConfig"></a>__*.Domain__
    - ???
-- <a name="dataAccessConfig"></a>__DataAccess__
+- <a name="dataAccessConfig"></a>__*.DataAccess__
    - ???
 -->
-- <a name="testsConfig"></a>__Tests__
+- <a name="testsConfig"></a>__*.Tests__
   | Property            | Value                                           | Remark                                              |
   |-------------------- |------------------------------------------------ |---------------------------------------------------- |
   | IsPackable          | false                                           |                                                     |
   | RunSettingsFilePath | [runsettings in this package](#testRunsettings) | will only be set when RunSettingsFilePath is empty  |
   | Global Usings       | Microsoft.VisualStudio.TestTools.UnitTesting    | will only be set when MSTest is referenced          |
-- <a name="benchmarksConfig"></a>__Benchmarks__
+- <a name="benchmarksConfig"></a>__*.Benchmarks__
   | Property   | Value  | Remark |
   |----------- |------- |------- |
   | IsPackable | false  |        |
-- <a name="codeAnalysisConfig"></a>__CodeAnalysis__
+- <a name="codeAnalysisConfig"></a>__*.CodeAnalysis__
   | Property 	          | Value                     | Remark                                                    |
   |-------------------- |-------------------------- | --------------------------------------------------------- |
   | Global Usings       | Microsoft.CodeAnalysis    |                                                           |
