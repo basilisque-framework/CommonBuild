@@ -47,6 +47,13 @@
 		<Message Importance="High" Text="RunSettingsFilePath = '$(RunSettingsFilePath)'" />
 		<Message Importance="High" Text="==BAS_CB_Properties==" />
 	</Target>
+
+	<!-- Target for reading items and item metadata -->
+	<Target Name="ReadItemMetadata" AfterTargets="PrepareForBuild">
+		<PropertyGroup>
+			<BAS_CB_AllPackageReferences>;@(PackageReference->'%(Identity)');</BAS_CB_AllPackageReferences>
+		</PropertyGroup>
+	</Target>
     
     <!-- define/init some variables -->
     <PropertyGroup>
@@ -120,4 +127,12 @@
     <PropertyGroup Condition="'$(BAS_CB_ProjType_Benchmarks)' == 'true'">
         <IsPackable>false</IsPackable>
     </PropertyGroup>
+
+	<!-- Target for handling items and item metadata -->
+	<Target Name="HandleItemMetadata" AfterTargets="PrepareForBuild">
+		<!-- .Tests projects -->
+		<ItemGroup Condition="'$(BAS_CB_ProjType_Tests)' == 'true'">
+			<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" Condition="$(BAS_CB_AllPackageReferences.Contains(';MSTest.TestFramework;'))" />
+		</ItemGroup>
+	</Target>
 </Project>

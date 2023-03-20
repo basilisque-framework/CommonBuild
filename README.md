@@ -84,10 +84,11 @@ __.props / .targets__
    - ???
 -->
 - <a name="testsConfig"></a>__Tests__
-  | Property            | Value                       | Remark                                              |
-  |-------------------- |---------------------------- |---------------------------------------------------- |
-  | IsPackable          | false                       |                                                     |
-  | RunSettingsFilePath | [runsettings in this package](#msTestRunsettings) | will only be set when RunSettingsFilePath is empty  |
+  | Property            | Value                                           | Remark                                              |
+  |-------------------- |------------------------------------------------ |---------------------------------------------------- |
+  | IsPackable          | false                                           |                                                     |
+  | RunSettingsFilePath | [runsettings in this package](#testRunsettings) | will only be set when RunSettingsFilePath is empty  |
+  | Global Usings       | Microsoft.VisualStudio.TestTools.UnitTesting    | will only be set when MSTest is referenced          |
 - <a name="benchmarksConfig"></a>__Benchmarks__
   | Property   | Value  | Remark |
   |----------- |------- |------- |
@@ -105,8 +106,8 @@ For example if you don't want the NeutralLanguage to be set, add this to your pr
       <BAS_CB_Set_NeutralLanguage>false</BAS_CB_Set_NeutralLanguage>
     </PropertyGroup>
 
-<a name="msTestRunsettings"></a>__MSTest runsettings__  
-Provides a default .runsettings-file for MSTest. This is automatically set to RunSettingsFilePath when RunSettingsFilePath is empty. So when you want to use your own runsettings, simply overwrite RunSettingsFilePath like you normally would do anyway.
+<a name="testRunsettings"></a>__Test runsettings__  
+Provides a default .runsettings-file for tests and coverage. This is automatically set to RunSettingsFilePath when RunSettingsFilePath is empty. So when you want to use your own runsettings, simply overwrite RunSettingsFilePath like you normally would do anyway.
 
 Included settings:
 - MaxCpuCount = 0  
