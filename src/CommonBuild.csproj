@@ -1,0 +1,52 @@
+<!--
+   Copyright 2023 Alexander Stärk
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$(MSBuildThisFileDirectory)build\Basilisque.CommonBuild.props"/>
+	
+    <PropertyGroup>
+		<PackageVersion>0.1.8.21</PackageVersion>
+		
+		<AssemblyName>Basilisque.CommonBuild</AssemblyName>
+		<Description>This package provides optional common build configuration for projects that use the Basilisque framework. But it also can be used without Basilique. So if you like the contained configuration feel free to use it, otherwise simply don't.</Description>
+		<Authors>Alexander Stärk</Authors>
+		<BAS_CB_Copyright_BeginYear>2023</BAS_CB_Copyright_BeginYear>
+		<PackageProjectUrl>https://github.com/basilisque-framework/CommonBuild</PackageProjectUrl>
+		<PackageReleaseNotes>https://github.com/basilisque-framework/CommonBuild/releases</PackageReleaseNotes>
+		<PackageTags>Basilisque Build</PackageTags>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<!--<PackageIconUrl>images\icon.png</PackageIconUrl>-->
+		<!--<PackageIconUrl>https://github.com/basilisque-framework/CommonBuild...raw...icon.png</PackageIconUrl>-->
+		<PackageReadmeFile>docs\README.md</PackageReadmeFile>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<MinClientVersion>3.0</MinClientVersion>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+		<DevelopmentDependency>true</DevelopmentDependency>
+    </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md" Pack="true" PackagePath="docs\"/>
+		<None Include="build/**" Pack="true" PackagePath="build\"/>
+	</ItemGroup>
+	
+	<Import Project="$(MSBuildThisFileDirectory)build\Basilisque.CommonBuild.targets"/>
+</Project>
+
+<!--
+        !   <repository type="git" url="https://github.com/NuGet/NuGet.Client.git" branch="dev" commit="e1c65e4524cd70ee6e22abe33e6cb6ec73938cb3" />
+        !   <file src="..\icon.png" target="images\" />
+-->
