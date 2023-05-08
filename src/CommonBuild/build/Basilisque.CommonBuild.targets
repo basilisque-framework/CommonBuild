@@ -33,6 +33,14 @@
 		<Message Importance="High" Text="BAS_CB_Set_Title = '$(BAS_CB_Set_Title)'" />
 		<Message Importance="High" Text="BAS_CB_Set_Copyright = '$(BAS_CB_Set_Copyright)'" />
 		<Message Importance="High" Text="BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'" />
+		<Message Importance="High" Text="BAS_CB_Set_Versions = '$(BAS_CB_Set_Versions)'" />
+		<Message Importance="High" Text="BAS_CB_BuildType = '$(BAS_CB_BuildType)'" />
+		<Message Importance="High" Text="BAS_CB_Set_PublishDir = '$(BAS_CB_Set_PublishDir)'" />
+		<Message Importance="High" Text="BAS_CB_VersionMajor = '$(BAS_CB_VersionMajor)'" />
+		<Message Importance="High" Text="BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'" />
+		<Message Importance="High" Text="BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'" />
+		<Message Importance="High" Text="BAS_CB_VersionRevision = '$(BAS_CB_VersionRevision)'" />
+		<Message Importance="High" Text="BAS_CB_BuildType = '$(BAS_CB_BuildType)'" />
 		<Message Importance="High" Text="GenerateDocumentationFile = '$(GenerateDocumentationFile)'" />
 		<Message Importance="High" Text="Nullable = '$(Nullable)'" />
 		<Message Importance="High" Text="ImplicitUsings = '$(ImplicitUsings)'" />
@@ -45,6 +53,11 @@
 		<Message Importance="High" Text="IsPackable = '$(IsPackable)'" />
 		<Message Importance="High" Text="Copyright = '$(Copyright)'" />
 		<Message Importance="High" Text="RunSettingsFilePath = '$(RunSettingsFilePath)'" />
+		<Message Importance="High" Text="AssemblyVersion = '$(AssemblyVersion)'" />
+		<Message Importance="High" Text="FileVersion = '$(FileVersion)'" />
+		<Message Importance="High" Text="InformationalVersion = '$(InformationalVersion)'" />
+		<Message Importance="High" Text="PackageVersion = '$(PackageVersion)'" />
+		<Message Importance="High" Text="PublishDir = '$(PublishDir)'" />
 		<Message Importance="High" Text="==BAS_CB_Properties ($(MSBuildProjectName))==" />
 	</Target>
 
@@ -110,6 +123,30 @@
 		</When>
 	</Choose>
 
+	<!-- versioning -->
+	<PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
+		<!-- ensure build type and version is not empty -->
+		<BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
+		<BAS_CB_VersionMajor Condition="'$(BAS_CB_VersionMajor)' == ''">1</BAS_CB_VersionMajor>
+		<BAS_CB_VersionMinor Condition="'$(BAS_CB_VersionMinor)' == ''">0</BAS_CB_VersionMinor>
+
+		<!-- init version with MAJOR.MINOR -->
+		<BAS_CB_Tmp_VersionShort>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</BAS_CB_Tmp_VersionShort>
+
+		<!-- add .BUILD if not empty  -->
+		<BAS_CB_Tmp_VersionShort Condition="'$(BAS_CB_VersionBuild)' != ''">$(BAS_CB_Tmp_VersionShort).$(BAS_CB_VersionBuild)</BAS_CB_Tmp_VersionShort>
+
+		<!-- add SUFFIX and REVISION -->
+		<BAS_CB_Tmp_Version>$(BAS_CB_Tmp_VersionShort)</BAS_CB_Tmp_Version>
+		<BAS_CB_Tmp_Version Condition="'$(BAS_CB_BuildType)' != 'Release'">$(BAS_CB_Tmp_Version)-$(BAS_CB_BuildType)$(BAS_CB_VersionRevision)</BAS_CB_Tmp_Version>
+		
+		<!-- set versions -->
+		<AssemblyVersion>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</AssemblyVersion>
+		<FileVersion>$(BAS_CB_Tmp_VersionShort)</FileVersion>
+		<InformationalVersion>$(BAS_CB_Tmp_Version)</InformationalVersion>
+		<PackageVersion>$(BAS_CB_Tmp_Version)</PackageVersion>
+	</PropertyGroup>
+
     <!-- global usings -->
 	<ItemGroup Condition="'$(BAS_CB_Add_GlobalUsings)' == 'true'">
 		<Using Include="System" />
@@ -147,4 +184,9 @@
 			<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" Condition="$(BAS_CB_AllPackageReferences.Contains(';MSTest.TestFramework;'))" />
 		</ItemGroup>
 	</Target>
+
+	<!-- Publish directory for solutions -->
+    <PropertyGroup Condition="'$(BAS_CB_Set_PublishDir)' == 'true'">
+        <PublishDir>$(SolutionDir)publish\$(MSBuildProjectName)</PublishDir>
+    </PropertyGroup>
 </Project>

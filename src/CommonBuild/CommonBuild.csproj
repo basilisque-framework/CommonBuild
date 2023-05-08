@@ -17,8 +17,6 @@
 	<Import Project="$(MSBuildThisFileDirectory)build\Basilisque.CommonBuild.props"/>
 	
     <PropertyGroup>
-		<PackageVersion>0.1.8.21</PackageVersion>
-		
 		<AssemblyName>Basilisque.CommonBuild</AssemblyName>
 		<Description>This package provides optional common build configuration for projects that use the Basilisque framework. But it also can be used without Basilique. So if you like the contained configuration feel free to use it, otherwise simply don't.</Description>
 		<Authors>Alexander Stärk</Authors>
@@ -39,8 +37,8 @@
     </PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\..\README.md" Pack="true" PackagePath="docs\"/>
-		<None Include="build/**" Pack="true" PackagePath="build\"/>
+		<None Include="..\..\README.md" Pack="true" PackagePath="docs"/>
+		<None Include="build/**" Pack="true" PackagePath="build"/>
 	</ItemGroup>
 	
 	<Import Project="$(MSBuildThisFileDirectory)build\Basilisque.CommonBuild.targets"/>

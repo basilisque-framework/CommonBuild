@@ -22,7 +22,7 @@ This project provides __optional__ common build configuration for projects that 
 So if you like the contained configuration feel free to use it, otherwise simply don't.
 
 ## Description
-This project doesn't contain any assemblies that will be deployed with the target project. Instead it only contains build time configuration (.props/.targets-files) to provide a common basic set of configuration to all target projects.
+This project doesn't contain any assemblies that will be deployed with the target project. Instead it only contains build time configuration (.props/.targets-files, ...) to provide a common basic set of configuration to all target projects.
 
 ### Usage
 Install the [NuGet package](https://www.nuget.org/packages/Basilisque.CommonBuild)  
@@ -52,6 +52,7 @@ The configuration is based on conventions regarding the names of the target proj
 >_<sup>Containing benchmarks for a project<sup>_
 >- MyProject.[__CodeAnalysis__](#codeAnalysisConfig)  
 >_<sup>Containing code analysis support for the project like source generators, analyzers and fixes<sup>_
+
 Obviously not all applications need all of those project types. So e.g. if you don't need data access, then just do not create a project named like it. But if you do need data access, then let the project name end with _.DataAccess_. That is the intention behind the configuration in Basilisque.CommonBuild.
 
 ### Provided Configuration
@@ -71,6 +72,11 @@ __.props / .targets__
   | GenerateDocumentationFile | true                        | not for .Tests-projects and .Benchmarks-projects          |
   | LangVersion               | 11.0                        | will only be set when TargetFramework is netstandard2.0<br/>(mainly for nullable reference types in C# 8 and raw string literals in C# 11)   |
   | Global Usings             | System<br/>System.Collections.Generic<br/>System.Linq<br/>System.Threading.Tasks  | The flag for this setting is named BAS_CB_Add_GlobalUsings   |
+  | AssemblyVersion           | Major.Minor                 | see [versioning](#versioning)                             |
+  | FileVersion               | Major.Minor(.Build)         | see [versioning](#versioning)                             |
+  | InformationalVersion      | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
+  | PackageVersion            | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
+  | PublishDir                | \<SolutionDir>\publish\\\<ProjectName> | This moves all published artifacts for all projects to a common publish directory instead of being scattered all around. This makes it easier to find all relevant artifacts on a build server. |
 <!--
 - <a name="servicesConfig"></a>__*.Service__
    - ???
@@ -116,6 +122,40 @@ max process-level parallelization; but parallelization on thread level is not en
 - TreatNoTestsAsError = true  
 when no tests are found in the test project, it is treated as error. So e.g. when, due to an error, no tests are found in your test project, your test run will fail.
 - excludes \*.Tests.dll, \*.Benchmarks.dll and Microsoft.\*.dll projects from code coverage
+
+<a name="versioning"></a>__Versioning__  
+The versions are built from the properties BAS_CB_BuildType, BAS_CB_VersionMajor, BAS_CB_VersionMinor, BAS_CB_VersionBuild and BAS_CB_VersionRevision. If you want to disable the versioning you can set BAS_CB_Set_Versions = false.
+
+The build type differentiates between release builds and different kinds of prerelease builds.
+Recommended values are:
+| Value   | Usage                                           |
+|-------- |------------------------------------------------ |
+| Alpha   | Local builds                                    |
+| CI      | Continuous integration builds or nightly builds |
+| Preview | Public preview builds                           |
+| RC      | Release candidates                              |
+| Release | Release builds                                  |
+
+But you can use any other string. The only fixed value is 'Release'. This removes the prerelease suffix and the revision from the InformationalVersion and the PackageVersion. Any other string will be used as suffix including the revision number.  
+Be aware, that the suffixes will be ordered alphabetically e.g. by NuGet. So for example version 1.0-RC is considered higher than a version 1.0-Preview, because it is further back in the alphabet.
+
+This is how the version properties are being set:
+| Property 	            | Value                                   |
+|---------------------- |---------------------------------------- |
+| AssemblyVersion       | Major.Minor                             |
+| FileVersion           | Major.Minor(.Build)                     |
+| InformationalVersion  | Major.Minor(.Build)(-Suffix(Revision))  |
+| PackageVersion        | Major.Minor(.Build)(-Suffix(Revision))  |
+
+You can specify the necessary properties directly in your project or you can set them using dotnet build (MSBuild) parameters:
+
+    dotnet build MySolution.sln -p:BAS_CB_VersionMajor=2 -p:BAS_CB_VersionMinor=1 -p:BAS_CB_VersionBuild=0 -p:BAS_CB_VersionRevision=1043 -p:BAS_CB_BuildType=CI
+
+Typically you would set them on the build server using parameters. Local builds in the IDE won't have any parameters set.
+When nothing else is specified, build type 'Alpha' is used as fallback. By doing so, all local builds will be in this category.
+The purpose for this is, that almost all other build types (suffixes) would be considered higher than a local build, because A is right at the beginning of the alphabet.
+
+Major and Minor are set to 1.0 when empty, Build and Revision are omitted from the version when empty.
 
 ### Logging
 If you want to log the properties, that are set by this project, you can set the property BAS_CB_Log_Properties to true. This will log the current value of all these properties after the _PrepareForBuild_ target.

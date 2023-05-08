@@ -32,7 +32,15 @@
         <BAS_CB_Set_LangVersion Condition="'$(BAS_CB_Set_LangVersion)' == ''">true</BAS_CB_Set_LangVersion>
         <BAS_CB_Set_RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == '' AND '$(BAS_CB_ProjType_Tests)' == 'true'">true</BAS_CB_Set_RunSettingsFilePath>
         <BAS_CB_Set_IncludeBuildOutput Condition="'$(BAS_CB_Set_IncludeBuildOutput)' == ''">true</BAS_CB_Set_IncludeBuildOutput>
+        <BAS_CB_Set_Versions Condition="'$(BAS_CB_Set_Versions)' == ''">true</BAS_CB_Set_Versions>
+        <BAS_CB_Set_PublishDir Condition="'$(BAS_CB_Set_PublishDir)' == ''">true</BAS_CB_Set_PublishDir>
     </PropertyGroup>
+
+	<!-- versioning -->
+	<PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
+		<!-- initialize build type to already have it available in csproj -->
+		<BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
+	</PropertyGroup>
 
     <!-- XML documentation -->
 	<PropertyGroup>
