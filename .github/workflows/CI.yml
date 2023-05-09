@@ -21,14 +21,18 @@ permissions:
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+      - 'release/**'
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+      - 'release/**'
 
 jobs:
   call-build:
     uses: ./.github/workflows/Common-Build.yml
-    # uses: basilisque-framework/CommonBuild/.github/workflows/Common-Build.yml@v1.0
+    # uses: basilisque-framework/CommonBuild/.github/workflows/Common-Build.yml@release/v1.0
     with:
       basBuildType: 'CI'
     secrets: inherit
