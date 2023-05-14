@@ -25,7 +25,6 @@
         <BAS_CB_Set_NeutralLanguage Condition="'$(BAS_CB_Set_NeutralLanguage)' == ''">true</BAS_CB_Set_NeutralLanguage>
         <BAS_CB_Set_Company Condition="'$(BAS_CB_Set_Company)' == ''">true</BAS_CB_Set_Company>
         <BAS_CB_Set_Product Condition="'$(BAS_CB_Set_Product)' == ''">true</BAS_CB_Set_Product>
-        <BAS_CB_Set_PackageId Condition="'$(BAS_CB_Set_PackageId)' == ''">true</BAS_CB_Set_PackageId>
         <BAS_CB_Set_IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == ''">true</BAS_CB_Set_IsPackable>
         <BAS_CB_Set_GenerateDocumentationFile Condition="'$(BAS_CB_Set_GenerateDocumentationFile)' == '' AND '$(BAS_CB_ProjType_Tests)' != 'true' AND '$(BAS_CB_ProjType_Benchmarks)' != 'true'">true</BAS_CB_Set_GenerateDocumentationFile>
         <BAS_CB_Add_GlobalUsings Condition="'$(BAS_CB_Add_GlobalUsings)' == ''">true</BAS_CB_Add_GlobalUsings>

@@ -67,7 +67,6 @@ __.props / .targets__
   | Copyright                 | Copyright © yyyy \<Company> | will only be set when the copyright is empty.<br/>When the company is empty, authors will be used instead.<br/>In addition you can set the property BAS_CB_Copyright_BeginYear to the begin year of the copyright to show a year range. |
   | Company                   | \<Authors>                  | will only be set when the authors property is not empty   |
   | Product	                  | \<AssemblyName>             |                                                           |
-  | PackageId	                | \<AssemblyName>             |                                                           |
   | IsPackable                | false                       | will be set when Configuration != Release                 |
   | GenerateDocumentationFile | true                        | not for .Tests-projects and .Benchmarks-projects          |
   | LangVersion               | 11.0                        | will only be set when TargetFramework is netstandard2.0<br/>(mainly for nullable reference types in C# 8 and raw string literals in C# 11)   |

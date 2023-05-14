@@ -25,7 +25,6 @@
 		<Message Importance="High" Text="BAS_CB_Set_NeutralLanguage = '$(BAS_CB_Set_NeutralLanguage)'" />
 		<Message Importance="High" Text="BAS_CB_Set_Company = '$(BAS_CB_Set_Company)'" />
 		<Message Importance="High" Text="BAS_CB_Set_Product = '$(BAS_CB_Set_Product)'" />
-		<Message Importance="High" Text="BAS_CB_Set_PackageId = '$(BAS_CB_Set_PackageId)'" />
 		<Message Importance="High" Text="BAS_CB_Set_IsPackable = '$(BAS_CB_Set_IsPackable)'" />
 		<Message Importance="High" Text="BAS_CB_Set_GenerateDocumentationFile = '$(BAS_CB_Set_GenerateDocumentationFile)'" />
 		<Message Importance="High" Text="BAS_CB_Add_GlobalUsings = '$(BAS_CB_Add_GlobalUsings)'" />
@@ -49,7 +48,6 @@
 		<Message Importance="High" Text="Title = '$(Title)'" />
 		<Message Importance="High" Text="Company = '$(Company)'" />
 		<Message Importance="High" Text="Product = '$(Product)'" />
-		<Message Importance="High" Text="PackageId = '$(PackageId)'" />
 		<Message Importance="High" Text="IsPackable = '$(IsPackable)'" />
 		<Message Importance="High" Text="Copyright = '$(Copyright)'" />
 		<Message Importance="High" Text="RunSettingsFilePath = '$(RunSettingsFilePath)'" />
@@ -89,7 +87,6 @@
         <Title Condition="'$(BAS_CB_Set_Title)' == 'true'">$(AssemblyName)</Title>
 		<Company Condition="'$(BAS_CB_Set_Company)' == 'true' AND '$(Authors)' != ''">$(Authors)</Company>
 		<Product Condition="'$(BAS_CB_Set_Product)' == 'true'">$(AssemblyName)</Product>
-		<PackageId Condition="'$(BAS_CB_Set_PackageId)' == 'true'">$(AssemblyName)</PackageId>
         <IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == 'true' AND $(Configuration)!='Release'">false</IsPackable>
     </PropertyGroup>
 
