@@ -40,6 +40,8 @@
 		<Message Importance="High" Text="BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'" />
 		<Message Importance="High" Text="BAS_CB_VersionRevision = '$(BAS_CB_VersionRevision)'" />
 		<Message Importance="High" Text="BAS_CB_BuildType = '$(BAS_CB_BuildType)'" />
+		<Message Importance="High" Text="BAS_CB_Set_IncludeBuildOutput = '$(BAS_CB_Set_IncludeBuildOutput)'" />
+		<Message Importance="High" Text="BAS_CB_CodeAnalysis_PackCS = '$(BAS_CB_CodeAnalysis_PackCS)'" />
 		<Message Importance="High" Text="GenerateDocumentationFile = '$(GenerateDocumentationFile)'" />
 		<Message Importance="High" Text="Nullable = '$(Nullable)'" />
 		<Message Importance="High" Text="ImplicitUsings = '$(ImplicitUsings)'" />
@@ -169,7 +171,7 @@
 		<!-- do not pack an analyzer project as normal lib dependency... -->
 		<IncludeBuildOutput Condition="'$(BAS_CB_Set_IncludeBuildOutput)' == 'true'">false</IncludeBuildOutput>
 	</PropertyGroup>
-	<ItemGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'">
+	<ItemGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true' AND '$(BAS_CB_CodeAnalysis_PackCS)' == 'true'">
 		<!-- ... pack it in the analyzer directory instead -->
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
