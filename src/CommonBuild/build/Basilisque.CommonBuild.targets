@@ -158,7 +158,10 @@
     <!-- .Tests projects -->
     <PropertyGroup Condition="'$(BAS_CB_ProjType_Tests)' == 'true'">
         <IsPackable>false</IsPackable>
-        <RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == 'true' AND '$(RunSettingsFilePath)' == ''">$(MSBuildThisFileDirectory)CommonBuild.MSTest.runsettings</RunSettingsFilePath>
+		<IsPublishable>false</IsPublishable>
+		<IsTestProject>true</IsTestProject>
+		
+		<RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == 'true' AND '$(RunSettingsFilePath)' == ''">$(MSBuildThisFileDirectory)CommonBuild.MSTest.runsettings</RunSettingsFilePath>
     </PropertyGroup>
 
     <!-- .Benchmarks projects -->

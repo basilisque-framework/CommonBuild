@@ -90,6 +90,8 @@ __.props / .targets__
   | Property            | Value                                           | Remark                                              |
   |-------------------- |------------------------------------------------ |---------------------------------------------------- |
   | IsPackable          | false                                           |                                                     |
+  | IsPublishable       | false                                           |                                                     |
+  | IsTestProject       | true                                            |                                                     |
   | RunSettingsFilePath | [runsettings in this package](#testRunsettings) | will only be set when RunSettingsFilePath is empty  |
   | Global Usings       | Microsoft.VisualStudio.TestTools.UnitTesting    | will only be set when MSTest is referenced          |
 - <a name="benchmarksConfig"></a>__*.Benchmarks__
