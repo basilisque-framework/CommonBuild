@@ -95,9 +95,10 @@ __.props / .targets__
   | RunSettingsFilePath | [runsettings in this package](#testRunsettings) | will only be set when RunSettingsFilePath is empty  |
   | Global Usings       | Microsoft.VisualStudio.TestTools.UnitTesting    | will only be set when MSTest is referenced          |
 - <a name="benchmarksConfig"></a>__*.Benchmarks__
-  | Property   | Value  | Remark |
-  |----------- |------- |------- |
-  | IsPackable | false  |        |
+  | Property      | Value  | Remark |
+  |-------------- |------- |------- |
+  | IsPackable    | false  |        |
+  | IsPublishable | false  |        |
 - <a name="codeAnalysisConfig"></a>__*.CodeAnalysis__
   | Property 	          | Value                     | Remark                                                    |
   |-------------------- |-------------------------- | --------------------------------------------------------- |

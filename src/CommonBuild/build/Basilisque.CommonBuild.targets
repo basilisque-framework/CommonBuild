@@ -167,6 +167,7 @@
     <!-- .Benchmarks projects -->
     <PropertyGroup Condition="'$(BAS_CB_ProjType_Benchmarks)' == 'true'">
         <IsPackable>false</IsPackable>
+        <IsPublishable>false</IsPublishable>
     </PropertyGroup>
 
 	<!-- .CodeAnalysis projects -->
