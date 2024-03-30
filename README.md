@@ -59,7 +59,7 @@ Obviously not all applications need all of those project types. So e.g. if you d
 __.props / .targets__
 - <a name="generalConfig"></a>__General__ (for all project types)
   | Property 	                | Value                       | Remark                                                    |
-  |-----------------          |---------------------------- | --------------------------------------------------------- |
+  |-------------------------- |---------------------------- |---------------------------------------------------------- |
   | Nullable                  | enable                      |                                                           |
   | ImplicitUsings            | disable                     |                                                           |
   | NeutralLanguage           | en-US                       |                                                           |
@@ -76,6 +76,7 @@ __.props / .targets__
   | InformationalVersion      | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
   | PackageVersion            | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
   | UseArtifactsOutput        | true                        | Opts into the centralized output path format. This makes it easier to find all relevant artifacts on a build server. |
+  | ManagePackageVersionsCentrally | true                   | Enables centrally managed package versions in a Directory.Packages.props file |
 <!--
 - <a name="servicesConfig"></a>__*.Service__
    - ???
