@@ -1,5 +1,5 @@
 <!--
-   Copyright 2023 Alexander Stärk
+   Copyright 2023-2024 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ __.props / .targets__
   | Nullable                  | enable                      |                                                           |
   | ImplicitUsings            | disable                     |                                                           |
   | NeutralLanguage           | en-US                       |                                                           |
-  | Title	                    | \<AssemblyName>             | will only be set when the title is empty                  |
+  | Title                     | \<AssemblyName>             | will only be set when the title is empty                  |
   | Copyright                 | Copyright © yyyy \<Company> | will only be set when the copyright is empty.<br/>When the company is empty, authors will be used instead.<br/>In addition you can set the property BAS_CB_Copyright_BeginYear to the begin year of the copyright to show a year range. |
   | Company                   | \<Authors>                  | will only be set when the authors property is not empty   |
   | Product	                  | \<AssemblyName>             |                                                           |
@@ -75,7 +75,7 @@ __.props / .targets__
   | FileVersion               | Major.Minor(.Build)         | see [versioning](#versioning)                             |
   | InformationalVersion      | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
   | PackageVersion            | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
-  | PublishDir                | \<SolutionDir>\publish\\\<ProjectName> | This moves all published artifacts for all projects to a common publish directory instead of being scattered all around. This makes it easier to find all relevant artifacts on a build server. |
+  | UseArtifactsOutput        | true                        | Opts into the centralized output path format. This makes it easier to find all relevant artifacts on a build server. |
 <!--
 - <a name="servicesConfig"></a>__*.Service__
    - ???

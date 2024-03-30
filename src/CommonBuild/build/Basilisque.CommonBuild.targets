@@ -1,5 +1,5 @@
 <!--
-   Copyright 2023 Alexander Stärk
+   Copyright 2023-2024 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@
 		<Message Importance="High" Text="BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'" />
 		<Message Importance="High" Text="BAS_CB_Set_Versions = '$(BAS_CB_Set_Versions)'" />
 		<Message Importance="High" Text="BAS_CB_BuildType = '$(BAS_CB_BuildType)'" />
-		<Message Importance="High" Text="BAS_CB_Set_PublishDir = '$(BAS_CB_Set_PublishDir)'" />
+		<Message Importance="High" Text="BAS_CB_Set_UseArtifactsOutput = '$(BAS_CB_Set_UseArtifactsOutput)'" />
 		<Message Importance="High" Text="BAS_CB_VersionMajor = '$(BAS_CB_VersionMajor)'" />
 		<Message Importance="High" Text="BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'" />
 		<Message Importance="High" Text="BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'" />
@@ -57,7 +57,7 @@
 		<Message Importance="High" Text="FileVersion = '$(FileVersion)'" />
 		<Message Importance="High" Text="InformationalVersion = '$(InformationalVersion)'" />
 		<Message Importance="High" Text="PackageVersion = '$(PackageVersion)'" />
-		<Message Importance="High" Text="PublishDir = '$(PublishDir)'" />
+		<Message Importance="High" Text="UseArtifactsOutput = '$(UseArtifactsOutput)'" />
 		<Message Importance="High" Text="==BAS_CB_Properties ($(MSBuildProjectName))==" />
 	</Target>
 
@@ -187,8 +187,8 @@
 		</ItemGroup>
 	</Target>
 
-	<!-- Publish directory for solutions -->
-    <PropertyGroup Condition="'$(BAS_CB_Set_PublishDir)' == 'true'">
-        <PublishDir>$(SolutionDir)publish\$(MSBuildProjectName)</PublishDir>
+	<!-- Common publish directory -->
+    <PropertyGroup Condition="'$(BAS_CB_Set_UseArtifactsOutput)' == 'true'">
+		<UseArtifactsOutput>true</UseArtifactsOutput>
     </PropertyGroup>
 </Project>
