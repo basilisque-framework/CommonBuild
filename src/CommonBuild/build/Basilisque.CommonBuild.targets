@@ -34,7 +34,6 @@
 		<Message Importance="High" Text="BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'" />
 		<Message Importance="High" Text="BAS_CB_Set_Versions = '$(BAS_CB_Set_Versions)'" />
 		<Message Importance="High" Text="BAS_CB_BuildType = '$(BAS_CB_BuildType)'" />
-		<Message Importance="High" Text="BAS_CB_Set_UseArtifactsOutput = '$(BAS_CB_Set_UseArtifactsOutput)'" />
 		<Message Importance="High" Text="BAS_CB_VersionMajor = '$(BAS_CB_VersionMajor)'" />
 		<Message Importance="High" Text="BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'" />
 		<Message Importance="High" Text="BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'" />
@@ -57,7 +56,6 @@
 		<Message Importance="High" Text="FileVersion = '$(FileVersion)'" />
 		<Message Importance="High" Text="InformationalVersion = '$(InformationalVersion)'" />
 		<Message Importance="High" Text="PackageVersion = '$(PackageVersion)'" />
-		<Message Importance="High" Text="UseArtifactsOutput = '$(UseArtifactsOutput)'" />
 		<Message Importance="High" Text="==BAS_CB_Properties ($(MSBuildProjectName))==" />
 	</Target>
 
@@ -187,9 +185,4 @@
 			<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" Condition="$(BAS_CB_AllPackageReferences.Contains(';MSTest.TestFramework;'))" />
 		</ItemGroup>
 	</Target>
-
-	<!-- Common publish directory -->
-    <PropertyGroup Condition="'$(BAS_CB_Set_UseArtifactsOutput)' == 'true'">
-		<UseArtifactsOutput>true</UseArtifactsOutput>
-    </PropertyGroup>
 </Project>

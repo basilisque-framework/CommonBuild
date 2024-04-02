@@ -33,7 +33,6 @@
         <BAS_CB_Set_IncludeBuildOutput Condition="'$(BAS_CB_Set_IncludeBuildOutput)' == ''">true</BAS_CB_Set_IncludeBuildOutput>
 		<BAS_CB_CodeAnalysis_PackCS Condition="'$(BAS_CB_CodeAnalysis_PackCS)' == ''">true</BAS_CB_CodeAnalysis_PackCS>
         <BAS_CB_Set_Versions Condition="'$(BAS_CB_Set_Versions)' == ''">true</BAS_CB_Set_Versions>
-		<BAS_CB_Set_UseArtifactsOutput Condition="'$(BAS_CB_Set_UseArtifactsOutput)' == ''">true</BAS_CB_Set_UseArtifactsOutput>
     </PropertyGroup>
 
 	<!-- versioning -->
