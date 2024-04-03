@@ -36,10 +36,20 @@ on:
         default: 8.0.x
         required: false
         type: string
+      publishTargetFramework:
+        description: 'The target framework that will be used for publishing.'
+        default: ''
+        required: false
+        type: string
+      runsOn:
+        description: 'Defines the type of machine to run the job on.'
+        default: ubuntu-latest
+        required: false
+        type: string
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runsOn }}
 
     steps:
     - name: Print Input Parameters
@@ -47,6 +57,8 @@ jobs:
         echo basBuildType = ${{ inputs.basBuildType }}
         echo projectOrSolution = ${{ inputs.projectOrSolution }}
         echo dotNetVersion = ${{ inputs.dotNetVersion }}
+        echo publishTargetFramework = ${{ inputs.publishTargetFramework }}
+        echo runsOn = ${{ inputs.runsOn }}
     
     - name: Validate Input Parameters
       if: inputs.basBuildType != 'Alpha' && inputs.basBuildType != 'CI' && inputs.basBuildType != 'Preview' && inputs.basBuildType != 'RC' && inputs.basBuildType != 'Release'
@@ -88,7 +100,7 @@ jobs:
       run: dotnet test ${{ inputs.projectOrSolution }} -c Release --no-build --verbosity normal
     
     - name: Dotnet Publish
-      run: dotnet publish ${{ inputs.projectOrSolution }} -c Release --no-build
+      run: dotnet publish ${{ inputs.projectOrSolution }} -c Release --no-build ${{ inputs.publishTargetFramework != '' && format('-f {0}', inputs.publishTargetFramework) || '' }}
     
     - name: Attach Build Artifacts to Workflow Run
       uses: actions/upload-artifact@v3.1.2
@@ -105,7 +117,7 @@ jobs:
       uses: actions/upload-artifact@v3.1.2
       with:
         name: NuGet Packages
-        path: src/**/*.nupkg
+        path: src/artifacts/package/**/*.nupkg
         if-no-files-found: error
         retention-days: 10
     
