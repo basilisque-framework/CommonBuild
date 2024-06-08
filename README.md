@@ -75,7 +75,6 @@ __.props / .targets__
   | FileVersion               | Major.Minor(.Build)         | see [versioning](#versioning)                             |
   | InformationalVersion      | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
   | PackageVersion            | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
-  | ManagePackageVersionsCentrally | true                   | Enables centrally managed package versions in a Directory.Packages.props file |
 <!--
 - <a name="servicesConfig"></a>__*.Service__
    - ???

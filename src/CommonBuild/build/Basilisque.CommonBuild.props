@@ -45,9 +45,4 @@
 	<PropertyGroup>
 		<GenerateDocumentationFile Condition="'$(BAS_CB_Set_GenerateDocumentationFile)' == 'true'">true</GenerateDocumentationFile>
 	</PropertyGroup>
-	
-	<!-- enable central package management versioning -->
-	<PropertyGroup>
-		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-	</PropertyGroup>
 </Project>
