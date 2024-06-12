@@ -1,0 +1,33 @@
+<!--
+   Copyright 2024 Alexander Stärk
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<Project>
+	<!-- define/init some variables -->
+	<PropertyGroup>
+		<BAS_CB_ProjType_CodeAnalysis Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == '' AND $(MSBuildProjectName.EndsWith('.CodeAnalysis')) == 'true'">true</BAS_CB_ProjType_CodeAnalysis>
+		<BAS_CB_ProjType_Tests Condition="'$(BAS_CB_ProjType_Tests)' == '' AND $(MSBuildProjectName.EndsWith('.Tests')) == 'true'">true</BAS_CB_ProjType_Tests>
+		<BAS_CB_ProjType_Benchmarks Condition="'$(BAS_CB_ProjType_Benchmarks)' == '' AND $(MSBuildProjectName.EndsWith('.Benchmarks')) == 'true'">true</BAS_CB_ProjType_Benchmarks>
+		
+		<BAS_CB_Set_IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == ''">true</BAS_CB_Set_IsPackable>
+		<BAS_CB_Set_RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == '' AND '$(BAS_CB_ProjType_Tests)' == 'true'">true</BAS_CB_Set_RunSettingsFilePath>
+		<BAS_CB_Set_Versions Condition="'$(BAS_CB_Set_Versions)' == ''">true</BAS_CB_Set_Versions>
+	</PropertyGroup>
+	
+	<!-- versioning -->
+	<PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
+		<!-- initialize build type to already have it available in csproj -->
+		<BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
+	</PropertyGroup>
+</Project>
