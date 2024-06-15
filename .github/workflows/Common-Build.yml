@@ -67,21 +67,19 @@ jobs:
         exit 1
     
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ inputs.dotNetVersion }}
         dotnet-quality: 'ga'
     
     - name: Git Semantic Versioning
       id: versioning
-      # You may pin to the exact commit or the version.
-      # uses: PaulHatch/semantic-version@61243c92212f7939f340bd2f8072bee529ac77df
-      uses: PaulHatch/semantic-version@v5.0.3
+      uses: PaulHatch/semantic-version@v5.4.0
       with:
         branch: ${{ github.ref_name }} # default is HEAD
         major_pattern: "BREAKING CHANGE:" # default is (MAJOR)
@@ -103,7 +101,7 @@ jobs:
       run: dotnet publish ${{ inputs.projectOrSolution }} -c Release --no-build ${{ inputs.publishTargetFramework != '' && format('-f {0}', inputs.publishTargetFramework) || '' }}
     
     - name: Attach Build Artifacts to Workflow Run
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4.3.3
       with:
         name: Artifacts
         path: src/artifacts/publish/**
@@ -114,7 +112,7 @@ jobs:
       run: dotnet pack ${{ inputs.projectOrSolution }} -c Release -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
     
     - name: Attach NuGet Artifacts to Workflow Run
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4.3.3
       with:
         name: NuGet Packages
         path: src/artifacts/package/**/*.nupkg
@@ -122,7 +120,7 @@ jobs:
         retention-days: 10
     
     - name: Create Git Tag
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         script: |
           github.rest.git.createRef({
@@ -133,7 +131,7 @@ jobs:
           })
     
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       if: inputs.basBuildType == 'Release' || inputs.basBuildType == 'RC' || inputs.basBuildType == 'Preview'
       with:
         files: src/**/*.nupkg
