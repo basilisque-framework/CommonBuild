@@ -16,24 +16,29 @@
 <Project>
 	<!-- Log all shared properties that are set by the Basilisque.CommonBuild project -->
 	<Target Name="LogBasilisqueCommonSharedBuildProperties" AfterTargets="PrepareForBuild" Condition="'$(BAS_CB_Log_Properties)' == 'true'">
-		<Message Importance="High" Text="==BAS_CB_Properties - begin shared ($(MSBuildProjectName))==" />
-		<Message Importance="High" Text="BAS_CB_ProjType_CodeAnalysis = '$(BAS_CB_ProjType_CodeAnalysis)'" />
-		<Message Importance="High" Text="BAS_CB_ProjType_Tests = '$(BAS_CB_ProjType_Tests)'" />
-		<Message Importance="High" Text="BAS_CB_ProjType_Benchmarks = '$(BAS_CB_ProjType_Benchmarks)'" />
-		<Message Importance="High" Text="BAS_CB_Set_IsPackable = '$(BAS_CB_Set_IsPackable)'" />
-		<Message Importance="High" Text="BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'" />
-		<Message Importance="High" Text="BAS_CB_Set_Versions = '$(BAS_CB_Set_Versions)'" />
-		<Message Importance="High" Text="BAS_CB_BuildType = '$(BAS_CB_BuildType)'" />
-		<Message Importance="High" Text="BAS_CB_VersionMajor = '$(BAS_CB_VersionMajor)'" />
-		<Message Importance="High" Text="BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'" />
-		<Message Importance="High" Text="BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'" />
-		<Message Importance="High" Text="BAS_CB_VersionRevision = '$(BAS_CB_VersionRevision)'" />
-		<Message Importance="High" Text="PackageVersion = '$(PackageVersion)'" />
-		<Message Importance="High" Text="IsPackable = '$(IsPackable)'" />
-		<Message Importance="High" Text="IsPublishable = '$(IsPublishable)'" />
-		<Message Importance="High" Text="IsTestProject = '$(IsTestProject)'" />
-		<Message Importance="High" Text="RunSettingsFilePath = '$(RunSettingsFilePath)'" />
-		<Message Importance="High" Text="==BAS_CB_Properties - end shared ($(MSBuildProjectName))==" />
+		<PropertyGroup>
+			<__BAS_Log_Msg>
+==BAS_CB_Properties - begin shared ($(MSBuildProjectName))==
+	BAS_CB_ProjType_CodeAnalysis = '$(BAS_CB_ProjType_CodeAnalysis)'
+	BAS_CB_ProjType_Tests = '$(BAS_CB_ProjType_Tests)'
+	BAS_CB_ProjType_Benchmarks = '$(BAS_CB_ProjType_Benchmarks)'
+	BAS_CB_Set_IsPackable = '$(BAS_CB_Set_IsPackable)'
+	BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'
+	BAS_CB_Set_Versions = '$(BAS_CB_Set_Versions)'
+	BAS_CB_BuildType = '$(BAS_CB_BuildType)'
+	BAS_CB_VersionMajor = '$(BAS_CB_VersionMajor)'
+	BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'
+	BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'
+	BAS_CB_VersionRevision = '$(BAS_CB_VersionRevision)'
+	PackageVersion = '$(PackageVersion)'
+	IsPackable = '$(IsPackable)'
+	IsPublishable = '$(IsPublishable)'
+	IsTestProject = '$(IsTestProject)'
+	RunSettingsFilePath = '$(RunSettingsFilePath)'
+==BAS_CB_Properties - end shared ($(MSBuildProjectName))==
+			</__BAS_Log_Msg>
+		</PropertyGroup>
+		<Message Importance="High" Text="$(__BAS_Log_Msg)" />
 	</Target>
 
 	<!-- NuGet package properties and project info -->
