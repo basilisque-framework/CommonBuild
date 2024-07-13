@@ -30,11 +30,13 @@
 	BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'
 	BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'
 	BAS_CB_VersionRevision = '$(BAS_CB_VersionRevision)'
+	BAS_CB_Set_SonarQubeTestProject = '$(BAS_CB_Set_SonarQubeTestProject)'
 	PackageVersion = '$(PackageVersion)'
 	IsPackable = '$(IsPackable)'
 	IsPublishable = '$(IsPublishable)'
 	IsTestProject = '$(IsTestProject)'
 	RunSettingsFilePath = '$(RunSettingsFilePath)'
+	SonarQubeTestProject = '$(SonarQubeTestProject)'
 ==BAS_CB_Properties - end shared ($(MSBuildProjectName))==
 			</__BAS_Log_Msg>
 		</PropertyGroup>
@@ -72,6 +74,7 @@
 		<IsPackable>false</IsPackable>
 		<IsPublishable>false</IsPublishable>
 		<IsTestProject>true</IsTestProject>
+		<SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == 'true'">true</SonarQubeTestProject>
 
 		<RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == 'true' AND '$(RunSettingsFilePath)' == ''">$(MSBuildThisFileDirectory)CommonBuild.MSTest.runsettings</RunSettingsFilePath>
 	</PropertyGroup>
@@ -80,5 +83,6 @@
 	<PropertyGroup Condition="'$(BAS_CB_ProjType_Benchmarks)' == 'true'">
 		<IsPackable>false</IsPackable>
 		<IsPublishable>false</IsPublishable>
+		<SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == 'true'">true</SonarQubeTestProject>
 	</PropertyGroup>
 </Project>

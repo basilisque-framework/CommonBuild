@@ -23,6 +23,7 @@
 		<BAS_CB_Set_IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == ''">true</BAS_CB_Set_IsPackable>
 		<BAS_CB_Set_RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == '' AND '$(BAS_CB_ProjType_Tests)' == 'true'">true</BAS_CB_Set_RunSettingsFilePath>
 		<BAS_CB_Set_Versions Condition="'$(BAS_CB_Set_Versions)' == ''">true</BAS_CB_Set_Versions>
+		<BAS_CB_Set_SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == ''">true</BAS_CB_Set_SonarQubeTestProject>
 	</PropertyGroup>
 	
 	<!-- versioning -->

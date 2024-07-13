@@ -16,8 +16,10 @@
 # Basilisque - Common Build
 
 ## Overview
-[![NuGet](https://img.shields.io/badge/NuGet-latest-blue.svg)](https://www.nuget.org/packages/Basilisque.CommonBuild)
-[![License](https://img.shields.io/badge/License-Apache%20License%202.0-red.svg)](LICENSE.txt)  
+[![NuGet](https://img.shields.io/badge/NuGet-latest-%23004880.svg?logo=nuget)](https://www.nuget.org/packages/Basilisque.CommonBuild)
+[![License](https://img.shields.io/badge/License-Apache%20License%202.0-%23D22128.svg?logo=apache&logoColor=%23D22128)](LICENSE.txt)
+[![SonarCloud](https://img.shields.io/badge/SonarCloud-main-%23F3702A.svg?logo=sonarcloud&logoColor=%23F3702A)](https://sonarcloud.io/project/overview?id=basilisque-framework_CommonBuild)  
+
 This project provides __optional__ common build configuration for projects that use the Basilisque framework. But it also can be used without Basilique.  
 So if you like the contained configuration feel free to use it, otherwise simply don't.
 
@@ -91,13 +93,15 @@ __.props / .targets__
   | IsPackable          | false                                           |                                                     |
   | IsPublishable       | false                                           |                                                     |
   | IsTestProject       | true                                            |                                                     |
+  | SonarQubeTestProject| true                                            |                                                     |
   | RunSettingsFilePath | [runsettings in this package](#testRunsettings) | will only be set when RunSettingsFilePath is empty  |
   | Global Usings       | Microsoft.VisualStudio.TestTools.UnitTesting    | will only be set when MSTest is referenced          |
 - <a name="benchmarksConfig"></a>__*.Benchmarks__
-  | Property      | Value  | Remark |
-  |-------------- |------- |------- |
-  | IsPackable    | false  |        |
-  | IsPublishable | false  |        |
+  | Property              | Value  | Remark |
+  |---------------------- |------- |------- |
+  | IsPackable            | false  |        |
+  | IsPublishable         | false  |        |
+  | SonarQubeTestProject  | true   |        |
 - <a name="codeAnalysisConfig"></a>__*.CodeAnalysis__
   | Property 	          | Value                     | Remark                                                    |
   |-------------------- |-------------------------- | --------------------------------------------------------- |
