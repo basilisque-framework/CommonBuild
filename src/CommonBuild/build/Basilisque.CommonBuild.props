@@ -1,5 +1,5 @@
 <!--
-   Copyright 2023 Alexander Stärk
+   Copyright 2023-2024 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,36 +14,28 @@
    limitations under the License.
 -->
 <Project>
+	<!-- import the props file that is shared between single and multi targeting builds -->
+	<Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.Before.Shared.props" />
+	
     <!-- define/init some variables -->
     <PropertyGroup>
-        <BAS_CB_ProjType_CodeAnalysis Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == '' AND $(MSBuildProjectName.EndsWith('.CodeAnalysis')) == 'true'">true</BAS_CB_ProjType_CodeAnalysis>
-        <BAS_CB_ProjType_Tests Condition="'$(BAS_CB_ProjType_Tests)' == '' AND $(MSBuildProjectName.EndsWith('.Tests')) == 'true'">true</BAS_CB_ProjType_Tests>
-        <BAS_CB_ProjType_Benchmarks Condition="'$(BAS_CB_ProjType_Benchmarks)' == '' AND $(MSBuildProjectName.EndsWith('.Benchmarks')) == 'true'">true</BAS_CB_ProjType_Benchmarks>
-
         <BAS_CB_Set_Nullable Condition="'$(BAS_CB_Set_Nullable)' == ''">true</BAS_CB_Set_Nullable>
         <BAS_CB_Set_ImplicitUsings Condition="'$(BAS_CB_Set_ImplicitUsings)' == ''">true</BAS_CB_Set_ImplicitUsings>
         <BAS_CB_Set_NeutralLanguage Condition="'$(BAS_CB_Set_NeutralLanguage)' == ''">true</BAS_CB_Set_NeutralLanguage>
         <BAS_CB_Set_Company Condition="'$(BAS_CB_Set_Company)' == ''">true</BAS_CB_Set_Company>
         <BAS_CB_Set_Product Condition="'$(BAS_CB_Set_Product)' == ''">true</BAS_CB_Set_Product>
-        <BAS_CB_Set_IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == ''">true</BAS_CB_Set_IsPackable>
         <BAS_CB_Set_GenerateDocumentationFile Condition="'$(BAS_CB_Set_GenerateDocumentationFile)' == '' AND '$(BAS_CB_ProjType_Tests)' != 'true' AND '$(BAS_CB_ProjType_Benchmarks)' != 'true'">true</BAS_CB_Set_GenerateDocumentationFile>
         <BAS_CB_Add_GlobalUsings Condition="'$(BAS_CB_Add_GlobalUsings)' == ''">true</BAS_CB_Add_GlobalUsings>
         <BAS_CB_Set_LangVersion Condition="'$(BAS_CB_Set_LangVersion)' == ''">true</BAS_CB_Set_LangVersion>
-        <BAS_CB_Set_RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == '' AND '$(BAS_CB_ProjType_Tests)' == 'true'">true</BAS_CB_Set_RunSettingsFilePath>
         <BAS_CB_Set_IncludeBuildOutput Condition="'$(BAS_CB_Set_IncludeBuildOutput)' == ''">true</BAS_CB_Set_IncludeBuildOutput>
 		<BAS_CB_CodeAnalysis_PackCS Condition="'$(BAS_CB_CodeAnalysis_PackCS)' == ''">true</BAS_CB_CodeAnalysis_PackCS>
-        <BAS_CB_Set_Versions Condition="'$(BAS_CB_Set_Versions)' == ''">true</BAS_CB_Set_Versions>
-        <BAS_CB_Set_PublishDir Condition="'$(BAS_CB_Set_PublishDir)' == ''">true</BAS_CB_Set_PublishDir>
     </PropertyGroup>
-
-	<!-- versioning -->
-	<PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
-		<!-- initialize build type to already have it available in csproj -->
-		<BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
-	</PropertyGroup>
-
+	
     <!-- XML documentation -->
 	<PropertyGroup>
 		<GenerateDocumentationFile Condition="'$(BAS_CB_Set_GenerateDocumentationFile)' == 'true'">true</GenerateDocumentationFile>
 	</PropertyGroup>
+
+	<!-- import the props file that is shared between single and multi targeting builds -->
+	<Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.After.Shared.props" />
 </Project>

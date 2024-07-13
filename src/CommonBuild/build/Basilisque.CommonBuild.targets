@@ -1,5 +1,5 @@
 <!--
-   Copyright 2023 Alexander Stärk
+   Copyright 2023-2024 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,51 +14,42 @@
    limitations under the License.
 -->
 <Project>
+	<!-- import the targets file that is shared between single and multi targeting builds -->
+	<Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.Before.Shared.targets" />
+	
     <!-- Log all properties that are set by the Basilisque.CommonBuild project -->
     <Target Name="LogBasilisqueCommonBuildProperties" AfterTargets="PrepareForBuild" Condition="'$(BAS_CB_Log_Properties)' == 'true'">
-		<Message Importance="High" Text="==BAS_CB_Properties ($(MSBuildProjectName))==" />
-        <Message Importance="High" Text="BAS_CB_ProjType_CodeAnalysis = '$(BAS_CB_ProjType_CodeAnalysis)'" />
-        <Message Importance="High" Text="BAS_CB_ProjType_Tests = '$(BAS_CB_ProjType_Tests)'" />
-        <Message Importance="High" Text="BAS_CB_ProjType_Benchmarks = '$(BAS_CB_ProjType_Benchmarks)'" />
-		<Message Importance="High" Text="BAS_CB_Set_Nullable = '$(BAS_CB_Set_Nullable)'" />
-		<Message Importance="High" Text="BAS_CB_Set_ImplicitUsings = '$(BAS_CB_Set_ImplicitUsings)'" />
-		<Message Importance="High" Text="BAS_CB_Set_NeutralLanguage = '$(BAS_CB_Set_NeutralLanguage)'" />
-		<Message Importance="High" Text="BAS_CB_Set_Company = '$(BAS_CB_Set_Company)'" />
-		<Message Importance="High" Text="BAS_CB_Set_Product = '$(BAS_CB_Set_Product)'" />
-		<Message Importance="High" Text="BAS_CB_Set_IsPackable = '$(BAS_CB_Set_IsPackable)'" />
-		<Message Importance="High" Text="BAS_CB_Set_GenerateDocumentationFile = '$(BAS_CB_Set_GenerateDocumentationFile)'" />
-		<Message Importance="High" Text="BAS_CB_Add_GlobalUsings = '$(BAS_CB_Add_GlobalUsings)'" />
-		<Message Importance="High" Text="BAS_CB_Set_LangVersion = '$(BAS_CB_Set_LangVersion)'" />
-		<Message Importance="High" Text="BAS_CB_Set_Title = '$(BAS_CB_Set_Title)'" />
-		<Message Importance="High" Text="BAS_CB_Set_Copyright = '$(BAS_CB_Set_Copyright)'" />
-		<Message Importance="High" Text="BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'" />
-		<Message Importance="High" Text="BAS_CB_Set_Versions = '$(BAS_CB_Set_Versions)'" />
-		<Message Importance="High" Text="BAS_CB_BuildType = '$(BAS_CB_BuildType)'" />
-		<Message Importance="High" Text="BAS_CB_Set_PublishDir = '$(BAS_CB_Set_PublishDir)'" />
-		<Message Importance="High" Text="BAS_CB_VersionMajor = '$(BAS_CB_VersionMajor)'" />
-		<Message Importance="High" Text="BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'" />
-		<Message Importance="High" Text="BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'" />
-		<Message Importance="High" Text="BAS_CB_VersionRevision = '$(BAS_CB_VersionRevision)'" />
-		<Message Importance="High" Text="BAS_CB_BuildType = '$(BAS_CB_BuildType)'" />
-		<Message Importance="High" Text="BAS_CB_Set_IncludeBuildOutput = '$(BAS_CB_Set_IncludeBuildOutput)'" />
-		<Message Importance="High" Text="BAS_CB_CodeAnalysis_PackCS = '$(BAS_CB_CodeAnalysis_PackCS)'" />
-		<Message Importance="High" Text="GenerateDocumentationFile = '$(GenerateDocumentationFile)'" />
-		<Message Importance="High" Text="Nullable = '$(Nullable)'" />
-		<Message Importance="High" Text="ImplicitUsings = '$(ImplicitUsings)'" />
-		<Message Importance="High" Text="LangVersion = '$(LangVersion)'" />
-		<Message Importance="High" Text="NeutralLanguage = '$(NeutralLanguage)'" />
-		<Message Importance="High" Text="Title = '$(Title)'" />
-		<Message Importance="High" Text="Company = '$(Company)'" />
-		<Message Importance="High" Text="Product = '$(Product)'" />
-		<Message Importance="High" Text="IsPackable = '$(IsPackable)'" />
-		<Message Importance="High" Text="Copyright = '$(Copyright)'" />
-		<Message Importance="High" Text="RunSettingsFilePath = '$(RunSettingsFilePath)'" />
-		<Message Importance="High" Text="AssemblyVersion = '$(AssemblyVersion)'" />
-		<Message Importance="High" Text="FileVersion = '$(FileVersion)'" />
-		<Message Importance="High" Text="InformationalVersion = '$(InformationalVersion)'" />
-		<Message Importance="High" Text="PackageVersion = '$(PackageVersion)'" />
-		<Message Importance="High" Text="PublishDir = '$(PublishDir)'" />
-		<Message Importance="High" Text="==BAS_CB_Properties ($(MSBuildProjectName))==" />
+		<PropertyGroup>
+			<__BAS_Log_Msg>
+==BAS_CB_Properties - begin single targeting ($(MSBuildProjectName))==
+	BAS_CB_Set_Nullable = '$(BAS_CB_Set_Nullable)'
+	BAS_CB_Set_ImplicitUsings = '$(BAS_CB_Set_ImplicitUsings)'
+	BAS_CB_Set_NeutralLanguage = '$(BAS_CB_Set_NeutralLanguage)'
+	BAS_CB_Set_Company = '$(BAS_CB_Set_Company)'
+	BAS_CB_Set_Product = '$(BAS_CB_Set_Product)'
+	BAS_CB_Set_GenerateDocumentationFile = '$(BAS_CB_Set_GenerateDocumentationFile)'
+	BAS_CB_Add_GlobalUsings = '$(BAS_CB_Add_GlobalUsings)'
+	BAS_CB_Set_LangVersion = '$(BAS_CB_Set_LangVersion)'
+	BAS_CB_Set_Title = '$(BAS_CB_Set_Title)'
+	BAS_CB_Set_Copyright = '$(BAS_CB_Set_Copyright)'
+	BAS_CB_Set_IncludeBuildOutput = '$(BAS_CB_Set_IncludeBuildOutput)'
+	BAS_CB_CodeAnalysis_PackCS = '$(BAS_CB_CodeAnalysis_PackCS)'
+	GenerateDocumentationFile = '$(GenerateDocumentationFile)'
+	Nullable = '$(Nullable)'
+	ImplicitUsings = '$(ImplicitUsings)'
+	LangVersion = '$(LangVersion)'
+	NeutralLanguage = '$(NeutralLanguage)'
+	Title = '$(Title)'
+	Company = '$(Company)'
+	Product = '$(Product)'
+	Copyright = '$(Copyright)'
+	AssemblyVersion = '$(AssemblyVersion)'
+	FileVersion = '$(FileVersion)'
+	InformationalVersion = '$(InformationalVersion)'
+==BAS_CB_Properties - end single targeting ($(MSBuildProjectName))==
+			</__BAS_Log_Msg>
+		</PropertyGroup>
+		<Message Importance="High" Text="$(__BAS_Log_Msg)" />
 	</Target>
 
 	<!-- Target for reading items and item metadata -->
@@ -89,7 +80,6 @@
         <Title Condition="'$(BAS_CB_Set_Title)' == 'true'">$(AssemblyName)</Title>
 		<Company Condition="'$(BAS_CB_Set_Company)' == 'true' AND '$(Authors)' != ''">$(Authors)</Company>
 		<Product Condition="'$(BAS_CB_Set_Product)' == 'true'">$(AssemblyName)</Product>
-        <IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == 'true' AND $(Configuration)!='Release'">false</IsPackable>
     </PropertyGroup>
 
     <!-- set copyright -->
@@ -124,28 +114,12 @@
 
 	<!-- versioning -->
 	<PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
-		<!-- ensure build type and version is not empty -->
-		<BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
-		<BAS_CB_VersionMajor Condition="'$(BAS_CB_VersionMajor)' == ''">1</BAS_CB_VersionMajor>
-		<BAS_CB_VersionMinor Condition="'$(BAS_CB_VersionMinor)' == ''">0</BAS_CB_VersionMinor>
-
-		<!-- init version with MAJOR.MINOR -->
-		<BAS_CB_Tmp_VersionShort>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</BAS_CB_Tmp_VersionShort>
-
-		<!-- add .BUILD if not empty  -->
-		<BAS_CB_Tmp_VersionShort Condition="'$(BAS_CB_VersionBuild)' != ''">$(BAS_CB_Tmp_VersionShort).$(BAS_CB_VersionBuild)</BAS_CB_Tmp_VersionShort>
-
-		<!-- add SUFFIX and REVISION -->
-		<BAS_CB_Tmp_Version>$(BAS_CB_Tmp_VersionShort)</BAS_CB_Tmp_Version>
-		<BAS_CB_Tmp_Version Condition="'$(BAS_CB_BuildType)' != 'Release'">$(BAS_CB_Tmp_Version)-$(BAS_CB_BuildType)$(BAS_CB_VersionRevision)</BAS_CB_Tmp_Version>
-		
 		<!-- set versions -->
 		<AssemblyVersion>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</AssemblyVersion>
 		<FileVersion>$(BAS_CB_Tmp_VersionShort)</FileVersion>
 		<InformationalVersion>$(BAS_CB_Tmp_Version)</InformationalVersion>
-		<PackageVersion>$(BAS_CB_Tmp_Version)</PackageVersion>
 	</PropertyGroup>
-
+	
     <!-- global usings -->
 	<ItemGroup Condition="'$(BAS_CB_Add_GlobalUsings)' == 'true'">
 		<Using Include="System" />
@@ -154,18 +128,7 @@
 		<Using Include="System.Threading.Tasks" />
 		<Using Include="Microsoft.CodeAnalysis" Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'" />
 	</ItemGroup>
-
-    <!-- .Tests projects -->
-    <PropertyGroup Condition="'$(BAS_CB_ProjType_Tests)' == 'true'">
-        <IsPackable>false</IsPackable>
-        <RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == 'true' AND '$(RunSettingsFilePath)' == ''">$(MSBuildThisFileDirectory)CommonBuild.MSTest.runsettings</RunSettingsFilePath>
-    </PropertyGroup>
-
-    <!-- .Benchmarks projects -->
-    <PropertyGroup Condition="'$(BAS_CB_ProjType_Benchmarks)' == 'true'">
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
-
+	
 	<!-- .CodeAnalysis projects -->
 	<PropertyGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'">
 		<!-- do not pack an analyzer project as normal lib dependency... -->
@@ -184,8 +147,6 @@
 		</ItemGroup>
 	</Target>
 
-	<!-- Publish directory for solutions -->
-    <PropertyGroup Condition="'$(BAS_CB_Set_PublishDir)' == 'true'">
-        <PublishDir>$(SolutionDir)publish\$(MSBuildProjectName)</PublishDir>
-    </PropertyGroup>
+	<!-- import the targets file that is shared between single and multi targeting builds -->
+	<Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.After.Shared.targets" />
 </Project>
