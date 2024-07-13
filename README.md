@@ -1,5 +1,5 @@
 <!--
-   Copyright 2023 Alexander Stärk
+   Copyright 2023-2024 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@
 # Basilisque - Common Build
 
 ## Overview
-[![NuGet](https://img.shields.io/badge/NuGet-latest-blue.svg)](https://www.nuget.org/packages/Basilisque.CommonBuild)
-[![License](https://img.shields.io/badge/License-Apache%20License%202.0-red.svg)](LICENSE.txt)  
+[![NuGet](https://img.shields.io/badge/NuGet-latest-%23004880.svg?logo=nuget)](https://www.nuget.org/packages/Basilisque.CommonBuild)
+[![License](https://img.shields.io/badge/License-Apache%20License%202.0-%23D22128.svg?logo=apache&logoColor=%23D22128)](LICENSE.txt)
+[![SonarCloud](https://img.shields.io/badge/SonarCloud-main-%23F3702A.svg?logo=sonarcloud&logoColor=%23F3702A)](https://sonarcloud.io/project/overview?id=basilisque-framework_CommonBuild)  
+
 This project provides __optional__ common build configuration for projects that use the Basilisque framework. But it also can be used without Basilique.  
 So if you like the contained configuration feel free to use it, otherwise simply don't.
 
@@ -59,11 +61,11 @@ Obviously not all applications need all of those project types. So e.g. if you d
 __.props / .targets__
 - <a name="generalConfig"></a>__General__ (for all project types)
   | Property 	                | Value                       | Remark                                                    |
-  |-----------------          |---------------------------- | --------------------------------------------------------- |
+  |-------------------------- |---------------------------- |---------------------------------------------------------- |
   | Nullable                  | enable                      |                                                           |
   | ImplicitUsings            | disable                     |                                                           |
   | NeutralLanguage           | en-US                       |                                                           |
-  | Title	                    | \<AssemblyName>             | will only be set when the title is empty                  |
+  | Title                     | \<AssemblyName>             | will only be set when the title is empty                  |
   | Copyright                 | Copyright © yyyy \<Company> | will only be set when the copyright is empty.<br/>When the company is empty, authors will be used instead.<br/>In addition you can set the property BAS_CB_Copyright_BeginYear to the begin year of the copyright to show a year range. |
   | Company                   | \<Authors>                  | will only be set when the authors property is not empty   |
   | Product	                  | \<AssemblyName>             |                                                           |
@@ -75,7 +77,6 @@ __.props / .targets__
   | FileVersion               | Major.Minor(.Build)         | see [versioning](#versioning)                             |
   | InformationalVersion      | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
   | PackageVersion            | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
-  | PublishDir                | \<SolutionDir>\publish\\\<ProjectName> | This moves all published artifacts for all projects to a common publish directory instead of being scattered all around. This makes it easier to find all relevant artifacts on a build server. |
 <!--
 - <a name="servicesConfig"></a>__*.Service__
    - ???
@@ -90,12 +91,17 @@ __.props / .targets__
   | Property            | Value                                           | Remark                                              |
   |-------------------- |------------------------------------------------ |---------------------------------------------------- |
   | IsPackable          | false                                           |                                                     |
+  | IsPublishable       | false                                           |                                                     |
+  | IsTestProject       | true                                            |                                                     |
+  | SonarQubeTestProject| true                                            |                                                     |
   | RunSettingsFilePath | [runsettings in this package](#testRunsettings) | will only be set when RunSettingsFilePath is empty  |
   | Global Usings       | Microsoft.VisualStudio.TestTools.UnitTesting    | will only be set when MSTest is referenced          |
 - <a name="benchmarksConfig"></a>__*.Benchmarks__
-  | Property   | Value  | Remark |
-  |----------- |------- |------- |
-  | IsPackable | false  |        |
+  | Property              | Value  | Remark |
+  |---------------------- |------- |------- |
+  | IsPackable            | false  |        |
+  | IsPublishable         | false  |        |
+  | SonarQubeTestProject  | true   |        |
 - <a name="codeAnalysisConfig"></a>__*.CodeAnalysis__
   | Property 	          | Value                     | Remark                                                    |
   |-------------------- |-------------------------- | --------------------------------------------------------- |

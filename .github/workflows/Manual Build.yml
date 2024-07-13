@@ -37,4 +37,6 @@ jobs:
     # uses: basilisque-framework/CommonBuild/.github/workflows/Common-Build.yml@v1.0
     with:
       basBuildType: ${{ inputs.basBuildTypeChoice }}
+      sonarProjectKey: 'basilisque-framework_CommonBuild'
+      sonarOrganization: 'basilisque-framework'
     secrets: inherit

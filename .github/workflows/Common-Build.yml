@@ -1,4 +1,4 @@
-# Copyright 2023 Alexander Stärk
+# Copyright 2023-2024 Alexander Stärk
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -33,13 +33,33 @@ on:
         type: string
       dotNetVersion:
         description: 'The version of .Net that will be used for the build.'
-        default: 6.0.x
+        default: 8.0.x
+        required: false
+        type: string
+      publishTargetFramework:
+        description: 'The target framework that will be used for publishing.'
+        default: ''
+        required: false
+        type: string
+      runsOn:
+        description: 'Defines the type of machine to run the job on.'
+        default: ubuntu-latest
+        required: false
+        type: string
+      sonarProjectKey:
+        description: 'The project key of the sonar project'
+        default: ''
+        required: false
+        type: string
+      sonarOrganization:
+        description: 'The name of the sonar organization'
+        default: ''
         required: false
         type: string
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runsOn }}
 
     steps:
     - name: Print Input Parameters
@@ -47,6 +67,10 @@ jobs:
         echo basBuildType = ${{ inputs.basBuildType }}
         echo projectOrSolution = ${{ inputs.projectOrSolution }}
         echo dotNetVersion = ${{ inputs.dotNetVersion }}
+        echo publishTargetFramework = ${{ inputs.publishTargetFramework }}
+        echo runsOn = ${{ inputs.runsOn }}
+        echo sonarProjectKey = ${{ inputs.sonarProjectKey }}
+        echo sonarOrganization = ${{ inputs.sonarOrganization }}
     
     - name: Validate Input Parameters
       if: inputs.basBuildType != 'Alpha' && inputs.basBuildType != 'CI' && inputs.basBuildType != 'Preview' && inputs.basBuildType != 'RC' && inputs.basBuildType != 'Release'
@@ -54,22 +78,50 @@ jobs:
         echo 'Please check the basBuildType input. Supported values are ''Alpha'', ''CI'', ''Preview'', ''RC'' and ''Release''.'
         exit 1
     
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+    - name: Set up JDK 17 # necessary for Sonar
+      uses: actions/setup-java@v4
+      if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
       with:
-        fetch-depth: 0
+        java-version: 17
+        distribution: 'zulu' # Alternative distribution options are available.
+    
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Shallow clones should be disabled for versioning and a better relevancy of sonar analysis
     
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ inputs.dotNetVersion }}
         dotnet-quality: 'ga'
     
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v4
+      if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
+      with:
+        path: ~\sonar\cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+    
+    - name: Cache SonarCloud scanner
+      id: cache-sonar-scanner
+      uses: actions/cache@v4
+      if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
+      with:
+        path: .\.sonar\scanner
+        key: ${{ runner.os }}-sonar-scanner
+        restore-keys: ${{ runner.os }}-sonar-scanner
+    
+    - name: Install SonarCloud scanner
+      if: steps.cache-sonar-scanner.outputs.cache-hit != 'true' && inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
+      run: |
+        mkdir -p .sonar/scanner
+        dotnet tool update dotnet-sonarscanner --tool-path .sonar/scanner
+    
     - name: Git Semantic Versioning
       id: versioning
-      # You may pin to the exact commit or the version.
-      # uses: PaulHatch/semantic-version@61243c92212f7939f340bd2f8072bee529ac77df
-      uses: PaulHatch/semantic-version@v5.0.3
+      uses: PaulHatch/semantic-version@v5.4.0
       with:
         branch: ${{ github.ref_name }} # default is HEAD
         major_pattern: "BREAKING CHANGE:" # default is (MAJOR)
@@ -81,20 +133,31 @@ jobs:
     - name: Dotnet Restore
       run: dotnet restore ${{ inputs.projectOrSolution }}
     
-    - name: Dotnet Build
-      run: dotnet build ${{ inputs.projectOrSolution }} -c Release --no-restore -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
+    - name: Dotnet Build and Sonar Analyze
+      if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        .sonar/scanner/dotnet-sonarscanner begin /k:"${{ inputs.sonarProjectKey }}" /o:"${{ inputs.sonarOrganization }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+        dotnet build ${{ inputs.projectOrSolution }} -c Release --no-restore -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
+        .sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
     
+    - name: Dotnet Build
+      if: inputs.sonarProjectKey == '' || inputs.sonarOrganization == ''
+      run: dotnet build ${{ inputs.projectOrSolution }} -c Release --no-restore -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
+        
     - name: Dotnet Test
       run: dotnet test ${{ inputs.projectOrSolution }} -c Release --no-build --verbosity normal
     
     - name: Dotnet Publish
-      run: dotnet publish ${{ inputs.projectOrSolution }} -c Release --no-build
+      run: dotnet publish ${{ inputs.projectOrSolution }} -c Release --no-build ${{ inputs.publishTargetFramework != '' && format('-f {0}', inputs.publishTargetFramework) || '' }}
     
     - name: Attach Build Artifacts to Workflow Run
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4.3.3
       with:
         name: Artifacts
-        path: src/publish/**
+        path: src/artifacts/publish/**
         if-no-files-found: error
         retention-days: 10
     
@@ -102,15 +165,15 @@ jobs:
       run: dotnet pack ${{ inputs.projectOrSolution }} -c Release -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
     
     - name: Attach NuGet Artifacts to Workflow Run
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4.3.3
       with:
         name: NuGet Packages
-        path: src/**/*.nupkg
+        path: src/artifacts/package/**/*.nupkg
         if-no-files-found: error
         retention-days: 10
     
     - name: Create Git Tag
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         script: |
           github.rest.git.createRef({
@@ -121,7 +184,7 @@ jobs:
           })
     
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       if: inputs.basBuildType == 'Release' || inputs.basBuildType == 'RC' || inputs.basBuildType == 'Preview'
       with:
         files: src/**/*.nupkg
