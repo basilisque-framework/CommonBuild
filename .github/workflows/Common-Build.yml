@@ -46,6 +46,16 @@ on:
         default: ubuntu-latest
         required: false
         type: string
+      sonarProjectKey:
+        description: 'The project key of the sonar project'
+        default: ''
+        required: false
+        type: string
+      sonarOrganization:
+        description: 'The name of the sonar organization'
+        default: ''
+        required: false
+        type: string
 jobs:
   build:
 
@@ -59,6 +69,8 @@ jobs:
         echo dotNetVersion = ${{ inputs.dotNetVersion }}
         echo publishTargetFramework = ${{ inputs.publishTargetFramework }}
         echo runsOn = ${{ inputs.runsOn }}
+        echo sonarProjectKey = ${{ inputs.sonarProjectKey }}
+        echo sonarOrganization = ${{ inputs.sonarOrganization }}
     
     - name: Validate Input Parameters
       if: inputs.basBuildType != 'Alpha' && inputs.basBuildType != 'CI' && inputs.basBuildType != 'Preview' && inputs.basBuildType != 'RC' && inputs.basBuildType != 'Release'
@@ -66,10 +78,17 @@ jobs:
         echo 'Please check the basBuildType input. Supported values are ''Alpha'', ''CI'', ''Preview'', ''RC'' and ''Release''.'
         exit 1
     
+    - name: Set up JDK 17 # necessary for Sonar
+        uses: actions/setup-java@v3
+        if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+    
     - name: Checkout Repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        fetch-depth: 0 # Shallow clones should be disabled for versioning and a better relevancy of sonar analysis
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -77,6 +96,30 @@ jobs:
         dotnet-version: ${{ inputs.dotNetVersion }}
         dotnet-quality: 'ga'
     
+    - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+    
+    - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+    
+    - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true' && inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
+        shell: powershell
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+          
     - name: Git Semantic Versioning
       id: versioning
       uses: PaulHatch/semantic-version@v5.4.0
@@ -91,9 +134,21 @@ jobs:
     - name: Dotnet Restore
       run: dotnet restore ${{ inputs.projectOrSolution }}
     
+    - name: Dotnet Build and Sonar Analyze
+        if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: |
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"${{ inputs.sonarProjectKey }}" /o:"${{ inputs.sonarOrganization }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet build ${{ inputs.projectOrSolution }} -c Release --no-restore -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
     - name: Dotnet Build
-      run: dotnet build ${{ inputs.projectOrSolution }} -c Release --no-restore -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
-    
+        if: inputs.sonarProjectKey == '' || inputs.sonarOrganization == ''
+        run: dotnet build ${{ inputs.projectOrSolution }} -c Release --no-restore -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
+        
     - name: Dotnet Test
       run: dotnet test ${{ inputs.projectOrSolution }} -c Release --no-build --verbosity normal
     
