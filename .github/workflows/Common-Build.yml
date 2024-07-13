@@ -79,7 +79,7 @@ jobs:
         exit 1
     
     - name: Set up JDK 17 # necessary for Sonar
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
       with:
         java-version: 17
