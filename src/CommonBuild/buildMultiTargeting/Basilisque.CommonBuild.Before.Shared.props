@@ -1,5 +1,5 @@
 <!--
-   Copyright 2024 Alexander Stärk
+   Copyright 2024-2025 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,21 +14,21 @@
    limitations under the License.
 -->
 <Project>
-	<!-- define/init some variables -->
-	<PropertyGroup>
-		<BAS_CB_ProjType_CodeAnalysis Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == '' AND $(MSBuildProjectName.EndsWith('.CodeAnalysis')) == 'true'">true</BAS_CB_ProjType_CodeAnalysis>
-		<BAS_CB_ProjType_Tests Condition="'$(BAS_CB_ProjType_Tests)' == '' AND $(MSBuildProjectName.EndsWith('.Tests')) == 'true'">true</BAS_CB_ProjType_Tests>
-		<BAS_CB_ProjType_Benchmarks Condition="'$(BAS_CB_ProjType_Benchmarks)' == '' AND $(MSBuildProjectName.EndsWith('.Benchmarks')) == 'true'">true</BAS_CB_ProjType_Benchmarks>
-		
-		<BAS_CB_Set_IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == ''">true</BAS_CB_Set_IsPackable>
-		<BAS_CB_Set_RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == '' AND '$(BAS_CB_ProjType_Tests)' == 'true'">true</BAS_CB_Set_RunSettingsFilePath>
-		<BAS_CB_Set_Versions Condition="'$(BAS_CB_Set_Versions)' == ''">true</BAS_CB_Set_Versions>
-		<BAS_CB_Set_SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == ''">true</BAS_CB_Set_SonarQubeTestProject>
-	</PropertyGroup>
-	
-	<!-- versioning -->
-	<PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
-		<!-- initialize build type to already have it available in csproj -->
-		<BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
-	</PropertyGroup>
+  <!-- define/init some variables -->
+  <PropertyGroup>
+    <BAS_CB_ProjType_CodeAnalysis Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == '' AND $(MSBuildProjectName.EndsWith('.CodeAnalysis')) == 'true'">true</BAS_CB_ProjType_CodeAnalysis>
+    <BAS_CB_ProjType_Tests Condition="'$(BAS_CB_ProjType_Tests)' == '' AND $(MSBuildProjectName.EndsWith('.Tests')) == 'true'">true</BAS_CB_ProjType_Tests>
+    <BAS_CB_ProjType_Benchmarks Condition="'$(BAS_CB_ProjType_Benchmarks)' == '' AND $(MSBuildProjectName.EndsWith('.Benchmarks')) == 'true'">true</BAS_CB_ProjType_Benchmarks>
+    
+    <BAS_CB_Set_IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == ''">true</BAS_CB_Set_IsPackable>
+    <BAS_CB_Set_RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == '' AND '$(BAS_CB_ProjType_Tests)' == 'true'">true</BAS_CB_Set_RunSettingsFilePath>
+    <BAS_CB_Set_Versions Condition="'$(BAS_CB_Set_Versions)' == ''">true</BAS_CB_Set_Versions>
+    <BAS_CB_Set_SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == ''">true</BAS_CB_Set_SonarQubeTestProject>
+  </PropertyGroup>
+  
+  <!-- versioning -->
+  <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
+    <!-- initialize build type to already have it available in csproj -->
+    <BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
+  </PropertyGroup>
 </Project>

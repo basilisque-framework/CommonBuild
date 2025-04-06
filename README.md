@@ -1,5 +1,5 @@
 <!--
-   Copyright 2023-2024 Alexander Stärk
+   Copyright 2023-2025 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -107,6 +107,7 @@ __.props / .targets__
   |-------------------- |-------------------------- | --------------------------------------------------------- |
   | Global Usings       | Microsoft.CodeAnalysis    |                                                           |
   | IncludeBuildOutput  | false                     | do not pack analyzers/source generators as lib dependency |
+  | AssemblyName        | \<AssemblyName>-Major.Minor(.Build)(-Suffix(Revision)) | Version is appended to assembly name to fix loading of dependencies in Visual Studio. Can be disabled by settings BAS_CB_Set_AssemblyName_VersionSuffix to false |
 
   Analyzers and Source Generators will be packed to the analyzer directory of the NuGet package instead of being packed as normal lib dependency. Can be disabled by setting BAS_CB_CodeAnalysis_PackCS to false.
 

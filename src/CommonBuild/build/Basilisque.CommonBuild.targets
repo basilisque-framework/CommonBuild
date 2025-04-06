@@ -1,5 +1,5 @@
 <!--
-   Copyright 2023-2024 Alexander Stärk
+   Copyright 2023-2025 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,139 +14,125 @@
    limitations under the License.
 -->
 <Project>
-	<!-- import the targets file that is shared between single and multi targeting builds -->
-	<Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.Before.Shared.targets" />
-	
-    <!-- Log all properties that are set by the Basilisque.CommonBuild project -->
-    <Target Name="LogBasilisqueCommonBuildProperties" AfterTargets="PrepareForBuild" Condition="'$(BAS_CB_Log_Properties)' == 'true'">
-		<PropertyGroup>
-			<__BAS_Log_Msg>
+  <!-- import the targets file that is shared between single and multi targeting builds -->
+  <Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.Before.Shared.targets" />
+  
+  <!-- Log all properties that are set by the Basilisque.CommonBuild project -->
+  <Target Name="LogBasilisqueCommonBuildProperties" AfterTargets="PrepareForBuild" Condition="'$(BAS_CB_Log_Properties)' == 'true'">
+    <PropertyGroup>
+      <__BAS_Log_Msg>
 ==BAS_CB_Properties - begin single targeting ($(MSBuildProjectName))==
-	BAS_CB_Set_Nullable = '$(BAS_CB_Set_Nullable)'
-	BAS_CB_Set_ImplicitUsings = '$(BAS_CB_Set_ImplicitUsings)'
-	BAS_CB_Set_NeutralLanguage = '$(BAS_CB_Set_NeutralLanguage)'
-	BAS_CB_Set_Company = '$(BAS_CB_Set_Company)'
-	BAS_CB_Set_Product = '$(BAS_CB_Set_Product)'
-	BAS_CB_Set_GenerateDocumentationFile = '$(BAS_CB_Set_GenerateDocumentationFile)'
-	BAS_CB_Add_GlobalUsings = '$(BAS_CB_Add_GlobalUsings)'
-	BAS_CB_Set_LangVersion = '$(BAS_CB_Set_LangVersion)'
-	BAS_CB_Set_Title = '$(BAS_CB_Set_Title)'
-	BAS_CB_Set_Copyright = '$(BAS_CB_Set_Copyright)'
-	BAS_CB_Set_IncludeBuildOutput = '$(BAS_CB_Set_IncludeBuildOutput)'
-	BAS_CB_CodeAnalysis_PackCS = '$(BAS_CB_CodeAnalysis_PackCS)'
-	GenerateDocumentationFile = '$(GenerateDocumentationFile)'
-	Nullable = '$(Nullable)'
-	ImplicitUsings = '$(ImplicitUsings)'
-	LangVersion = '$(LangVersion)'
-	NeutralLanguage = '$(NeutralLanguage)'
-	Title = '$(Title)'
-	Company = '$(Company)'
-	Product = '$(Product)'
-	Copyright = '$(Copyright)'
-	AssemblyVersion = '$(AssemblyVersion)'
-	FileVersion = '$(FileVersion)'
-	InformationalVersion = '$(InformationalVersion)'
+  BAS_CB_Set_Nullable = '$(BAS_CB_Set_Nullable)'
+  BAS_CB_Set_ImplicitUsings = '$(BAS_CB_Set_ImplicitUsings)'
+  BAS_CB_Set_NeutralLanguage = '$(BAS_CB_Set_NeutralLanguage)'
+  BAS_CB_Set_Company = '$(BAS_CB_Set_Company)'
+  BAS_CB_Set_Product = '$(BAS_CB_Set_Product)'
+  BAS_CB_Set_GenerateDocumentationFile = '$(BAS_CB_Set_GenerateDocumentationFile)'
+  BAS_CB_Add_GlobalUsings = '$(BAS_CB_Add_GlobalUsings)'
+  BAS_CB_Set_LangVersion = '$(BAS_CB_Set_LangVersion)'
+  BAS_CB_Set_Title = '$(BAS_CB_Set_Title)'
+  BAS_CB_Set_Copyright = '$(BAS_CB_Set_Copyright)'
+  BAS_CB_Set_IncludeBuildOutput = '$(BAS_CB_Set_IncludeBuildOutput)'
+  BAS_CB_CodeAnalysis_PackCS = '$(BAS_CB_CodeAnalysis_PackCS)'
+  BAS_CB_Set_AssemblyName_VersionSuffix = '$(BAS_CB_Set_AssemblyName_VersionSuffix)'
+  GenerateDocumentationFile = '$(GenerateDocumentationFile)'
+  Nullable = '$(Nullable)'
+  ImplicitUsings = '$(ImplicitUsings)'
+  LangVersion = '$(LangVersion)'
+  NeutralLanguage = '$(NeutralLanguage)'
+  Title = '$(Title)'
+  Company = '$(Company)'
+  Product = '$(Product)'
+  Copyright = '$(Copyright)'
+  AssemblyVersion = '$(AssemblyVersion)'
+  FileVersion = '$(FileVersion)'
+  InformationalVersion = '$(InformationalVersion)'
+  AssemblyName = '$(AssemblyName)'
 ==BAS_CB_Properties - end single targeting ($(MSBuildProjectName))==
-			</__BAS_Log_Msg>
-		</PropertyGroup>
-		<Message Importance="High" Text="$(__BAS_Log_Msg)" />
-	</Target>
-
-	<!-- Target for reading items and item metadata -->
-	<!-- properties vs items vs item metadata: https://stackoverflow.com/a/2816244 -->
-	<!-- item metadata can only be reliably accessed in a target when you want to use it in conditions for properties -->
-	<Target Name="ReadItemMetadata" AfterTargets="PrepareForBuild">
-		<PropertyGroup>
-			<BAS_CB_AllPackageReferences>;@(PackageReference->'%(Identity)');</BAS_CB_AllPackageReferences>
-		</PropertyGroup>
-	</Target>
-    
-    <!-- define/init some variables -->
-    <PropertyGroup>
-        <BAS_CB_Set_Title Condition="'$(BAS_CB_Set_Title)' == '' AND '$(Title)' == ''">true</BAS_CB_Set_Title>
-        <BAS_CB_Set_Copyright Condition="'$(BAS_CB_Set_Copyright)' == '' AND '$(Copyright)' == ''">true</BAS_CB_Set_Copyright>
+      </__BAS_Log_Msg>
     </PropertyGroup>
-
-    <!-- general build properties -->
-	<PropertyGroup>
-		<Nullable Condition="'$(BAS_CB_Set_Nullable)' == 'true'">enable</Nullable>
-		<ImplicitUsings Condition="'$(BAS_CB_Set_ImplicitUsings)' == 'true'">disable</ImplicitUsings>
-        <LangVersion Condition="'$(BAS_CB_Set_LangVersion)' == 'true' AND '$(TargetFramework)'=='netstandard2.0'">11.0</LangVersion>
-	</PropertyGroup>
-
-    <!-- NuGet package properties and project info -->
+    <Message Importance="High" Text="$(__BAS_Log_Msg)" />
+  </Target>
+  
+  <!-- Target for reading items and item metadata -->
+  <!-- properties vs items vs item metadata: https://stackoverflow.com/a/2816244 -->
+  <!-- item metadata can only be reliably accessed in a target when you want to use it in conditions for properties -->
+  <Target Name="ReadItemMetadata" AfterTargets="PrepareForBuild">
     <PropertyGroup>
-		<NeutralLanguage Condition="'$(BAS_CB_Set_NeutralLanguage)' == 'true'">en-US</NeutralLanguage>
-        <Title Condition="'$(BAS_CB_Set_Title)' == 'true'">$(AssemblyName)</Title>
-		<Company Condition="'$(BAS_CB_Set_Company)' == 'true' AND '$(Authors)' != ''">$(Authors)</Company>
-		<Product Condition="'$(BAS_CB_Set_Product)' == 'true'">$(AssemblyName)</Product>
+      <BAS_CB_AllPackageReferences>;@(PackageReference->'%(Identity)');</BAS_CB_AllPackageReferences>
     </PropertyGroup>
+  </Target>
+  
+  <!-- define/init some variables -->
+  <PropertyGroup>
+    <BAS_CB_Set_Title Condition="'$(BAS_CB_Set_Title)' == '' AND '$(Title)' == ''">true</BAS_CB_Set_Title>
+    <BAS_CB_Set_Copyright Condition="'$(BAS_CB_Set_Copyright)' == '' AND '$(Copyright)' == ''">true</BAS_CB_Set_Copyright>
+  </PropertyGroup>
 
-    <!-- set copyright -->
-    <Choose>
-		<When Condition="'$(BAS_CB_Set_Copyright)' == 'true'">
-			<Choose>
-				<When Condition="'$(BAS_CB_Copyright_BeginYear)' != '' AND '$(BAS_CB_Copyright_BeginYear)' != '$([System.DateTime]::Now.ToString(yyyy))'">
-					<PropertyGroup>
-                        <Copyright>Copyright © $(BAS_CB_Copyright_BeginYear)-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
-                    </PropertyGroup>
-				</When>
-				<Otherwise>
-					<PropertyGroup>
-                        <Copyright>Copyright © $([System.DateTime]::Now.ToString(yyyy))</Copyright>
-                    </PropertyGroup>
-				</Otherwise>
-			</Choose>
-            <Choose>
-                <When Condition="'$(Company)' != ''">
-					<PropertyGroup>
-                        <Copyright>$(Copyright) $(Company)</Copyright>
-                    </PropertyGroup>
-				</When>
-				<When Condition="'$(Authors)' != ''">
-					<PropertyGroup>
-                        <Copyright>$(Copyright) $(Authors)</Copyright>
-                    </PropertyGroup>
-				</When>
-            </Choose>
-		</When>
-	</Choose>
+  <!-- general build properties -->
+  <PropertyGroup>
+    <Nullable Condition="'$(BAS_CB_Set_Nullable)' == 'true'">enable</Nullable>
+    <ImplicitUsings Condition="'$(BAS_CB_Set_ImplicitUsings)' == 'true'">disable</ImplicitUsings>
+    <LangVersion Condition="'$(BAS_CB_Set_LangVersion)' == 'true' AND '$(TargetFramework)'=='netstandard2.0'">11.0</LangVersion>
+  </PropertyGroup>
+  
+  <!-- set copyright -->
+  <Choose>
+    <When Condition="'$(BAS_CB_Set_Copyright)' == 'true'">
+      <Choose>
+        <When Condition="'$(BAS_CB_Copyright_BeginYear)' != '' AND '$(BAS_CB_Copyright_BeginYear)' != '$([System.DateTime]::Now.ToString(yyyy))'">
+          <PropertyGroup>
+            <Copyright>Copyright © $(BAS_CB_Copyright_BeginYear)-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
+          </PropertyGroup>
+        </When>
+        <Otherwise>
+          <PropertyGroup>
+            <Copyright>Copyright © $([System.DateTime]::Now.ToString(yyyy))</Copyright>
+          </PropertyGroup>
+        </Otherwise>
+      </Choose>
+      <Choose>
+        <When Condition="'$(Company)' != ''">
+          <PropertyGroup>
+            <Copyright>$(Copyright) $(Company)</Copyright>
+          </PropertyGroup>
+        </When>
+        <When Condition="'$(Authors)' != ''">
+          <PropertyGroup>
+            <Copyright>$(Copyright) $(Authors)</Copyright>
+          </PropertyGroup>
+        </When>
+      </Choose>
+    </When>
+  </Choose>
 
-	<!-- versioning -->
-	<PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
-		<!-- set versions -->
-		<AssemblyVersion>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</AssemblyVersion>
-		<FileVersion>$(BAS_CB_Tmp_VersionShort)</FileVersion>
-		<InformationalVersion>$(BAS_CB_Tmp_Version)</InformationalVersion>
-	</PropertyGroup>
-	
-    <!-- global usings -->
-	<ItemGroup Condition="'$(BAS_CB_Add_GlobalUsings)' == 'true'">
-		<Using Include="System" />
-		<Using Include="System.Collections.Generic" />
-		<Using Include="System.Linq" />
-		<Using Include="System.Threading.Tasks" />
-		<Using Include="Microsoft.CodeAnalysis" Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'" />
-	</ItemGroup>
-	
-	<!-- .CodeAnalysis projects -->
-	<PropertyGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'">
-		<!-- do not pack an analyzer project as normal lib dependency... -->
-		<IncludeBuildOutput Condition="'$(BAS_CB_Set_IncludeBuildOutput)' == 'true'">false</IncludeBuildOutput>
-	</PropertyGroup>
-	<ItemGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true' AND '$(BAS_CB_CodeAnalysis_PackCS)' == 'true'">
-		<!-- ... pack it in the analyzer directory instead -->
-		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-	</ItemGroup>
-
-	<!-- Target for handling items and item metadata -->
-	<Target Name="HandleItemMetadata" AfterTargets="PrepareForBuild">
-		<!-- .Tests projects -->
-		<ItemGroup Condition="'$(BAS_CB_ProjType_Tests)' == 'true'">
-			<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" Condition="$(BAS_CB_AllPackageReferences.Contains(';MSTest.TestFramework;'))" />
-		</ItemGroup>
-	</Target>
-
-	<!-- import the targets file that is shared between single and multi targeting builds -->
-	<Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.After.Shared.targets" />
+  <!-- global usings -->
+  <ItemGroup Condition="'$(BAS_CB_Add_GlobalUsings)' == 'true'">
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Linq" />
+    <Using Include="System.Threading.Tasks" />
+    <Using Include="Microsoft.CodeAnalysis" Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'" />
+  </ItemGroup>
+  
+  <!-- .CodeAnalysis projects -->
+  <PropertyGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'">
+    <!-- do not pack an analyzer project as normal lib dependency... -->
+    <IncludeBuildOutput Condition="'$(BAS_CB_Set_IncludeBuildOutput)' == 'true'">false</IncludeBuildOutput>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true' AND '$(BAS_CB_CodeAnalysis_PackCS)' == 'true'">
+    <!-- ... pack it in the analyzer directory instead -->
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+  
+  <!-- Target for handling items and item metadata -->
+  <Target Name="HandleItemMetadata" AfterTargets="PrepareForBuild">
+    <!-- .Tests projects -->
+    <ItemGroup Condition="'$(BAS_CB_ProjType_Tests)' == 'true'">
+      <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" Condition="$(BAS_CB_AllPackageReferences.Contains(';MSTest.TestFramework;'))" />
+    </ItemGroup>
+  </Target>
+  
+  <!-- import the targets file that is shared between single and multi targeting builds -->
+  <Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.After.Shared.targets" />
 </Project>

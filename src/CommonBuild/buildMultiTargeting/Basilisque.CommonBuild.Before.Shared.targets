@@ -1,5 +1,5 @@
 <!--
-   Copyright 2024 Alexander Stärk
+   Copyright 2024-2025 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,75 +14,54 @@
    limitations under the License.
 -->
 <Project>
-	<!-- Log all shared properties that are set by the Basilisque.CommonBuild project -->
-	<Target Name="LogBasilisqueCommonSharedBuildProperties" AfterTargets="PrepareForBuild" Condition="'$(BAS_CB_Log_Properties)' == 'true'">
-		<PropertyGroup>
-			<__BAS_Log_Msg>
+  <!-- Log all shared properties that are set by the Basilisque.CommonBuild project -->
+  <Target Name="LogBasilisqueCommonSharedBuildProperties" AfterTargets="PrepareForBuild" Condition="'$(BAS_CB_Log_Properties)' == 'true'">
+    <PropertyGroup>
+      <__BAS_Log_Msg>
 ==BAS_CB_Properties - begin shared ($(MSBuildProjectName))==
-	BAS_CB_ProjType_CodeAnalysis = '$(BAS_CB_ProjType_CodeAnalysis)'
-	BAS_CB_ProjType_Tests = '$(BAS_CB_ProjType_Tests)'
-	BAS_CB_ProjType_Benchmarks = '$(BAS_CB_ProjType_Benchmarks)'
-	BAS_CB_Set_IsPackable = '$(BAS_CB_Set_IsPackable)'
-	BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'
-	BAS_CB_Set_Versions = '$(BAS_CB_Set_Versions)'
-	BAS_CB_BuildType = '$(BAS_CB_BuildType)'
-	BAS_CB_VersionMajor = '$(BAS_CB_VersionMajor)'
-	BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'
-	BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'
-	BAS_CB_VersionRevision = '$(BAS_CB_VersionRevision)'
-	BAS_CB_Set_SonarQubeTestProject = '$(BAS_CB_Set_SonarQubeTestProject)'
-	PackageVersion = '$(PackageVersion)'
-	IsPackable = '$(IsPackable)'
-	IsPublishable = '$(IsPublishable)'
-	IsTestProject = '$(IsTestProject)'
-	RunSettingsFilePath = '$(RunSettingsFilePath)'
-	SonarQubeTestProject = '$(SonarQubeTestProject)'
+  BAS_CB_ProjType_CodeAnalysis = '$(BAS_CB_ProjType_CodeAnalysis)'
+  BAS_CB_ProjType_Tests = '$(BAS_CB_ProjType_Tests)'
+  BAS_CB_ProjType_Benchmarks = '$(BAS_CB_ProjType_Benchmarks)'
+  BAS_CB_Set_IsPackable = '$(BAS_CB_Set_IsPackable)'
+  BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'
+  BAS_CB_Set_Versions = '$(BAS_CB_Set_Versions)'
+  BAS_CB_BuildType = '$(BAS_CB_BuildType)'
+  BAS_CB_VersionMajor = '$(BAS_CB_VersionMajor)'
+  BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'
+  BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'
+  BAS_CB_VersionRevision = '$(BAS_CB_VersionRevision)'
+  BAS_CB_Set_SonarQubeTestProject = '$(BAS_CB_Set_SonarQubeTestProject)'
+  PackageVersion = '$(PackageVersion)'
+  IsPackable = '$(IsPackable)'
+  IsPublishable = '$(IsPublishable)'
+  IsTestProject = '$(IsTestProject)'
+  RunSettingsFilePath = '$(RunSettingsFilePath)'
+  SonarQubeTestProject = '$(SonarQubeTestProject)'
 ==BAS_CB_Properties - end shared ($(MSBuildProjectName))==
-			</__BAS_Log_Msg>
-		</PropertyGroup>
-		<Message Importance="High" Text="$(__BAS_Log_Msg)" />
-	</Target>
-
-	<!-- NuGet package properties and project info -->
-	<PropertyGroup>
-		<IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == 'true' AND $(Configuration)!='Release'">false</IsPackable>
-	</PropertyGroup>
-
-	<!-- versioning -->
-	<PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
-		<!-- ensure build type and version is not empty -->
-		<BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
-		<BAS_CB_VersionMajor Condition="'$(BAS_CB_VersionMajor)' == ''">1</BAS_CB_VersionMajor>
-		<BAS_CB_VersionMinor Condition="'$(BAS_CB_VersionMinor)' == ''">0</BAS_CB_VersionMinor>
-
-		<!-- init version with MAJOR.MINOR -->
-		<BAS_CB_Tmp_VersionShort>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</BAS_CB_Tmp_VersionShort>
-
-		<!-- add .BUILD if not empty  -->
-		<BAS_CB_Tmp_VersionShort Condition="'$(BAS_CB_VersionBuild)' != ''">$(BAS_CB_Tmp_VersionShort).$(BAS_CB_VersionBuild)</BAS_CB_Tmp_VersionShort>
-
-		<!-- add SUFFIX and REVISION -->
-		<BAS_CB_Tmp_Version>$(BAS_CB_Tmp_VersionShort)</BAS_CB_Tmp_Version>
-		<BAS_CB_Tmp_Version Condition="'$(BAS_CB_BuildType)' != 'Release'">$(BAS_CB_Tmp_Version)-$(BAS_CB_BuildType)$(BAS_CB_VersionRevision)</BAS_CB_Tmp_Version>
-
-		<!-- set versions -->
-		<PackageVersion>$(BAS_CB_Tmp_Version)</PackageVersion>
-	</PropertyGroup>
-
-	<!-- .Tests projects -->
-	<PropertyGroup Condition="'$(BAS_CB_ProjType_Tests)' == 'true'">
-		<IsPackable>false</IsPackable>
-		<IsPublishable>false</IsPublishable>
-		<IsTestProject>true</IsTestProject>
-		<SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == 'true'">true</SonarQubeTestProject>
-
-		<RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == 'true' AND '$(RunSettingsFilePath)' == ''">$(MSBuildThisFileDirectory)CommonBuild.MSTest.runsettings</RunSettingsFilePath>
-	</PropertyGroup>
-
-	<!-- .Benchmarks projects -->
-	<PropertyGroup Condition="'$(BAS_CB_ProjType_Benchmarks)' == 'true'">
-		<IsPackable>false</IsPackable>
-		<IsPublishable>false</IsPublishable>
-		<SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == 'true'">true</SonarQubeTestProject>
-	</PropertyGroup>
+      </__BAS_Log_Msg>
+    </PropertyGroup>
+    <Message Importance="High" Text="$(__BAS_Log_Msg)" />
+  </Target>
+  
+  <!-- NuGet package properties and project info -->
+  <PropertyGroup>
+    <IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == 'true' AND $(Configuration)!='Release'">false</IsPackable>
+  </PropertyGroup>
+  
+  <!-- .Tests projects -->
+  <PropertyGroup Condition="'$(BAS_CB_ProjType_Tests)' == 'true'">
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <IsTestProject>true</IsTestProject>
+    <SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == 'true'">true</SonarQubeTestProject>
+    
+    <RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == 'true' AND '$(RunSettingsFilePath)' == ''">$(MSBuildThisFileDirectory)CommonBuild.MSTest.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+  
+  <!-- .Benchmarks projects -->
+  <PropertyGroup Condition="'$(BAS_CB_ProjType_Benchmarks)' == 'true'">
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == 'true'">true</SonarQubeTestProject>
+  </PropertyGroup>
 </Project>
