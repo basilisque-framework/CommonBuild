@@ -33,7 +33,7 @@ on:
         type: string
       dotNetVersion:
         description: 'The version of .Net that will be used for the build.'
-        default: 8.0.x
+        default: 9.0.x
         required: false
         type: string
       publishTargetFramework:
