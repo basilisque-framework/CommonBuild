@@ -48,27 +48,6 @@
     <IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == 'true' AND $(Configuration)!='Release'">false</IsPackable>
   </PropertyGroup>
   
-  <!-- versioning -->
-  <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
-    <!-- ensure build type and version is not empty -->
-    <BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
-    <BAS_CB_VersionMajor Condition="'$(BAS_CB_VersionMajor)' == ''">1</BAS_CB_VersionMajor>
-    <BAS_CB_VersionMinor Condition="'$(BAS_CB_VersionMinor)' == ''">0</BAS_CB_VersionMinor>
-    
-    <!-- init version with MAJOR.MINOR -->
-    <BAS_CB_Tmp_VersionShort>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</BAS_CB_Tmp_VersionShort>
-    
-    <!-- add .BUILD if not empty  -->
-    <BAS_CB_Tmp_VersionShort Condition="'$(BAS_CB_VersionBuild)' != ''">$(BAS_CB_Tmp_VersionShort).$(BAS_CB_VersionBuild)</BAS_CB_Tmp_VersionShort>
-    
-    <!-- add SUFFIX and REVISION -->
-    <BAS_CB_Tmp_Version>$(BAS_CB_Tmp_VersionShort)</BAS_CB_Tmp_Version>
-    <BAS_CB_Tmp_Version Condition="'$(BAS_CB_BuildType)' != 'Release'">$(BAS_CB_Tmp_Version)-$(BAS_CB_BuildType)$(BAS_CB_VersionRevision)</BAS_CB_Tmp_Version>
-    
-    <!-- set versions -->
-    <PackageVersion>$(BAS_CB_Tmp_Version)</PackageVersion>
-  </PropertyGroup>
-  
   <!-- .Tests projects -->
   <PropertyGroup Condition="'$(BAS_CB_ProjType_Tests)' == 'true'">
     <IsPackable>false</IsPackable>

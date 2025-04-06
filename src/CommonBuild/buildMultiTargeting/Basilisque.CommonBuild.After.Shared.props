@@ -1,5 +1,5 @@
 <!--
-   Copyright 2024 Alexander Stärk
+   Copyright 2024-2025 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,4 +14,8 @@
    limitations under the License.
 -->
 <Project>
+  <!-- execute a targets file right after the csproj -->
+  <PropertyGroup>
+    <BeforeTargetFrameworkInferenceTargets>$(MSBuildThisFileDirectory)BeforeTargetFrameworkInference.targets</BeforeTargetFrameworkInferenceTargets>
+  </PropertyGroup>
 </Project>

@@ -29,6 +29,7 @@
     <BAS_CB_Set_LangVersion Condition="'$(BAS_CB_Set_LangVersion)' == ''">true</BAS_CB_Set_LangVersion>
     <BAS_CB_Set_IncludeBuildOutput Condition="'$(BAS_CB_Set_IncludeBuildOutput)' == ''">true</BAS_CB_Set_IncludeBuildOutput>
     <BAS_CB_CodeAnalysis_PackCS Condition="'$(BAS_CB_CodeAnalysis_PackCS)' == ''">true</BAS_CB_CodeAnalysis_PackCS>
+    <BAS_CB_Set_AssemblyName_VersionSuffix Condition="'$(BAS_CB_Set_AssemblyName_VersionSuffix)' == ''">$(BAS_CB_ProjType_CodeAnalysis)</BAS_CB_Set_AssemblyName_VersionSuffix>
   </PropertyGroup>
   
   <!-- XML documentation -->

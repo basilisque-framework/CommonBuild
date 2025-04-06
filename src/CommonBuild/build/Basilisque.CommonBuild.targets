@@ -34,6 +34,7 @@
   BAS_CB_Set_Copyright = '$(BAS_CB_Set_Copyright)'
   BAS_CB_Set_IncludeBuildOutput = '$(BAS_CB_Set_IncludeBuildOutput)'
   BAS_CB_CodeAnalysis_PackCS = '$(BAS_CB_CodeAnalysis_PackCS)'
+  BAS_CB_Set_AssemblyName_VersionSuffix = '$(BAS_CB_Set_AssemblyName_VersionSuffix)'
   GenerateDocumentationFile = '$(GenerateDocumentationFile)'
   Nullable = '$(Nullable)'
   ImplicitUsings = '$(ImplicitUsings)'
@@ -46,6 +47,7 @@
   AssemblyVersion = '$(AssemblyVersion)'
   FileVersion = '$(FileVersion)'
   InformationalVersion = '$(InformationalVersion)'
+  AssemblyName = '$(AssemblyName)'
 ==BAS_CB_Properties - end single targeting ($(MSBuildProjectName))==
       </__BAS_Log_Msg>
     </PropertyGroup>
@@ -72,14 +74,6 @@
     <Nullable Condition="'$(BAS_CB_Set_Nullable)' == 'true'">enable</Nullable>
     <ImplicitUsings Condition="'$(BAS_CB_Set_ImplicitUsings)' == 'true'">disable</ImplicitUsings>
     <LangVersion Condition="'$(BAS_CB_Set_LangVersion)' == 'true' AND '$(TargetFramework)'=='netstandard2.0'">11.0</LangVersion>
-  </PropertyGroup>
-  
-  <!-- NuGet package properties and project info -->
-  <PropertyGroup>
-    <NeutralLanguage Condition="'$(BAS_CB_Set_NeutralLanguage)' == 'true'">en-US</NeutralLanguage>
-    <Title Condition="'$(BAS_CB_Set_Title)' == 'true'">$(AssemblyName)</Title>
-    <Company Condition="'$(BAS_CB_Set_Company)' == 'true' AND '$(Authors)' != ''">$(Authors)</Company>
-    <Product Condition="'$(BAS_CB_Set_Product)' == 'true'">$(AssemblyName)</Product>
   </PropertyGroup>
   
   <!-- set copyright -->
@@ -111,15 +105,7 @@
       </Choose>
     </When>
   </Choose>
-  
-  <!-- versioning -->
-  <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
-    <!-- set versions -->
-    <AssemblyVersion>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</AssemblyVersion>
-    <FileVersion>$(BAS_CB_Tmp_VersionShort)</FileVersion>
-    <InformationalVersion>$(BAS_CB_Tmp_Version)</InformationalVersion>
-  </PropertyGroup>
-  
+
   <!-- global usings -->
   <ItemGroup Condition="'$(BAS_CB_Add_GlobalUsings)' == 'true'">
     <Using Include="System" />
