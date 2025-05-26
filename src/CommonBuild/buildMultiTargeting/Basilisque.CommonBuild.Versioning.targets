@@ -14,6 +14,10 @@
    limitations under the License.
 -->
 <Project>
+  <PropertyGroup>
+    <BasilisqueCommonBuildVersioningTargets_Imported>true</BasilisqueCommonBuildVersioningTargets_Imported>
+  </PropertyGroup>
+  
   <!-- versioning -->
   <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
     <!-- ensure build type and version is not empty -->

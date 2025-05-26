@@ -48,7 +48,7 @@
     <IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == 'true' AND $(Configuration)!='Release'">false</IsPackable>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)Basilisque.CommonBuild.Versioning.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)Basilisque.CommonBuild.Versioning.targets" Condition="'$(BasilisqueCommonBuildVersioningTargets_Imported)' != 'true'" />
 
   <!-- versioning -->
   <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">

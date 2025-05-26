@@ -15,7 +15,7 @@
 -->
 <Project>
 
-  <Import Project="$(MSBuildThisFileDirectory)Basilisque.CommonBuild.Versioning.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)Basilisque.CommonBuild.Versioning.targets" Condition="'$(BasilisqueCommonBuildVersioningTargets_Imported)' != 'true'" />
 
   <!-- NuGet package properties and project info -->
   <!-- Be aware that this is using the AssemblyName before it optionally gets the version suffix. -->
