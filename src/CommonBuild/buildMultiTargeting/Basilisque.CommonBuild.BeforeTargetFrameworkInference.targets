@@ -14,6 +14,9 @@
    limitations under the License.
 -->
 <Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)Basilisque.CommonBuild.Versioning.targets" />
+
   <!-- NuGet package properties and project info -->
   <!-- Be aware that this is using the AssemblyName before it optionally gets the version suffix. -->
   <PropertyGroup>

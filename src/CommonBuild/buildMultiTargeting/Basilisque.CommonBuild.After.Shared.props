@@ -16,6 +16,6 @@
 <Project>
   <!-- execute a targets file right after the csproj -->
   <PropertyGroup>
-    <BeforeTargetFrameworkInferenceTargets>$(MSBuildThisFileDirectory)BeforeTargetFrameworkInference.targets</BeforeTargetFrameworkInferenceTargets>
+    <BeforeTargetFrameworkInferenceTargets>$(MSBuildThisFileDirectory)Basilisque.CommonBuild.BeforeTargetFrameworkInference.targets</BeforeTargetFrameworkInferenceTargets>
   </PropertyGroup>
 </Project>
