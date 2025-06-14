@@ -163,6 +163,9 @@ The purpose for this is, that almost all other build types (suffixes) would be c
 
 Major and Minor are set to 1.0 when empty, Build and Revision are omitted from the version when empty.
 
+The Revision is padded to 5 digits. This is done to ensure that the version is always the same length, which is important for NuGet.
+You can set the property BAS_CB_VersionRevisionPadLength to change the padding length. The default is 5. Setting it to 0 will disable the padding.
+
 ### Logging
 If you want to log the properties, that are set by this project, you can set the property BAS_CB_Log_Properties to true. This will log the current value of all these properties after the _PrepareForBuild_ target.
 

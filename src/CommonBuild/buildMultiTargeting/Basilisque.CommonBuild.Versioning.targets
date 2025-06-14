@@ -18,12 +18,13 @@
     <BasilisqueCommonBuildVersioningTargets_Imported>true</BasilisqueCommonBuildVersioningTargets_Imported>
   </PropertyGroup>
   
-  <!-- versioning -->
+  <!-- general versioning -->
   <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
     <!-- ensure build type and version is not empty -->
     <BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
     <BAS_CB_VersionMajor Condition="'$(BAS_CB_VersionMajor)' == ''">1</BAS_CB_VersionMajor>
     <BAS_CB_VersionMinor Condition="'$(BAS_CB_VersionMinor)' == ''">0</BAS_CB_VersionMinor>
+    <BAS_CB_VersionRevisionPadLength Condition="'$(BAS_CB_VersionRevisionPadLength)' == ''">5</BAS_CB_VersionRevisionPadLength>
 
     <!-- init version with MAJOR.MINOR -->
     <BAS_CB_Tmp_VersionShort>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</BAS_CB_Tmp_VersionShort>
@@ -33,6 +34,20 @@
 
     <!-- add SUFFIX and REVISION -->
     <BAS_CB_Tmp_Version>$(BAS_CB_Tmp_VersionShort)</BAS_CB_Tmp_Version>
-    <BAS_CB_Tmp_Version Condition="'$(BAS_CB_BuildType)' != 'Release'">$(BAS_CB_Tmp_Version)-$(BAS_CB_BuildType)$(BAS_CB_VersionRevision)</BAS_CB_Tmp_Version>
+  </PropertyGroup>
+  
+  <!-- pad the revision if it is a number -->
+  <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true' AND '$(BAS_CB_VersionRevision)' != '' AND $(BAS_CB_VersionRevisionPadLength) &gt; 0">
+    <_BAS_CB_VersionRevision_IsInt>$([System.Text.RegularExpressions.Regex]::IsMatch($(BAS_CB_VersionRevision), '^\d+$'))</_BAS_CB_VersionRevision_IsInt>
+    <_BAS_CB_VersionRevision_Padded>$(BAS_CB_VersionRevision)</_BAS_CB_VersionRevision_Padded>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(_BAS_CB_VersionRevision_IsInt)' == 'true'">
+    <BAS_CB_VersionRevisionFormat>{0:D$(BAS_CB_VersionRevisionPadLength)}</BAS_CB_VersionRevisionFormat>
+    <_BAS_CB_VersionRevision_Padded>$([System.String]::Format($(BAS_CB_VersionRevisionFormat), $([System.Int32]::Parse($(BAS_CB_VersionRevision)))))</_BAS_CB_VersionRevision_Padded>
+  </PropertyGroup>
+
+  <!-- add pre-release suffix -->
+  <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true' AND '$(BAS_CB_BuildType)' != 'Release'">
+    <BAS_CB_Tmp_Version>$(BAS_CB_Tmp_Version)-$(BAS_CB_BuildType)$(_BAS_CB_VersionRevision_Padded)</BAS_CB_Tmp_Version>
   </PropertyGroup>
 </Project>
