@@ -17,7 +17,7 @@
 
 ## Overview
 [![GitHub](https://img.shields.io/badge/GitHub-Project-%23004880.svg?logo=github)](https://github.com/basilisque-framework/CommonBuild)
-[![License](https://img.shields.io/badge/License-Apache%20License%202.0-%23D22128.svg?logo=apache&logoColor=%23D22128)](LICENSE.txt)  
+[![License](https://img.shields.io/badge/License-Apache%20License%202.0-%23D22128.svg?logo=apache&logoColor=%23D22128)](https://github.com/basilisque-framework/CommonBuild/blob/main/LICENSE.txt)  
 
 This project provides __optional__ common build configuration for projects that use the Basilisque framework. But it also can be used without Basilique.  
 So if you like the contained configuration feel free to use it, otherwise simply don't.
@@ -33,25 +33,25 @@ For more information about how this can be configured, please see the [GitHub pa
 The configuration is based on conventions regarding the names of the target projects. _(The folder structure of the solution is irrelevant.)_
 
 >__ExampleSolution__
->- MyProject.[__Service__](#servicesConfig)  
+>- MyProject.__Service__  
 >_Containing the startup code of a backend (Windows) service_
->- MyProject.Service.[__Tests__](#testsConfig)  
+>- MyProject.Service.__Tests__  
 >_Containing automated tests. In this case for the MyProject.Service-project_
->- MyProject.[__API__](#apiConfig)  
+>- MyProject.__API__  
 >_Containing the public facing code of the backend (API-Controllers, ...)_
->- MyProject.API.[__Tests__](#testsConfig)  
+>- MyProject.API.__Tests__  
 >_Containing automated tests. In this case for the MyProject.API-project_
->- MyProject.[__Domain__](#domainConfig)  
+>- MyProject.__Domain__  
 >_Containing the business logic_
->- MyProject.Domain.[__Tests__](#testsConfig)  
+>- MyProject.Domain.__Tests__  
 >_Containing automated tests. In this case for the MyProject.Domain-project_
->- MyProject.[__DataAccess__](#dataAccessConfig)  
+>- MyProject.__DataAccess__  
 >_Containing the data access layer (e.g. using Entity Framework)_
->- MyProject.DataAccess.[__Tests__](#testsConfig)  
+>- MyProject.DataAccess.__Tests__  
 >_Containing automated tests. In this case for the MyProject.DataAccess-project_
->- MyProject.[__Benchmarks__](#benchmarksConfig)  
+>- MyProject.__Benchmarks__  
 >_Containing benchmarks for a project_
->- MyProject.[__CodeAnalysis__](#codeAnalysisConfig)  
+>- MyProject.__CodeAnalysis__  
 >_Containing code analysis support for the project like source generators, analyzers and fixes_
 
 Obviously not all applications need all of those project types. So e.g. if you don't need data access, then just do not create a project named like it. But if you do need data access, then let the project name end with _.DataAccess_. That is the intention behind the configuration in Basilisque.CommonBuild.
@@ -62,4 +62,4 @@ For detailed information, please have a look at the GitHub page:
 [![GitHub](https://img.shields.io/badge/GitHub-Project-%23004880.svg?logo=github)](https://github.com/basilisque-framework/CommonBuild)
 
 ## License
-The Basilisque framework (including this repository) is licensed under the [Apache License, Version 2.0](LICENSE.txt).
+The Basilisque framework (including this repository) is licensed under the [Apache License, Version 2.0](https://github.com/basilisque-framework/CommonBuild/blob/main/LICENSE.txt).
