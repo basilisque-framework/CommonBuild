@@ -130,6 +130,24 @@ jobs:
         # If true, the body of commits will also be searched for major/minor patterns to determine the version type.
         #search_commit_body: # default is false
     
+    - name: Compose padded version
+      id: version_padded
+      run: |
+        MAJOR="${{ steps.versioning.outputs.major }}"
+        MINOR="${{ steps.versioning.outputs.minor }}"
+        PATCH="${{ steps.versioning.outputs.patch }}"
+        INCREMENT="${{ steps.versioning.outputs.increment }}"
+        LABEL="${{ inputs.basBuildType }}"
+        
+        if [[ "$LABEL" == "Release" ]]; then
+          VERSION="$MAJOR.$MINOR.$PATCH"
+        else
+          PADDED=$(printf "%05d" "$INCREMENT")
+          VERSION="$MAJOR.$MINOR.$PATCH-${LABEL}${PADDED}"
+        fi
+
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
     - name: Dotnet Restore
       run: dotnet restore ${{ inputs.projectOrSolution }}
     
@@ -179,7 +197,7 @@ jobs:
           github.rest.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: 'refs/tags/v${{ steps.versioning.outputs.version }}',
+            ref: 'refs/tags/v${{ steps.version_padded.outputs.version }}',
             sha: context.sha
           })
     
@@ -188,7 +206,7 @@ jobs:
       if: inputs.basBuildType == 'Release' || inputs.basBuildType == 'RC' || inputs.basBuildType == 'Preview'
       with:
         files: src/**/*.nupkg
-        tag_name: v${{ steps.versioning.outputs.version }}
+        tag_name: v${{ steps.version_padded.outputs.version }}
         prerelease: ${{ inputs.basBuildType != 'Release' }}
     
     - name: Dotnet NuGet Push NuGet.org
