@@ -145,28 +145,38 @@ jobs:
           PADDED=$(printf "%05d" "$INCREMENT")
           VERSION="$MAJOR.$MINOR.$PATCH-${LABEL}${PADDED}"
         fi
-
+        
         echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
+    
     - name: Dotnet Restore
       run: dotnet restore ${{ inputs.projectOrSolution }}
     
-    - name: Dotnet Build and Sonar Analyze
+    - name: Start Sonar Analysis
       if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        .sonar/scanner/dotnet-sonarscanner begin /k:"${{ inputs.sonarProjectKey }}" /o:"${{ inputs.sonarOrganization }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-        dotnet build ${{ inputs.projectOrSolution }} -c Release --no-restore -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
-        .sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          PR_PARAMS="/d:sonar.pullrequest.key=${{ github.event.pull_request.number }} /d:sonar.pullrequest.branch=${{ github.head_ref }} /d:sonar.pullrequest.base=${{ github.base_ref }} /d:sonar.github.repository=${{ github.repository }} /d:sonar.github.oauth=${{ secrets.GITHUB_TOKEN }}"
+        else
+          PR_PARAMS=""
+        fi
+        
+        .sonar/scanner/dotnet-sonarscanner begin /k:"${{ inputs.sonarProjectKey }}" /o:"${{ inputs.sonarOrganization }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/TestResults/*/coverage.opencover.xml" $PR_PARAMS
     
     - name: Dotnet Build
-      if: inputs.sonarProjectKey == '' || inputs.sonarOrganization == ''
       run: dotnet build ${{ inputs.projectOrSolution }} -c Release --no-restore -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
         
     - name: Dotnet Test
-      run: dotnet test ${{ inputs.projectOrSolution }} -c Release --no-build --verbosity normal -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
+      run: dotnet test ${{ inputs.projectOrSolution }} -c Release --no-build --verbosity normal --collect:"XPlat Code Coverage" -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
+    
+    - name: End Sonar Analysis
+      if: inputs.sonarProjectKey != '' && inputs.sonarOrganization != ''
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        .sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
     
     - name: Dotnet Publish
       run: dotnet publish ${{ inputs.projectOrSolution }} -c Release --no-build ${{ inputs.publishTargetFramework != '' && format('-f {0}', inputs.publishTargetFramework) || '' }} -p:BAS_CB_VersionMajor=${{ steps.versioning.outputs.major }} -p:BAS_CB_VersionMinor=${{ steps.versioning.outputs.minor }} -p:BAS_CB_VersionBuild=${{ steps.versioning.outputs.patch }} -p:BAS_CB_VersionRevision=${{ steps.versioning.outputs.increment }} -p:BAS_CB_BuildType=${{ inputs.basBuildType }}
