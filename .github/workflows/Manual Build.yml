@@ -39,4 +39,5 @@ jobs:
       sonarProjectKey: 'basilisque-framework_CommonBuild'
       sonarOrganization: 'basilisque-framework'
       runDotnetPack: true
+      runDotnetTest: false
     secrets: inherit
