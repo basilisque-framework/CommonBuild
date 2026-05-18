@@ -1,5 +1,5 @@
 <!--
-   Copyright 2024-2025 Alexander Stärk
+   Copyright 2024-2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@
   BAS_CB_Set_IsPackable = '$(BAS_CB_Set_IsPackable)'
   BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'
   BAS_CB_Set_Versions = '$(BAS_CB_Set_Versions)'
+  BAS_CB_Use_GitVersion = '$(BAS_CB_Use_GitVersion)'
   BAS_CB_BuildType = '$(BAS_CB_BuildType)'
   BAS_CB_VersionMajor = '$(BAS_CB_VersionMajor)'
   BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'
@@ -50,12 +51,6 @@
 
   <Import Project="$(MSBuildThisFileDirectory)Basilisque.CommonBuild.Versioning.targets" Condition="'$(BasilisqueCommonBuildVersioningTargets_Imported)' != 'true'" />
 
-  <!-- versioning -->
-  <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
-    <!-- set versions -->
-    <PackageVersion>$(BAS_CB_Tmp_Version)</PackageVersion>
-  </PropertyGroup>
-  
   <!-- .Tests projects -->
   <PropertyGroup Condition="'$(BAS_CB_ProjType_Tests)' == 'true'">
     <IsPackable>false</IsPackable>
@@ -72,4 +67,74 @@
     <IsPublishable>false</IsPublishable>
     <SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == 'true'">true</SonarQubeTestProject>
   </PropertyGroup>
+
+  <!-- versioning -->
+  <Target Name="BAS_CB_SetVersionPropertiesWithGitVersion" AfterTargets="GetVersion" Condition="'$(BAS_CB_Use_GitVersion)' == 'true'">
+    <!-- When GitVersion is used enforce execution after GetVersion -->
+  </Target>
+  <Target Name="BAS_CB_SetVersionPropertiesWithoutGitVersion" Condition="'$(BAS_CB_Use_GitVersion)' != 'true'">
+    <!-- When GitVersion is not used there is no specific target this should be executed after. But it should be executed -->
+  </Target>
+  <Target Name="BAS_CB_SetVersionProperties"
+          AfterTargets="BAS_CB_SetVersionPropertiesWithoutGitVersion;BAS_CB_SetVersionPropertiesWithGitVersion"
+          BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;EnsureWixToolsetInstalled"
+          Condition="'$(BAS_CB_Use_GitVersion)' == 'true' OR '$(BAS_CB_Set_Versions)' == 'true'">
+    <PropertyGroup>
+      <!-- ensure total revision width is not empty -->
+      <BAS_CB_Revision_TotalWidth Condition="'$(BAS_CB_Revision_TotalWidth)' == ''">5</BAS_CB_Revision_TotalWidth>
+
+      <!-- get values from GitVersion -->
+      <BAS_CB_VersionMajor Condition="'$(BAS_CB_VersionMajor)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_Major)</BAS_CB_VersionMajor>
+      <BAS_CB_VersionMinor Condition="'$(BAS_CB_VersionMinor)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_Minor)</BAS_CB_VersionMinor>
+      <BAS_CB_VersionBuild Condition="'$(BAS_CB_VersionBuild)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_Patch)</BAS_CB_VersionBuild>
+      <BAS_CB_VersionRevision Condition="'$(BAS_CB_VersionRevision)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_CommitsSinceVersionSource)</BAS_CB_VersionRevision>
+      <BAS_CB_VersionRevisionPadded>$(BAS_CB_VersionRevision.PadLeft($(BAS_CB_Revision_TotalWidth), '0'))</BAS_CB_VersionRevisionPadded>
+
+      <!-- ensure build type and versions are not empty -->
+      <BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
+      <BAS_CB_VersionMajor Condition="'$(BAS_CB_VersionMajor)' == ''">1</BAS_CB_VersionMajor>
+      <BAS_CB_VersionMinor Condition="'$(BAS_CB_VersionMinor)' == ''">0</BAS_CB_VersionMinor>
+
+      <!-- init version with MAJOR.MINOR -->
+      <BAS_CB_Tmp_VersionShort>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</BAS_CB_Tmp_VersionShort>
+
+      <!-- add .BUILD if not empty  -->
+      <BAS_CB_Tmp_VersionShort Condition="'$(BAS_CB_VersionBuild)' != ''">$(BAS_CB_Tmp_VersionShort).$(BAS_CB_VersionBuild)</BAS_CB_Tmp_VersionShort>
+
+      <!-- add SUFFIX and REVISION -->
+      <BAS_CB_Tmp_Version>$(BAS_CB_Tmp_VersionShort)</BAS_CB_Tmp_Version>
+      <BAS_CB_Tmp_Version Condition="'$(BAS_CB_BuildType)' != 'Release'">$(BAS_CB_Tmp_Version)-$(BAS_CB_BuildType)$(BAS_CB_VersionRevisionPadded)</BAS_CB_Tmp_Version>
+      <BAS_CB_Tmp_InfoVersion>$(BAS_CB_Tmp_Version)</BAS_CB_Tmp_InfoVersion>
+      <BAS_CB_Tmp_InfoVersion Condition="'$(BAS_CB_BuildType)' != 'Release' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(BAS_CB_Tmp_InfoVersion).$(GitVersion_ShortSha)</BAS_CB_Tmp_InfoVersion>
+
+      <!-- set versions -->
+      <AssemblyVersion>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</AssemblyVersion>
+      <FileVersion>$(BAS_CB_Tmp_VersionShort)</FileVersion>
+      <InformationalVersion>$(BAS_CB_Tmp_InfoVersion)</InformationalVersion>
+      <PackageVersion>$(BAS_CB_Tmp_Version)</PackageVersion>
+
+      <!-- set git repository properties -->
+      <RepositoryType Condition=" '$(RepositoryType)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true' ">git</RepositoryType>
+      <RepositoryBranch Condition=" '$(RepositoryBranch)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true' ">$(GitVersion_BranchName)</RepositoryBranch>
+      <RepositoryCommit Condition=" '$(RepositoryCommit)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true' ">$(GitVersion_Sha)</RepositoryCommit>
+    </PropertyGroup>
+
+    <!-- AssemblyName with versioning suffix (e.g. for code analysis assemblies) -->
+    <PropertyGroup Condition="'$(BAS_CB_Set_AssemblyName_VersionSuffix)' == 'true'">
+      <AssemblyName Condition="'$(AssemblyName)' == ''">$(MSBuildProjectName)</AssemblyName>
+      <AssemblyName>$(AssemblyName)-$(BAS_CB_Tmp_Version)</AssemblyName>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="BAS_CB_LogVersionProperties" AfterTargets="BAS_CB_SetVersionProperties" Condition="('$(BAS_CB_Use_GitVersion)' == 'true' OR '$(BAS_CB_Set_Versions)' == 'true') AND '$(BAS_CB_Log_Properties)' == 'true'">
+    <Message Importance="High" Text="==BAS_CB_Versions ($(MSBuildProjectName))==" />
+    <Message Importance="High" Text="AssemblyVersion = $(AssemblyVersion)" />
+    <Message Importance="High" Text="FileVersion = $(FileVersion)" />
+    <Message Importance="High" Text="InformationalVersion = $(InformationalVersion)" />
+    <Message Importance="High" Text="PackageVersion = $(PackageVersion)" />
+    <Message Importance="High" Text="RepositoryType = $(RepositoryType)" />
+    <Message Importance="High" Text="RepositoryBranch = $(RepositoryBranch)" />
+    <Message Importance="High" Text="RepositoryCommit = $(RepositoryCommit)" />
+    <Message Importance="High" Text="==BAS_CB_Versions ($(MSBuildProjectName))==" />
+  </Target>
 </Project>

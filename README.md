@@ -130,7 +130,12 @@ when no tests are found in the test project, it is treated as error. So e.g. whe
 - excludes \*.Tests.dll, \*.Benchmarks.dll and Microsoft.\*.dll projects from code coverage
 
 <a name="versioning"></a>__Versioning__  
-The versions are built from the properties BAS_CB_BuildType, BAS_CB_VersionMajor, BAS_CB_VersionMinor, BAS_CB_VersionBuild and BAS_CB_VersionRevision. If you want to disable the versioning you can set BAS_CB_Set_Versions = false.
+This project adds a dependency to (GitVersion)[https://gitversion.net/] to the target project.  
+If you want to disable versioning with GitVersion, you can set the MSBuild property BAS_CB_Use_GitVersion to false.
+
+The versions are built from the properties BAS_CB_BuildType, BAS_CB_VersionMajor, BAS_CB_VersionMinor, BAS_CB_VersionBuild and BAS_CB_VersionRevision.
+If you do not set those properties, the values will be automatically determined using GitVersion.
+If you want to disable versioning at all, you can set the MSBuild properties BAS_CB_Use_GitVersion and BAS_CB_Set_Versions to false.
 
 The build type differentiates between release builds and different kinds of prerelease builds.
 Recommended values are:
@@ -146,22 +151,26 @@ But you can use any other string. The only fixed value is 'Release'. This remove
 Be aware, that the suffixes will be ordered alphabetically e.g. by NuGet. So for example version 1.0-RC is considered higher than a version 1.0-Preview, because it is further back in the alphabet.
 
 This is how the version properties are being set:
-| Property 	            | Value                                   |
-|---------------------- |---------------------------------------- |
-| AssemblyVersion       | Major.Minor                             |
-| FileVersion           | Major.Minor(.Build)                     |
-| InformationalVersion  | Major.Minor(.Build)(-Suffix(Revision))  |
-| PackageVersion        | Major.Minor(.Build)(-Suffix(Revision))  |
+| Property 	        | Value                                       |
+|---------------------- |-------------------------------------------- |
+| AssemblyVersion       | Major.Minor                                 |
+| FileVersion           | Major.Minor(.Build)                         |
+| InformationalVersion  | Major.Minor(.Build)(-Suffix(Revision).Sha)  |
+| PackageVersion        | Major.Minor(.Build)(-Suffix(Revision))      |
 
 You can specify the necessary properties directly in your project or you can set them using dotnet build (MSBuild) parameters:
 
+When using GitVersion:
+    dotnet build MySolution.sln -p:BAS_CB_BuildType=CI
+
+When not using GitVersion:
     dotnet build MySolution.sln -p:BAS_CB_VersionMajor=2 -p:BAS_CB_VersionMinor=1 -p:BAS_CB_VersionBuild=0 -p:BAS_CB_VersionRevision=1043 -p:BAS_CB_BuildType=CI
 
 Typically you would set them on the build server using parameters. Local builds in the IDE won't have any parameters set.
 When nothing else is specified, build type 'Alpha' is used as fallback. By doing so, all local builds will be in this category.
 The purpose for this is, that almost all other build types (suffixes) would be considered higher than a local build, because A is right at the beginning of the alphabet.
 
-Major and Minor are set to 1.0 when empty, Build and Revision are omitted from the version when empty.
+Major and Minor are set to 1.0 when empty and GitVersion doesn't return a version. Build and Revision are omitted from the version when empty.
 
 The Revision is padded to 5 digits. This is done to ensure that the version is always the same length, which is important for NuGet.
 You can set the property BAS_CB_VersionRevisionPadLength to change the padding length. The default is 5. Setting it to 0 will disable the padding.

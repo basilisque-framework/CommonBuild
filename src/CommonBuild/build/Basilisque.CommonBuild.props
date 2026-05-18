@@ -1,5 +1,5 @@
 <!--
-   Copyright 2023-2025 Alexander Stärk
+   Copyright 2023-2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,9 +14,14 @@
    limitations under the License.
 -->
 <Project>
+  <!-- define/init some variables -->
+  <PropertyGroup>
+    <BAS_CB_Use_GitVersion Condition="'$(BAS_CB_Use_GitVersion)' == ''">true</BAS_CB_Use_GitVersion>
+  </PropertyGroup>
+
   <!-- import the props file that is shared between single and multi targeting builds -->
   <Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.Before.Shared.props" />
-  
+
   <!-- define/init some variables -->
   <PropertyGroup>
     <BAS_CB_Set_Nullable Condition="'$(BAS_CB_Set_Nullable)' == ''">true</BAS_CB_Set_Nullable>
@@ -31,12 +36,12 @@
     <BAS_CB_CodeAnalysis_PackCS Condition="'$(BAS_CB_CodeAnalysis_PackCS)' == ''">true</BAS_CB_CodeAnalysis_PackCS>
     <BAS_CB_Set_AssemblyName_VersionSuffix Condition="'$(BAS_CB_Set_AssemblyName_VersionSuffix)' == ''">$(BAS_CB_ProjType_CodeAnalysis)</BAS_CB_Set_AssemblyName_VersionSuffix>
   </PropertyGroup>
-  
+
   <!-- XML documentation -->
   <PropertyGroup>
     <GenerateDocumentationFile Condition="'$(BAS_CB_Set_GenerateDocumentationFile)' == 'true'">true</GenerateDocumentationFile>
   </PropertyGroup>
-  
+
   <!-- import the props file that is shared between single and multi targeting builds -->
   <Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.After.Shared.props" />
 </Project>

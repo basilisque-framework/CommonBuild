@@ -1,5 +1,5 @@
 <!--
-   Copyright 2024-2025 Alexander Stärk
+   Copyright 2024-2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,10 +25,25 @@
     <BAS_CB_Set_Versions Condition="'$(BAS_CB_Set_Versions)' == ''">true</BAS_CB_Set_Versions>
     <BAS_CB_Set_SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == ''">true</BAS_CB_Set_SonarQubeTestProject>
   </PropertyGroup>
-  
+
   <!-- versioning -->
-  <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
+  <PropertyGroup Condition="'$(BAS_CB_Use_GitVersion)' == 'true'">
+    <!-- disable writing the version info by GitVersion -->
+    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+    <UpdateVersionProperties>false</UpdateVersionProperties>
+
+    <!-- enable native version generation (was disabled by GitVersion) -->
+    <GenerateAssemblyFileVersionAttribute>true</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
+  </PropertyGroup>
+  <PropertyGroup>
     <!-- initialize build type to already have it available in csproj -->
     <BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
+  </PropertyGroup>
+
+  <!-- add constant containing the current build type -->
+  <PropertyGroup>
+    <DefineConstants Condition="'$(BAS_CB_BuildType)' != ''">$(DefineConstants);BUILD_TYPE_$(BAS_CB_BuildType.ToUpper())</DefineConstants>
   </PropertyGroup>
 </Project>

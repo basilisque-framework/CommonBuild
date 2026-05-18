@@ -25,18 +25,4 @@
     <Company Condition="'$(BAS_CB_Set_Company)' == 'true' AND '$(Authors)' != ''">$(Authors)</Company>
     <Product Condition="'$(BAS_CB_Set_Product)' == 'true'">$(AssemblyName)</Product>
   </PropertyGroup>
-  
-  <!-- versioning -->
-  <PropertyGroup Condition="'$(BAS_CB_Set_Versions)' == 'true'">
-    <!-- set versions -->
-    <AssemblyVersion>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</AssemblyVersion>
-    <FileVersion>$(BAS_CB_Tmp_VersionShort)</FileVersion>
-    <InformationalVersion>$(BAS_CB_Tmp_Version)</InformationalVersion>
-  </PropertyGroup>
-
-  <!-- AssemblyName with versioning suffix (e.g. for code analysis assemblies) -->
-  <PropertyGroup Condition="'$(BAS_CB_Set_AssemblyName_VersionSuffix)' == 'true'">
-    <AssemblyName Condition="'$(AssemblyName)' == ''">$(MSBuildProjectName)</AssemblyName>
-    <AssemblyName>$(AssemblyName)-$(BAS_CB_Tmp_Version)</AssemblyName>
-  </PropertyGroup>
 </Project>
