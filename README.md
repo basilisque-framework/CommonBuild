@@ -1,5 +1,5 @@
 <!--
-   Copyright 2023-2025 Alexander Stärk
+   Copyright 2023-2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ __.props / .targets__
   | Product	                  | \<AssemblyName>             |                                                           |
   | IsPackable                | false                       | will be set when Configuration != Release                 |
   | GenerateDocumentationFile | true                        | not for .Tests-projects and .Benchmarks-projects          |
-  | LangVersion               | 11.0                        | will only be set when TargetFramework is netstandard2.0<br/>(mainly for nullable reference types in C# 8 and raw string literals in C# 11)   |
+  | LangVersion               | latest                      | will only be set when TargetFramework is netstandard2.0<br/>(mainly for nullable reference types in C# 8, raw string literals in C# 11 and extension members in C# 14)   |
   | Global Usings             | System<br/>System.Collections.Generic<br/>System.Linq<br/>System.Threading.Tasks  | The flag for this setting is named BAS_CB_Add_GlobalUsings   |
   | AssemblyVersion           | Major.Minor                 | see [versioning](#versioning)                             |
   | FileVersion               | Major.Minor(.Build)         | see [versioning](#versioning)                             |
