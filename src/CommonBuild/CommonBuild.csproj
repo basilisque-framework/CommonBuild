@@ -1,5 +1,5 @@
 <!--
-   Copyright 2023-2024 Alexander Stärk
+   Copyright 2023-2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,35 +14,38 @@
    limitations under the License.
 -->
 <Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="$(MSBuildThisFileDirectory)build/Basilisque.CommonBuild.props" />
-	
+  <Import Project="$(MSBuildThisFileDirectory)build/Basilisque.CommonBuild.props" />
+  
     <PropertyGroup>
-		<AssemblyName>Basilisque.CommonBuild</AssemblyName>
-		<Description>This package provides optional common build configuration for projects that use the Basilisque framework. But it also can be used without Basilique. So if you like the contained configuration feel free to use it, otherwise simply don't.</Description>
-		<Authors>Alexander Stärk</Authors>
-		<BAS_CB_Copyright_BeginYear>2023</BAS_CB_Copyright_BeginYear>
-		<PackageProjectUrl>https://github.com/basilisque-framework/CommonBuild</PackageProjectUrl>
-		<PackageReleaseNotes>https://github.com/basilisque-framework/CommonBuild/releases</PackageReleaseNotes>
-		<PackageTags>Basilisque Build</PackageTags>
-		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-		<!--<PackageIconUrl>images\icon.png</PackageIconUrl>-->
-		<!--<PackageIconUrl>https://github.com/basilisque-framework/CommonBuild...raw...icon.png</PackageIconUrl>-->
-		<PackageReadmeFile>docs\README.md</PackageReadmeFile>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<MinClientVersion>4.0</MinClientVersion>
-        <IncludeBuildOutput>false</IncludeBuildOutput>
-		<DevelopmentDependency>true</DevelopmentDependency>
+      <AssemblyName>Basilisque.CommonBuild</AssemblyName>
+      <Description>This package provides optional common build configuration for projects that use the Basilisque framework. But it also can be used without Basilique. So if you like the contained configuration feel free to use it, otherwise simply don't.</Description>
+      <Authors>Alexander Stärk</Authors>
+      <BAS_CB_Copyright_BeginYear>2023</BAS_CB_Copyright_BeginYear>
+      <PackageProjectUrl>https://github.com/basilisque-framework/CommonBuild</PackageProjectUrl>
+      <PackageReleaseNotes>https://github.com/basilisque-framework/CommonBuild/releases</PackageReleaseNotes>
+      <PackageTags>Basilisque Build</PackageTags>
+      <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+      <!--<PackageIconUrl>images\icon.png</PackageIconUrl>-->
+      <!--<PackageIconUrl>https://github.com/basilisque-framework/CommonBuild...raw...icon.png</PackageIconUrl>-->
+      <PackageReadmeFile>docs\README.md</PackageReadmeFile>
+      <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+      
+      <TargetFramework>netstandard2.0</TargetFramework>
+      <MinClientVersion>4.0</MinClientVersion>
+      <DevelopmentDependency>true</DevelopmentDependency>
+      <!-- do not pack this dll in the nupkg -->
+      <IncludeBuildOutput>false</IncludeBuildOutput>
+      <!-- fixes NU5128 - be aware that this also prevents this package from having real NuGet dependencies -->
+      <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     </PropertyGroup>
-
-	<ItemGroup>
-		<None Include="NuGet-README.md" Pack="true" PackagePath="docs/README.md" />
-		<None Include="build/**" Pack="true" PackagePath="build" />
-		<None Include="buildMultiTargeting/**" Pack="true" PackagePath="buildMultiTargeting" />
-	</ItemGroup>
-	
-	<Import Project="$(MSBuildThisFileDirectory)build/Basilisque.CommonBuild.targets" />
+  
+  <ItemGroup>
+    <None Include="NuGet-README.md" Pack="true" PackagePath="docs/README.md" />
+    <None Include="build/**" Pack="true" PackagePath="build" />
+    <None Include="buildMultiTargeting/**" Pack="true" PackagePath="buildMultiTargeting" />
+  </ItemGroup>
+  
+  <Import Project="$(MSBuildThisFileDirectory)build/Basilisque.CommonBuild.targets" />
 </Project>
 
 <!--
