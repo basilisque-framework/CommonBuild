@@ -130,12 +130,13 @@ when no tests are found in the test project, it is treated as error. So e.g. whe
 - excludes \*.Tests.dll, \*.Benchmarks.dll and Microsoft.\*.dll projects from code coverage
 
 <a name="versioning"></a>__Versioning__  
-This project adds a dependency to (GitVersion)[https://gitversion.net/] to the target project.  
-If you want to disable versioning with GitVersion, you can set the MSBuild property BAS_CB_Use_GitVersion to false.
+You can use [GitVersion](https://gitversion.net/) to version the target project by simply adding a [NuGet dependency](https://www.nuget.org/packages/GitVersion.MsBuild) to it or you can provide the parameter values manually like shown below.  
+Either way this library is consistently setting the version properties in the target project.
 
-The versions are built from the properties BAS_CB_BuildType, BAS_CB_VersionMajor, BAS_CB_VersionMinor, BAS_CB_VersionBuild and BAS_CB_VersionRevision.
+The version information is built from the properties BAS_CB_BuildType, BAS_CB_VersionMajor, BAS_CB_VersionMinor, BAS_CB_VersionBuild and BAS_CB_VersionRevision.
 If you do not set those properties, the values will be automatically determined using GitVersion.
-If you want to disable versioning at all, you can set the MSBuild properties BAS_CB_Use_GitVersion and BAS_CB_Set_Versions to false.
+If you want to disable versioning at all, you can leave those properties empty and not add the GitVersion NuGet package.
+If you want to disable versioning despite having a GitVersion reference, you can set the MSBuild property BAS_CB_Use_GitVersion to false.
 
 The build type differentiates between release builds and different kinds of prerelease builds.
 Recommended values are:
@@ -151,7 +152,7 @@ But you can use any other string. The only fixed value is 'Release'. This remove
 Be aware, that the suffixes will be ordered alphabetically e.g. by NuGet. So for example version 1.0-RC is considered higher than a version 1.0-Preview, because it is further back in the alphabet.
 
 This is how the version properties are being set:
-| Property 	        | Value                                       |
+| Property              | Value                                       |
 |---------------------- |-------------------------------------------- |
 | AssemblyVersion       | Major.Minor                                 |
 | FileVersion           | Major.Minor(.Build)                         |
@@ -173,7 +174,7 @@ The purpose for this is, that almost all other build types (suffixes) would be c
 Major and Minor are set to 1.0 when empty and GitVersion doesn't return a version. Build and Revision are omitted from the version when empty.
 
 The Revision is padded to 5 digits. This is done to ensure that the version is always the same length, which is important for NuGet.
-You can set the property BAS_CB_VersionRevisionPadLength to change the padding length. The default is 5. Setting it to 0 will disable the padding.
+You can set the property BAS_CB_Revision_TotalWidth to change the padding length. The default is 5. Setting it to 0 will disable the padding.
 
 ### Logging
 If you want to log the properties, that are set by this project, you can set the property BAS_CB_Log_Properties to true. This will log the current value of all these properties after the _PrepareForBuild_ target.
