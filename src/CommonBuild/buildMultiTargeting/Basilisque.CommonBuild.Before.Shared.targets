@@ -43,7 +43,7 @@
     </PropertyGroup>
     <Message Importance="High" Text="$(__BAS_Log_Msg)" />
   </Target>
-  
+
   <!-- NuGet package properties and project info -->
   <PropertyGroup>
     <IsPackable Condition="'$(BAS_CB_Set_IsPackable)' == 'true' AND $(Configuration)!='Release'">false</IsPackable>
@@ -73,15 +73,17 @@
     <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);BAS_CB_SetVersionProperties</MarkupCompilePass1DependsOn>
     <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn);BAS_CB_SetVersionProperties</GetPackageVersionDependsOn>
   </PropertyGroup>
-  <Target Name="BAS_CB_SetVersionPropertiesWithGitVersion" DependsOnTargets="GetVersion" Condition="'$(BAS_CB_Use_GitVersion)' == 'true'">
-    <!-- When GitVersion is used enforce execution after GetVersion -->
+  <Target Name="BAS_CB_SetVersionPropertiesWithGitVersion"
+          DependsOnTargets="GetVersion"
+          Condition="'$(BAS_CB_Use_GitVersion)' == 'true' AND '$(ExcludeRestorePackageImports)' != 'true'">
+    <!-- Read GitVersion values in build/pack nodes where GitVersion targets are available. -->
   </Target>
   <Target Name="BAS_CB_SetVersionPropertiesWithoutGitVersion" Condition="'$(BAS_CB_Use_GitVersion)' != 'true'">
     <!-- When GitVersion is not used there is no specific target this should be executed after. But it should be executed -->
   </Target>
   <Target Name="BAS_CB_SetVersionProperties"
-          AfterTargets="BAS_CB_SetVersionPropertiesWithoutGitVersion;BAS_CB_SetVersionPropertiesWithGitVersion"
-          BeforeTargets="BeforeCompile;CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;_GetOutputItemsFromPack;EnsureWixToolsetInstalled"
+          DependsOnTargets="BAS_CB_SetVersionPropertiesWithoutGitVersion;BAS_CB_SetVersionPropertiesWithGitVersion"
+          BeforeTargets="BeforeCompile;CoreCompile;GetAssemblyVersion;GenerateNuspec;_GetOutputItemsFromPack;EnsureWixToolsetInstalled"
           Condition="'$(BAS_CB_Use_GitVersion)' == 'true' OR '$(BAS_CB_Set_Versions)' == 'true'">
     <PropertyGroup>
       <!-- ensure total revision width is not empty -->

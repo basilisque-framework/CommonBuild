@@ -14,11 +14,6 @@
    limitations under the License.
 -->
 <Project>
-  <!-- define/init some variables -->
-  <PropertyGroup>
-    <BAS_CB_Use_GitVersion Condition="'$(BAS_CB_Use_GitVersion)' == ''">true</BAS_CB_Use_GitVersion>
-  </PropertyGroup>
-
   <!-- import the props file that is shared between single and multi targeting builds -->
   <Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.Before.Shared.props" />
 
