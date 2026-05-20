@@ -69,7 +69,11 @@
   </PropertyGroup>
 
   <!-- versioning -->
-  <Target Name="BAS_CB_SetVersionPropertiesWithGitVersion" AfterTargets="GetVersion" Condition="'$(BAS_CB_Use_GitVersion)' == 'true'">
+  <PropertyGroup>
+    <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);BAS_CB_SetVersionProperties</MarkupCompilePass1DependsOn>
+    <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn);BAS_CB_SetVersionProperties</GetPackageVersionDependsOn>
+  </PropertyGroup>
+  <Target Name="BAS_CB_SetVersionPropertiesWithGitVersion" DependsOnTargets="GetVersion" Condition="'$(BAS_CB_Use_GitVersion)' == 'true'">
     <!-- When GitVersion is used enforce execution after GetVersion -->
   </Target>
   <Target Name="BAS_CB_SetVersionPropertiesWithoutGitVersion" Condition="'$(BAS_CB_Use_GitVersion)' != 'true'">
@@ -77,7 +81,7 @@
   </Target>
   <Target Name="BAS_CB_SetVersionProperties"
           AfterTargets="BAS_CB_SetVersionPropertiesWithoutGitVersion;BAS_CB_SetVersionPropertiesWithGitVersion"
-          BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;EnsureWixToolsetInstalled"
+          BeforeTargets="BeforeCompile;CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;_GetOutputItemsFromPack;EnsureWixToolsetInstalled"
           Condition="'$(BAS_CB_Use_GitVersion)' == 'true' OR '$(BAS_CB_Set_Versions)' == 'true'">
     <PropertyGroup>
       <!-- ensure total revision width is not empty -->
