@@ -1,0 +1,40 @@
+<!--
+   Copyright 2026 Alexander Stärk
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<Solution>
+  <Folder Name="/Fixtures/">
+    <File Path="Fixtures/Directory.Build.props" />
+    <File Path="Fixtures/Directory.Build.targets" />
+    <Project Path="Fixtures/Consumer.Benchmarks/Consumer.Benchmarks.csproj" Id="b799aa43-e090-4ac3-92b4-1bf5d346d9a2" />
+    <Project Path="Fixtures/Consumer.CodeAnalysis/Consumer.CodeAnalysis.csproj" Id="ebdf94b3-24a4-4e8b-97fb-571dc20dd50c" />
+    <Project Path="Fixtures/Consumer.Shared/Consumer.Shared.csproj" Id="0cffc938-cba2-4e99-9297-70255d1d9cdf" />
+    <Project Path="Fixtures/Consumer.Tests/Consumer.Tests.csproj" Id="23998935-b649-4bcc-ab2d-11973c2cea8b" />
+  </Folder>
+  <Folder Name="/Integration Tests/">
+    <File Path="IntegrationTests/Directory.Build.props" />
+    <File Path="IntegrationTests/Directory.Build.targets" />
+    <Project Path="IntegrationTests/CommonBuild.Benchmarks.Integration.Tests/CommonBuild.Benchmarks.Integration.Tests.csproj" Id="d8354951-e936-49f3-b475-a593e9334ea1" />
+    <Project Path="IntegrationTests/CommonBuild.Benchmarks.Integration.Tests/CommonBuild.Tests.Integration.Tests/CommonBuild.Tests.Integration.Tests.csproj" Id="bfb7a73d-df19-43b4-ba51-18a562db61fa" />
+    <Project Path="IntegrationTests/CommonBuild.CodeAnalysis.Integration.Tests/CommonBuild.CodeAnalysis.Integration.Tests.csproj" Id="5271de8b-b711-429b-b537-c858974907d8" />
+    <Project Path="IntegrationTests/CommonBuild.General.Integration.Tests/CommonBuild.General.Integration.Tests.csproj" Id="a8003f56-4e25-47ae-8c67-f03135271215" />
+    <Project Path="IntegrationTests/CommonBuild.Integration.TestSupport/CommonBuild.Integration.TestSupport.csproj" Id="1fa10be9-6f19-47f8-816e-18a8e7ed4a24" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="NuGet.config" />
+  </Folder>
+</Solution>
