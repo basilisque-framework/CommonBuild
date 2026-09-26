@@ -26,7 +26,7 @@
     <File Path="IntegrationTests/Directory.Build.props" />
     <File Path="IntegrationTests/Directory.Build.targets" />
     <Project Path="IntegrationTests/CommonBuild.Benchmarks.Integration.Tests/CommonBuild.Benchmarks.Integration.Tests.csproj" Id="d8354951-e936-49f3-b475-a593e9334ea1" />
-    <Project Path="IntegrationTests/CommonBuild.Benchmarks.Integration.Tests/CommonBuild.Tests.Integration.Tests/CommonBuild.Tests.Integration.Tests.csproj" Id="bfb7a73d-df19-43b4-ba51-18a562db61fa" />
+    <Project Path="IntegrationTests/CommonBuild.Tests.Integration.Tests/CommonBuild.Tests.Integration.Tests.csproj" Id="bfb7a73d-df19-43b4-ba51-18a562db61fa" />
     <Project Path="IntegrationTests/CommonBuild.CodeAnalysis.Integration.Tests/CommonBuild.CodeAnalysis.Integration.Tests.csproj" Id="5271de8b-b711-429b-b537-c858974907d8" />
     <Project Path="IntegrationTests/CommonBuild.General.Integration.Tests/CommonBuild.General.Integration.Tests.csproj" Id="a8003f56-4e25-47ae-8c67-f03135271215" />
     <Project Path="IntegrationTests/CommonBuild.Integration.TestSupport/CommonBuild.Integration.TestSupport.csproj" Id="1fa10be9-6f19-47f8-816e-18a8e7ed4a24" />

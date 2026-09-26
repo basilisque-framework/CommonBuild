@@ -14,4 +14,10 @@
    limitations under the License.
 -->
 <Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <!-- preserve build time variables for runtime usage -->
+    <AssemblyMetadata Include="IsPackable" Value="$(IsPackable)" />
+    <AssemblyMetadata Include="IsPublishable" Value="$(IsPublishable)" />
+    <AssemblyMetadata Include="SonarQubeTestProject" Value="$(SonarQubeTestProject)" />
+  </ItemGroup>
 </Project>

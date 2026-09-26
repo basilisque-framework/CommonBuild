@@ -17,4 +17,12 @@
   <ItemGroup>
     <PackageReference Include="TUnit" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- preserve build time variables for runtime usage -->
+    <AssemblyMetadata Include="IsPackable" Value="$(IsPackable)" />
+    <AssemblyMetadata Include="IsPublishable" Value="$(IsPublishable)" />
+    <AssemblyMetadata Include="IsTestProject" Value="$(IsTestProject)" />
+    <AssemblyMetadata Include="SonarQubeTestProject" Value="$(SonarQubeTestProject)" />
+  </ItemGroup>
 </Project>
