@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using CommonBuild.Integration.TestSupport.Fixtures;
 using System.Reflection;
 
 namespace CommonBuild.General.Integration.Tests.Copyright;
@@ -26,5 +27,14 @@ internal class CopyrightTests
     public async Task Copyright_ShouldBeValid()
     {
         await Assert.That(_copyright).IsEqualTo($"Copyright © 2023-{DateTime.Today.Year} Alexander Stärk");
+    }
+
+    [Test]
+    [TestFixtureAssembliesDataGenerator]
+    public async Task Copyright_IsSetCorrectly(Assembly assembly)
+    {
+        var copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
+
+        await Assert.That(copyright).IsEqualTo($"Copyright © 2023-{DateTime.Today.Year} Alexander Stärk");
     }
 }
