@@ -20,4 +20,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <!-- preserve build time variables for runtime usage -->
+    <AssemblyMetadata Include="IncludeBuildOutput" Value="$(IncludeBuildOutput)" />
+  </ItemGroup>
 </Project>
