@@ -111,7 +111,6 @@
       <BAS_CB_Tmp_Version>$(BAS_CB_Tmp_VersionShort)</BAS_CB_Tmp_Version>
       <BAS_CB_Tmp_Version Condition="'$(BAS_CB_BuildType)' != 'Release'">$(BAS_CB_Tmp_Version)-$(BAS_CB_BuildType)$(BAS_CB_VersionRevisionPadded)</BAS_CB_Tmp_Version>
       <BAS_CB_Tmp_InfoVersion>$(BAS_CB_Tmp_Version)</BAS_CB_Tmp_InfoVersion>
-      <BAS_CB_Tmp_InfoVersion Condition="'$(BAS_CB_BuildType)' != 'Release' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(BAS_CB_Tmp_InfoVersion).$(GitVersion_ShortSha)</BAS_CB_Tmp_InfoVersion>
 
       <!-- set versions -->
       <AssemblyVersion>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</AssemblyVersion>

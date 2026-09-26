@@ -1,4 +1,4 @@
-﻿<!--
+﻿/*
    Copyright 2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,22 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
--->
-<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <!-- preserve build time PackageVersion for runtime usage -->
-    <AssemblyMetadata Include="PackageVersion" Value="$(PackageVersion)" />
-  </ItemGroup>
-</Project>
+*/
+
+using System.Reflection;
+
+namespace Consumer.Tests.Tests;
+
+internal class AssemblyTests
+{
+    [Test]
+    public async Task Title_IsSetTo_AssemblyName()
+    {
+        var assembly = this.GetType().Assembly;
+
+        string? title = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title;
+        string? assemblyName = assembly.GetName().Name;
+
+        await Assert.That(title).Matches(assemblyName);
+    }
+}
