@@ -34,5 +34,9 @@ public interface ITestInfo
     /// <summary>
     /// Gets the assembly of the test fixture.
     /// </summary>
+#if NETSTANDARD2_0
+    System.Reflection.Assembly Assembly { get; }
+#else
     System.Reflection.Assembly Assembly => this.GetType().Assembly;
+#endif
 }

@@ -26,4 +26,7 @@ public class CodeAnalysisTestInfo : ITestInfo
 
     /// <inheritdoc />
     public bool IsPublishable => true;
+
+    /// <inheritdoc />
+    public System.Reflection.Assembly Assembly => this.GetType().Assembly;
 }

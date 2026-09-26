@@ -14,6 +14,10 @@
    limitations under the License.
 -->
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>$(TargetFrameworks);netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+  
   <!-- this is a support library and not a project to be tested -->
   <PropertyGroup>
     <IsPackable>false</IsPackable>

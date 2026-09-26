@@ -14,4 +14,7 @@
    limitations under the License.
 -->
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TestingPlatformCommandLineArguments>--ignore-exit-code 8</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
 </Project>
