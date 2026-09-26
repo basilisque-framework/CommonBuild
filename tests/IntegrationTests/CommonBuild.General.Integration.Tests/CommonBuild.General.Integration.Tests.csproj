@@ -15,7 +15,8 @@
 -->
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <!-- preserve build time PackageVersion for runtime usage -->
+    <!-- preserve build time variables for runtime usage -->
     <AssemblyMetadata Include="PackageVersion" Value="$(PackageVersion)" />
+    <AssemblyMetadata Include="DefineConstants" Value="$(DefineConstants)" />
   </ItemGroup>
 </Project>
