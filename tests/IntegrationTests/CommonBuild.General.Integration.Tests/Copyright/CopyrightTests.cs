@@ -1,4 +1,4 @@
-﻿<!--
+﻿/*
    Copyright 2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +12,19 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
--->
-<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <!-- preserve build time variables for runtime usage -->
-    <AssemblyMetadata Include="PackageVersion" Value="$(PackageVersion)" />
-    <AssemblyMetadata Include="DefineConstants" Value="$(DefineConstants)" />
-    <AssemblyMetadata Include="Nullable" Value="$(Nullable)" />
-    <AssemblyMetadata Include="ImplicitUsings" Value="$(ImplicitUsings)" />
-  </ItemGroup>
-</Project>
+*/
+
+using System.Reflection;
+
+namespace CommonBuild.General.Integration.Tests.Copyright;
+
+internal class CopyrightTests
+{
+    private string? _copyright = typeof(CopyrightTests).Assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
+
+    [Test]
+    public async Task Copyright_ShouldBeValid()
+    {
+        await Assert.That(_copyright).IsEqualTo($"Copyright © 2023-{DateTime.Today.Year} Alexander Stärk");
+    }
+}

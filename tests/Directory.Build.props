@@ -20,5 +20,6 @@
     <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
 
     <Authors>Alexander Stärk</Authors>
+    <BAS_CB_Copyright_BeginYear>2023</BAS_CB_Copyright_BeginYear>
   </PropertyGroup>
 </Project>
