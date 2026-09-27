@@ -30,7 +30,7 @@
     <PackageVersion Include="GitVersion.MsBuild" Version="6.7.0" />
     <PackageVersion Include="TUnit" Version="0.55.23" />
     
-    <PackageVersion Include="Microsoft.CodeAnalysis" Version="5.6.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
   </ItemGroup>
 
   <!-- import packages for all projects -->

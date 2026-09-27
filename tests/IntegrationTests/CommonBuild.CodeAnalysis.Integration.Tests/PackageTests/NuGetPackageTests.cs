@@ -89,7 +89,7 @@ internal class NuGetPackageTests
 
 		await Assert.That(dependencyIds.Contains("Consumer.Shared")).IsTrue();
 		await Assert.That(dependencyIds.Contains("Basilisque.CommonBuild")).IsTrue();
-		await Assert.That(dependencyIds.Contains("Microsoft.CodeAnalysis")).IsTrue();
+		await Assert.That(dependencyIds.Contains("Microsoft.CodeAnalysis.CSharp")).IsTrue();
 	}
 
 	[Test]
@@ -158,13 +158,14 @@ internal class NuGetPackageTests
 	{
 		CommonBuild.Integration.TestSupport.TestSetup.UnpackNuGetPackages.EnsureUnpackedPackagesAvailable();
 
-		var unpackedPackagePath = System.IO.Directory
-			.EnumerateDirectories(CommonBuild.Integration.TestSupport.TestSetup.UnpackNuGetPackages.UnpackedPackagesPath, $"{_packageId}.*", System.IO.SearchOption.TopDirectoryOnly)
-			.OrderByDescending(path => path)
-			.FirstOrDefault();
+		var packageVersion = System.Reflection.CustomAttributeExtensions
+			.GetCustomAttributes<System.Reflection.AssemblyMetadataAttribute>(typeof(Consumer.CodeAnalysis.CodeAnalysisTestInfo).Assembly)
+			.Single(attribute => attribute.Key == "PackageVersion").Value;
+		var unpackedPackagePath = System.IO.Path.Combine(
+			CommonBuild.Integration.TestSupport.TestSetup.UnpackNuGetPackages.UnpackedPackagesPath, $"{_packageId}.{packageVersion}");
 
-		if (string.IsNullOrWhiteSpace(unpackedPackagePath))
-			throw new System.IO.DirectoryNotFoundException($"No unpacked package directory found for package '{_packageId}'.");
+		if (string.IsNullOrWhiteSpace(packageVersion) || !System.IO.Directory.Exists(unpackedPackagePath))
+			throw new System.IO.DirectoryNotFoundException($"No unpacked package directory found for package '{_packageId}' version '{packageVersion}'.");
 
 		return unpackedPackagePath;
 	}

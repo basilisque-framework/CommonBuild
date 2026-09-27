@@ -14,4 +14,9 @@
    limitations under the License.
 -->
 <Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" GeneratePathProperty="true" />
+    <AssemblyMetadata Include="RoslynPackagePath" Value="$(PkgMicrosoft_CodeAnalysis_CSharp)" />
+    <None Include="../../Fixtures/Consumer.CodeAnalysis/FixtureDiagnosticAnalyzer.cs" Link="TestAssets/FixtureDiagnosticAnalyzer.cs" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
