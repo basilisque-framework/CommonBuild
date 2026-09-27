@@ -65,7 +65,6 @@
   
   <!-- define/init some variables -->
   <PropertyGroup>
-    <BAS_CB_Set_Title Condition="'$(BAS_CB_Set_Title)' == '' AND '$(Title)' == ''">true</BAS_CB_Set_Title>
     <BAS_CB_Set_Copyright Condition="'$(BAS_CB_Set_Copyright)' == '' AND '$(Copyright)' == ''">true</BAS_CB_Set_Copyright>
   </PropertyGroup>
 

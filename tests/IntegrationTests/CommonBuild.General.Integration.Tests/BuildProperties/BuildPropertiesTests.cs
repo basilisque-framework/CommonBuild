@@ -15,6 +15,7 @@
 */
 
 using CommonBuild.General.Integration.Tests.AssemblyTests;
+using CommonBuild.Integration.TestSupport.Fixtures;
 using System.Reflection;
 /*
 Do NOT add the followign namespaces to not break the test for implicit global usings:
@@ -56,9 +57,35 @@ internal class BuildPropertiesTests
         await Assert.That(implicitUsingsEnabled).IsEqualTo("disable");
     }
 
+    [Test]
+    [TestFixtureAssembliesDataGenerator]
+    public async Task Ensure_NeutralLanguage_IsSetTo_enUS(Assembly assembly)
+    {
+        await Assert.That(getBuildProperty(assembly, "NeutralLanguage")).IsEqualTo("en-US");
+    }
+
+    [Test]
+    [TestFixtureAssembliesDataGenerator]
+    public async Task Ensure_Company_IsSetTo_Authors(Assembly assembly)
+    {
+        await Assert.That(getBuildProperty(assembly, "Company")).IsEqualTo("Alexander Stärk");
+    }
+
+    [Test]
+    [TestFixtureAssembliesDataGenerator]
+    public async Task Ensure_Product_IsSetTo_UnversionedAssemblyName(Assembly assembly)
+    {
+        await Assert.That(getBuildProperty(assembly, "Product")).IsEqualTo(FixtureInfo.GetProjectName(assembly));
+    }
+
     private string getBuildProperty(string propertyName)
     {
-        var propertyValue = typeof(CheckBuildVersionTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(attribute => attribute.Key == propertyName)?.Value;
+        return getBuildProperty(typeof(CheckBuildVersionTests).Assembly, propertyName);
+    }
+
+    private static string getBuildProperty(Assembly assembly, string propertyName)
+    {
+        var propertyValue = assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(attribute => attribute.Key == propertyName)?.Value;
 
         if (propertyValue is null)
             throw new Exception($"Build property '{propertyName}' not found.");

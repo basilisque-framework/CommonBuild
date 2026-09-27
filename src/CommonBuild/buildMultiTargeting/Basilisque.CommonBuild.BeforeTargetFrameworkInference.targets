@@ -20,6 +20,7 @@
   <!-- NuGet package properties and project info -->
   <!-- Be aware that this is using the AssemblyName before it optionally gets the version suffix. -->
   <PropertyGroup>
+    <BAS_CB_Set_Title Condition="'$(BAS_CB_Set_Title)' == '' AND '$(Title)' == ''">true</BAS_CB_Set_Title>
     <NeutralLanguage Condition="'$(BAS_CB_Set_NeutralLanguage)' == 'true'">en-US</NeutralLanguage>
     <Title Condition="'$(BAS_CB_Set_Title)' == 'true'">$(AssemblyName)</Title>
     <Company Condition="'$(BAS_CB_Set_Company)' == 'true' AND '$(Authors)' != ''">$(Authors)</Company>

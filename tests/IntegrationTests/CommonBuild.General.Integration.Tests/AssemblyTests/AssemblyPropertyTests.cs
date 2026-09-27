@@ -28,7 +28,7 @@ internal class AssemblyPropertyTests
     {
         string? neutralLanguage = assembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>()?.CultureName;
 
-        await Assert.That(neutralLanguage).Matches("en-US");
+        await Assert.That(neutralLanguage).IsEqualTo("en-US");
     }
 
     [Test]
@@ -47,7 +47,7 @@ internal class AssemblyPropertyTests
     {
         string? company = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company;
 
-        await Assert.That(company).Matches("Alexander Stärk");
+        await Assert.That(company).IsEqualTo("Alexander Stärk");
     }
 
     [Test]

@@ -19,6 +19,9 @@
   <Target Name="CaptureFixtureVersionMetadata" BeforeTargets="GetAssemblyAttributes" DependsOnTargets="BAS_CB_SetVersionProperties">
     <ItemGroup>
       <AssemblyMetadata Include="PackageVersion" Value="$(PackageVersion)" />
+      <AssemblyMetadata Include="NeutralLanguage" Value="$(NeutralLanguage)" />
+      <AssemblyMetadata Include="Company" Value="$(Company)" />
+      <AssemblyMetadata Include="Product" Value="$(Product)" />
     </ItemGroup>
   </Target>
 </Project>

@@ -83,6 +83,19 @@ internal class NuGetPackageTests
 	}
 
 	[Test]
+	public async Task Ensure_Nuspec_Title_IsSetTo_UnversionedAssemblyName()
+	{
+		var unpackedPackagePath = getUnpackedPackagePath();
+		var nuspecPath = System.IO.Path.Combine(unpackedPackagePath, $"{_packageId}.nuspec");
+		var nuspec = System.Xml.Linq.XDocument.Load(nuspecPath);
+		var xmlNamespace = nuspec.Root?.Name.Namespace ?? throw new Exception("nuspec root element missing.");
+		var metadata = nuspec.Root?.Element(xmlNamespace + "metadata") ?? throw new Exception("nuspec metadata element missing.");
+		var title = metadata.Element(xmlNamespace + "title")?.Value;
+
+		await Assert.That(title).IsEqualTo(_packageId);
+	}
+
+	[Test]
 	public async Task Ensure_Nuspec_Contains_Repository_Metadata()
 	{
 		var unpackedPackagePath = getUnpackedPackagePath();
