@@ -16,4 +16,9 @@
 <Project>
   <!-- import solution level Directory.Build.targets-->
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))"/>
+  <Target Name="CaptureFixtureVersionMetadata" BeforeTargets="GetAssemblyAttributes" DependsOnTargets="BAS_CB_SetVersionProperties">
+    <ItemGroup>
+      <AssemblyMetadata Include="PackageVersion" Value="$(PackageVersion)" />
+    </ItemGroup>
+  </Target>
 </Project>

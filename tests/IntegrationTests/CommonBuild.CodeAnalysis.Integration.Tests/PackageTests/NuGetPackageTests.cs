@@ -9,10 +9,22 @@ internal class NuGetPackageTests
 	{
 		var unpackedPackagePath = getUnpackedPackagePath();
 		var packageVersion = getPackageVersion(unpackedPackagePath);
-		var expectedAnalyzerDllRelativePath = System.IO.Path.Combine("analyzers", "dotnet", "cs", $"Consumer.CodeAnalysis.{packageVersion}.dll");
+		var expectedAnalyzerDllRelativePath = System.IO.Path.Combine("analyzers", "dotnet", "cs", $"Consumer.CodeAnalysis-{packageVersion}.dll");
 		var analyzerDllPath = System.IO.Path.Combine(unpackedPackagePath, expectedAnalyzerDllRelativePath);
 
 		await Assert.That(System.IO.File.Exists(analyzerDllPath)).IsTrue();
+	}
+
+	[Test]
+	public async Task Ensure_Packaged_AssemblyName_Contains_PackageVersionSuffix()
+	{
+		var unpackedPackagePath = getUnpackedPackagePath();
+		var packageVersion = getPackageVersion(unpackedPackagePath);
+		var analyzerDirectory = System.IO.Path.Combine(unpackedPackagePath, "analyzers", "dotnet", "cs");
+		var analyzerDllPath = System.IO.Directory.EnumerateFiles(analyzerDirectory, "*.dll").Single();
+		var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(analyzerDllPath).Name;
+
+		await Assert.That(assemblyName).IsEqualTo($"{_packageId}-{packageVersion}");
 	}
 
 	[Test]
@@ -33,7 +45,7 @@ internal class NuGetPackageTests
 	{
 		var unpackedPackagePath = getUnpackedPackagePath();
 		var packageVersion = getPackageVersion(unpackedPackagePath);
-		var expectedAnalyzerDllRelativePath = System.IO.Path.Combine("analyzers", "dotnet", "cs", $"Consumer.CodeAnalysis.{packageVersion}.dll");
+		var expectedAnalyzerDllRelativePath = System.IO.Path.Combine("analyzers", "dotnet", "cs", $"Consumer.CodeAnalysis-{packageVersion}.dll");
 		var dllEntries = System.IO.Directory
 			.EnumerateFiles(unpackedPackagePath, "*.dll", System.IO.SearchOption.AllDirectories)
 			.Select(path => normalizePackagePath(path.Substring(unpackedPackagePath.Length).TrimStart(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar)))

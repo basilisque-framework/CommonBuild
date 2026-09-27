@@ -37,7 +37,7 @@ internal class IsPublishableTests
     [TestInfoDataGenerator]
     public async Task ArtifactsPublishDirectory_Contains_TheCorrectSubdirectories(ITestInfo info)
     {
-        var expectedName = info.Assembly.GetName().Name;
+        var expectedName = FixtureInfo.GetProjectName(info.Assembly);
 
         await Assert.That(expectedName).IsNotNull();
 

@@ -73,6 +73,16 @@
     <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);BAS_CB_SetVersionProperties</MarkupCompilePass1DependsOn>
     <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn);BAS_CB_SetVersionProperties</GetPackageVersionDependsOn>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true' AND '$(BAS_CB_CodeAnalysis_PackCS)' != 'false'">
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);BAS_CB_GetCodeAnalysisPackageFiles</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+  <Target Name="BAS_CB_GetCodeAnalysisPackageFiles"
+          DependsOnTargets="BAS_CB_SetAssemblyNameVersionSuffix"
+          Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true' AND '$(BAS_CB_CodeAnalysis_PackCS)' != 'false'">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(TargetPath)" PackagePath="analyzers/dotnet/cs" />
+    </ItemGroup>
+  </Target>
   <Target Name="BAS_CB_SetVersionPropertiesWithGitVersion"
           DependsOnTargets="GetVersion"
           Condition="'$(BAS_CB_Use_GitVersion)' == 'true' AND '$(ExcludeRestorePackageImports)' != 'true'">
@@ -123,12 +133,28 @@
       <RepositoryBranch Condition=" '$(RepositoryBranch)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true' ">$(GitVersion_BranchName)</RepositoryBranch>
       <RepositoryCommit Condition=" '$(RepositoryCommit)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true' ">$(GitVersion_Sha)</RepositoryCommit>
     </PropertyGroup>
+  </Target>
 
-    <!-- AssemblyName with versioning suffix (e.g. for code analysis assemblies) -->
-    <PropertyGroup Condition="'$(BAS_CB_Set_AssemblyName_VersionSuffix)' == 'true'">
+  <Target Name="BAS_CB_SetAssemblyNameVersionSuffix"
+          DependsOnTargets="BAS_CB_SetVersionProperties"
+          BeforeTargets="PrepareForBuild;GetTargetPath;GetTargetPathWithTargetPlatformMoniker;_GetPackageFiles;PrepareForPublish"
+          Condition="'$(BAS_CB_Set_AssemblyName_VersionSuffix)' == 'true' AND '$(IsCrossTargetingBuild)' != 'true' AND ('$(BAS_CB_Use_GitVersion)' == 'true' OR '$(BAS_CB_Set_Versions)' == 'true')">
+    <PropertyGroup>
       <AssemblyName Condition="'$(AssemblyName)' == ''">$(MSBuildProjectName)</AssemblyName>
       <AssemblyName>$(AssemblyName)-$(BAS_CB_Tmp_Version)</AssemblyName>
+      <TargetName>$(AssemblyName)</TargetName>
+      <TargetFileName>$(TargetName)$(TargetExt)</TargetFileName>
+      <TargetPath>$(TargetDir)$(TargetFileName)</TargetPath>
+      <TargetRefPath Condition="'$(TargetRefPath)' != ''">$([System.IO.Path]::Combine($([System.IO.Path]::GetDirectoryName('$(TargetRefPath)')), '$(TargetFileName)'))</TargetRefPath>
     </PropertyGroup>
+    <ItemGroup>
+      <IntermediateAssembly Remove="@(IntermediateAssembly)" />
+      <IntermediateAssembly Include="$(IntermediateOutputPath)$(TargetFileName)" />
+      <IntermediateRefAssembly Remove="@(IntermediateRefAssembly)" />
+      <IntermediateRefAssembly Include="$(IntermediateOutputPath)refint\$(TargetFileName)" Condition="'$(ProduceReferenceAssembly)' == 'true'" />
+      <_DebugSymbolsIntermediatePath Remove="@(_DebugSymbolsIntermediatePath)" />
+      <_DebugSymbolsIntermediatePath Include="$(IntermediateOutputPath)$(TargetName).pdb" />
+    </ItemGroup>
   </Target>
 
   <Target Name="BAS_CB_LogVersionProperties" AfterTargets="BAS_CB_SetVersionProperties" Condition="('$(BAS_CB_Use_GitVersion)' == 'true' OR '$(BAS_CB_Set_Versions)' == 'true') AND '$(BAS_CB_Log_Properties)' == 'true'">

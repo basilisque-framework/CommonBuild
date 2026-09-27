@@ -120,10 +120,6 @@
     <!-- do not pack an analyzer project as normal lib dependency... -->
     <IncludeBuildOutput Condition="'$(BAS_CB_Set_IncludeBuildOutput)' == 'true'">false</IncludeBuildOutput>
   </PropertyGroup>
-  <ItemGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true' AND '$(BAS_CB_CodeAnalysis_PackCS)' == 'true'">
-    <!-- ... pack it in the analyzer directory instead -->
-    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-  </ItemGroup>
   
   <!-- Target for handling items and item metadata -->
   <Target Name="HandleItemMetadata" AfterTargets="PrepareForBuild">

@@ -35,7 +35,8 @@ internal class BuildPropertiesTests
         var packageVersion = getBuildProperty("PackageVersion");
         var assemblyName = typeof(CodeAnalysisTestInfo).Assembly.GetName().Name;
 
-        await Assert.That(assemblyName).IsNotNull().And.Contains($"-{packageVersion}");
+        await Assert.That(packageVersion).IsNotNullOrEmpty();
+        await Assert.That(assemblyName).IsNotNull().And.EndsWith($"-{packageVersion}");
     }
 
     [Test]

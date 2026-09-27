@@ -44,4 +44,13 @@ public static class FixtureInfo
     /// A list of all test fixtures assemblies
     /// </summary>
     public static IEnumerable<System.Reflection.Assembly> TestFixtureAssemblies => _testFixtureAssemblies;
+
+    /// <summary>
+    /// Gets the fixture project name, independently of assembly version suffixes.
+    /// </summary>
+    public static string GetProjectName(System.Reflection.Assembly assembly)
+    {
+        return _testFixtureInfos.Single(info => info.Assembly == assembly).GetType().Namespace
+            ?? throw new InvalidOperationException("The fixture type must have a project namespace.");
+    }
 }

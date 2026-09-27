@@ -33,12 +33,12 @@ internal class AssemblyPropertyTests
 
     [Test]
     [TestFixtureAssembliesDataGenerator]
-    public async Task Title_IsSetTo_AssemblyName(Assembly assembly)
+    public async Task Title_IsSetTo_UnversionedAssemblyName(Assembly assembly)
     {
         string? title = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title;
-        string? assemblyName = assembly.GetName().Name;
+        string assemblyName = FixtureInfo.GetProjectName(assembly);
 
-        await Assert.That(title).Matches(assemblyName);
+        await Assert.That(title).IsEqualTo(assemblyName);
     }
 
     [Test]
@@ -52,11 +52,11 @@ internal class AssemblyPropertyTests
 
     [Test]
     [TestFixtureAssembliesDataGenerator]
-    public async Task Product_IsSetTo_AssemblyName(Assembly assembly)
+    public async Task Product_IsSetTo_UnversionedAssemblyName(Assembly assembly)
     {
         string? product = assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product;
-        string? assemblyName = assembly.GetName().Name;
+        string assemblyName = FixtureInfo.GetProjectName(assembly);
 
-        await Assert.That(product).Matches(assemblyName);
+        await Assert.That(product).IsEqualTo(assemblyName);
     }
 }

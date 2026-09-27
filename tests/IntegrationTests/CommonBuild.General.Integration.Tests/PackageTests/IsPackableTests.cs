@@ -16,6 +16,7 @@
 
 using CommonBuild.Integration.TestSupport.Fixtures;
 using Consumer.Shared;
+using System.Reflection;
 
 namespace CommonBuild.General.Integration.Tests.PackageTests;
 
@@ -33,13 +34,12 @@ internal class IsPackableTests
         var expectedFileCount = FixtureInfo.TestFixtureInfos.Where(fi => fi.IsPackable).Count();
 
         var fixturePackageNames = FixtureInfo.TestFixtureInfos
-            .Select(fi => fi.Assembly.GetName().Name)
-            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Select(getPackageFileName)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         var actualFileCount = System.IO.Directory
             .EnumerateFiles(_artifactsPath, "*.nupkg", System.IO.SearchOption.TopDirectoryOnly)
-            .Count(path => fixturePackageNames.Any(name => System.IO.Path.GetFileName(path).StartsWith($"{name}.", StringComparison.OrdinalIgnoreCase)));
+            .Count(path => fixturePackageNames.Contains(System.IO.Path.GetFileName(path)));
 
         await Assert.That(actualFileCount).IsEqualTo(expectedFileCount);
     }
@@ -48,12 +48,23 @@ internal class IsPackableTests
     [TestInfoDataGenerator]
     public async Task ArtifactsPackageDirectory_Contains_TheCorrectPackages(ITestInfo info)
     {
-        var namePattern = $"{info.Assembly.GetName().Name}.*.nupkg";
+        var packageFileName = getPackageFileName(info);
 
-        var matchingPackagesCount = System.IO.Directory.EnumerateFiles(_artifactsPath, namePattern).Count();
+        var matchingPackagesCount = System.IO.Directory.EnumerateFiles(_artifactsPath, packageFileName).Count();
 
         var expectedPackageCount = info.IsPackable ? 1 : 0;
 
         await Assert.That(matchingPackagesCount).IsEqualTo(expectedPackageCount);
+    }
+
+    private static string getPackageFileName(ITestInfo info)
+    {
+        var packageVersion = info.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+            .Single(attribute => attribute.Key == "PackageVersion").Value;
+
+        if (string.IsNullOrWhiteSpace(packageVersion))
+            throw new InvalidOperationException("The fixture package version must not be empty.");
+
+        return $"{FixtureInfo.GetProjectName(info.Assembly)}.{packageVersion}.nupkg";
     }
 }

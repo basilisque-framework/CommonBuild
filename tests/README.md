@@ -52,7 +52,7 @@ Pack the test-related projects that are packable.
 ### 6) Run tests
 Finally, run the tests with dotnet test.
 
-    dotnet test tests/Basilisque.CommonBuild.Tests.slnx -c Release --no-build
+    dotnet test --solution tests/Basilisque.CommonBuild.Tests.slnx -c Release --no-build
 
 ## Complete Example Sequence
 The following commands can be executed in order from the repository root:
@@ -62,10 +62,11 @@ The following commands can be executed in order from the repository root:
     dotnet build tests/Basilisque.CommonBuild.Tests.slnx -c Release
     dotnet publish tests/Basilisque.CommonBuild.Tests.slnx -c Release --no-build
     dotnet pack tests/Basilisque.CommonBuild.Tests.slnx -c Release --no-build
-    dotnet test tests/Basilisque.CommonBuild.Tests.slnx -c Release --no-build
+    dotnet test --solution tests/Basilisque.CommonBuild.Tests.slnx -c Release --no-build
 
 ## Notes
 - The commands are intended to be run from the repository root.
+- Package-count tests check the exact package version captured from each fixture build. Packages from older builds may remain in the output directory; they do not replace a missing current package.
 - For a clean rebuild, you can run a clean step first:
 
       dotnet clean src/Basilisque.CommonBuild.slnx -c Release
