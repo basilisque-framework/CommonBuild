@@ -79,8 +79,13 @@
   <Target Name="BAS_CB_GetCodeAnalysisPackageFiles"
           DependsOnTargets="BAS_CB_SetAssemblyNameVersionSuffix"
           Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true' AND '$(BAS_CB_CodeAnalysis_PackCS)' != 'false'">
+    <!-- NU5128 - https://github.com/dotnet/aspnetcore/issues/744 -->
+    <MakeDir Directories="$(IntermediateOutputPath)Basilisque.CommonBuild" Condition="'$(IncludeBuildOutput)' == 'false'" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)Basilisque.CommonBuild/_._" Lines="" Overwrite="true" WriteOnlyWhenDifferent="true" Condition="'$(IncludeBuildOutput)' == 'false'" />
     <ItemGroup>
       <TfmSpecificPackageFile Include="$(TargetPath)" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(IntermediateOutputPath)Basilisque.CommonBuild/_._" PackagePath="lib/$(TargetFramework)" Condition="'$(IncludeBuildOutput)' == 'false'" />
+      <FileWrites Include="$(IntermediateOutputPath)Basilisque.CommonBuild/_._" Condition="'$(IncludeBuildOutput)' == 'false'" />
     </ItemGroup>
   </Target>
   <Target Name="BAS_CB_SetVersionPropertiesWithGitVersion"

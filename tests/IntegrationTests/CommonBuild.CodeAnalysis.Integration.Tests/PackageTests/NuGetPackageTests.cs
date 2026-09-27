@@ -41,6 +41,16 @@ internal class NuGetPackageTests
 	}
 
 	[Test]
+	public async Task Ensure_Package_Contains_EmptyLibPlaceholder_ForDependencyFrameworks()
+	{
+		var unpackedPackagePath = getUnpackedPackagePath();
+		var placeholderPath = System.IO.Path.Combine(unpackedPackagePath, "lib", "netstandard2.0", "_._");
+
+		await Assert.That(System.IO.File.Exists(placeholderPath)).IsTrue();
+		await Assert.That(System.IO.File.ReadAllText(placeholderPath).Trim()).IsEqualTo(string.Empty);
+	}
+
+	[Test]
 	public async Task Ensure_Package_Contains_Only_One_Dll_AndItIsTheAnalyzerAssembly()
 	{
 		var unpackedPackagePath = getUnpackedPackagePath();
