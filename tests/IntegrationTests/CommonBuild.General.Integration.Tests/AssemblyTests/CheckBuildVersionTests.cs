@@ -28,6 +28,7 @@ internal class CheckBuildVersionTests
     private string? _thisAssemblyFileVersion = typeof(CheckBuildVersionTests).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
     private string? _thisAssemblyInformationalVersion = typeof(CheckBuildVersionTests).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
     private string? _thisAssemblyPackageVersion = typeof(CheckBuildVersionTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(attribute => attribute.Key == "PackageVersion")?.Value;
+    private string? _defineConstants = typeof(CheckBuildVersionTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(attribute => attribute.Key == "DefineConstants")?.Value;
 
     [Test]
     public async Task Ensure_CurrentBuild_AssemblyVersion_Contains_VersionInformation()
@@ -119,6 +120,29 @@ internal class CheckBuildVersionTests
         await Assert.That(fullGitHash).IsNotNull().And.IsNotEmpty();
     }
 
+    [Test]
+    public async Task Ensure_CurrentBuild_PackageAndInformationalVersion_FollowBuildTypeRules()
+    {
+        var (informationalVersionBase, _) = await getInformationalVersionParts();
+        var buildType = getBuildTypeFromDefineConstants();
+
+        if (buildType == "Release")
+        {
+            await Assert.That(informationalVersionBase).DoesNotContain("-");
+            return;
+        }
+
+        var suffix = $"-{buildType}";
+        var separatorIndex = informationalVersionBase.IndexOf(suffix, StringComparison.Ordinal);
+
+        await Assert.That(separatorIndex).IsGreaterThan(0);
+
+        var revisionPart = informationalVersionBase[(separatorIndex + suffix.Length)..];
+
+        await Assert.That(revisionPart.Length).IsEqualTo(5);
+        await Assert.That(revisionPart.All(char.IsDigit)).IsTrue();
+    }
+
     private async Task<(string versionInformation, string fullGitHash)> getInformationalVersionParts()
     {
         await Assert.That(_thisAssemblyInformationalVersion).IsNotNull();
@@ -137,5 +161,19 @@ internal class CheckBuildVersionTests
             return versionInformation.Substring(0, index);
 
         return versionInformation;
+    }
+
+    private string getBuildTypeFromDefineConstants()
+    {
+        if (string.IsNullOrWhiteSpace(_defineConstants))
+            throw new Exception("Build property 'DefineConstants' not found.");
+
+        if (_defineConstants.Contains("BUILD_TYPE_RELEASE", StringComparison.Ordinal)) return "Release";
+        if (_defineConstants.Contains("BUILD_TYPE_RC", StringComparison.Ordinal)) return "RC";
+        if (_defineConstants.Contains("BUILD_TYPE_PREVIEW", StringComparison.Ordinal)) return "Preview";
+        if (_defineConstants.Contains("BUILD_TYPE_CI", StringComparison.Ordinal)) return "CI";
+        if (_defineConstants.Contains("BUILD_TYPE_ALPHA", StringComparison.Ordinal)) return "Alpha";
+
+        throw new Exception("Could not determine build type from DefineConstants.");
     }
 }

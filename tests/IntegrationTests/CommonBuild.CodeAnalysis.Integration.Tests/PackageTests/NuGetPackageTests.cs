@@ -3,13 +3,14 @@
 internal class NuGetPackageTests
 {
 	private const string _packageId = "Consumer.CodeAnalysis";
-	private static readonly string _expectedAnalyzerDllRelativePath = System.IO.Path.Combine("analyzers", "dotnet", "cs", "Consumer.CodeAnalysis.dll");
 
 	[Test]
 	public async Task Ensure_Package_Contains_AnalyzerAssembly_InAnalyzersDotnetCs()
 	{
 		var unpackedPackagePath = getUnpackedPackagePath();
-		var analyzerDllPath = System.IO.Path.Combine(unpackedPackagePath, _expectedAnalyzerDllRelativePath);
+		var packageVersion = getPackageVersion(unpackedPackagePath);
+		var expectedAnalyzerDllRelativePath = System.IO.Path.Combine("analyzers", "dotnet", "cs", $"Consumer.CodeAnalysis.{packageVersion}.dll");
+		var analyzerDllPath = System.IO.Path.Combine(unpackedPackagePath, expectedAnalyzerDllRelativePath);
 
 		await Assert.That(System.IO.File.Exists(analyzerDllPath)).IsTrue();
 	}
@@ -31,13 +32,16 @@ internal class NuGetPackageTests
 	public async Task Ensure_Package_Contains_Only_One_Dll_AndItIsTheAnalyzerAssembly()
 	{
 		var unpackedPackagePath = getUnpackedPackagePath();
+		var packageVersion = getPackageVersion(unpackedPackagePath);
+		var expectedAnalyzerDllRelativePath = System.IO.Path.Combine("analyzers", "dotnet", "cs", $"Consumer.CodeAnalysis.{packageVersion}.dll");
 		var dllEntries = System.IO.Directory
 			.EnumerateFiles(unpackedPackagePath, "*.dll", System.IO.SearchOption.AllDirectories)
 			.Select(path => normalizePackagePath(path.Substring(unpackedPackagePath.Length).TrimStart(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar)))
 			.ToList();
+		var expectedRelativePath = normalizePackagePath(expectedAnalyzerDllRelativePath);
 
 		await Assert.That(dllEntries.Count).IsEqualTo(1);
-		await Assert.That(dllEntries[0]).IsEqualTo("analyzers/dotnet/cs/Consumer.CodeAnalysis.dll");
+		await Assert.That(dllEntries[0]).IsEqualTo(expectedRelativePath);
 	}
 
 	[Test]
@@ -64,6 +68,37 @@ internal class NuGetPackageTests
 		await Assert.That(dependencyIds.Contains("Consumer.Shared")).IsTrue();
 		await Assert.That(dependencyIds.Contains("Basilisque.CommonBuild")).IsTrue();
 		await Assert.That(dependencyIds.Contains("Microsoft.CodeAnalysis")).IsTrue();
+	}
+
+	[Test]
+	public async Task Ensure_Nuspec_Contains_Repository_Metadata()
+	{
+		var unpackedPackagePath = getUnpackedPackagePath();
+		var nuspecPath = System.IO.Path.Combine(unpackedPackagePath, $"{_packageId}.nuspec");
+
+		await Assert.That(System.IO.File.Exists(nuspecPath)).IsTrue();
+
+		var nuspec = System.Xml.Linq.XDocument.Load(nuspecPath);
+		var xmlNamespace = nuspec.Root?.Name.Namespace ?? throw new Exception("nuspec root element missing.");
+		var metadata = nuspec.Root?.Element(xmlNamespace + "metadata") ?? throw new Exception("nuspec metadata element missing.");
+		var repositoryElement = metadata.Element(xmlNamespace + "repository");
+
+		await Assert.That(repositoryElement).IsNotNull();
+
+		var repositoryType = repositoryElement!.Attribute("type")?.Value;
+		var repositoryBranch = repositoryElement.Attribute("branch")?.Value;
+		var repositoryCommit = repositoryElement.Attribute("commit")?.Value;
+
+		await Assert.That(repositoryType).IsEqualTo("git");
+		await Assert.That(repositoryBranch).IsNotNull().And.IsNotEmpty();
+		await Assert.That(repositoryCommit).IsNotNull().And.IsNotEmpty();
+
+		var isHexCommit = repositoryCommit!.Length == 40 && repositoryCommit.All(character =>
+			(character >= '0' && character <= '9')
+			|| (character >= 'a' && character <= 'f')
+			|| (character >= 'A' && character <= 'F'));
+
+		await Assert.That(isHexCommit).IsTrue();
 	}
 
 	[Test]
@@ -102,5 +137,19 @@ internal class NuGetPackageTests
 	private static string normalizePackagePath(string packageRelativePath)
 	{
 		return packageRelativePath.Replace('\\', '/');
+	}
+
+	private static string getPackageVersion(string unpackedPackagePath)
+	{
+		var nuspecPath = System.IO.Path.Combine(unpackedPackagePath, $"{_packageId}.nuspec");
+		var nuspec = System.Xml.Linq.XDocument.Load(nuspecPath);
+		var xmlNamespace = nuspec.Root?.Name.Namespace ?? throw new Exception("nuspec root element missing.");
+		var metadata = nuspec.Root?.Element(xmlNamespace + "metadata") ?? throw new Exception("nuspec metadata element missing.");
+		var packageVersion = metadata.Element(xmlNamespace + "version")?.Value;
+
+		if (string.IsNullOrWhiteSpace(packageVersion))
+			throw new Exception("Package version is missing in nuspec metadata.");
+
+		return packageVersion;
 	}
 }

@@ -32,7 +32,14 @@ internal class IsPackableTests
     {
         var expectedFileCount = FixtureInfo.TestFixtureInfos.Where(fi => fi.IsPackable).Count();
 
-        var actualFileCount = System.IO.Directory.EnumerateFiles(_artifactsPath).Count();
+        var fixturePackageNames = FixtureInfo.TestFixtureInfos
+            .Select(fi => fi.Assembly.GetName().Name)
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var actualFileCount = System.IO.Directory
+            .EnumerateFiles(_artifactsPath, "*.nupkg", System.IO.SearchOption.TopDirectoryOnly)
+            .Count(path => fixturePackageNames.Any(name => System.IO.Path.GetFileName(path).StartsWith($"{name}.", StringComparison.OrdinalIgnoreCase)));
 
         await Assert.That(actualFileCount).IsEqualTo(expectedFileCount);
     }

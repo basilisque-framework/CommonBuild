@@ -24,5 +24,8 @@
   <ItemGroup>
     <!-- preserve build time variables for runtime usage -->
     <AssemblyMetadata Include="IncludeBuildOutput" Value="$(IncludeBuildOutput)" />
+    <AssemblyMetadata Include="PackageVersion" Value="$(PackageVersion)" />
+    <AssemblyMetadata Include="MarkupCompilePass1DependsOn" Value="$(MarkupCompilePass1DependsOn)" />
+    <AssemblyMetadata Include="GetPackageVersionDependsOn" Value="$(GetPackageVersionDependsOn)" />
   </ItemGroup>
 </Project>

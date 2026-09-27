@@ -29,6 +29,31 @@ internal class BuildPropertiesTests
         await Assert.That(includeBuildOutput).IsEqualTo("false");
     }
 
+    [Test]
+    public async Task Ensure_AssemblyName_Contains_PackageVersionSuffix()
+    {
+        var packageVersion = getBuildProperty("PackageVersion");
+        var assemblyName = typeof(CodeAnalysisTestInfo).Assembly.GetName().Name;
+
+        await Assert.That(assemblyName).IsNotNull().And.Contains($"-{packageVersion}");
+    }
+
+    [Test]
+    public async Task Ensure_MarkupCompilePass1DependsOn_Contains_VersioningTarget()
+    {
+        var dependsOn = getBuildProperty("MarkupCompilePass1DependsOn");
+
+        await Assert.That(dependsOn).Contains("BAS_CB_SetVersionProperties");
+    }
+
+    [Test]
+    public async Task Ensure_GetPackageVersionDependsOn_Contains_VersioningTarget()
+    {
+        var dependsOn = getBuildProperty("GetPackageVersionDependsOn");
+
+        await Assert.That(dependsOn).Contains("BAS_CB_SetVersionProperties");
+    }
+
     private string getBuildProperty(string propertyName)
     {
         var propertyValue = typeof(CodeAnalysisTestInfo).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(attribute => attribute.Key == propertyName)?.Value;
