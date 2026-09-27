@@ -21,7 +21,7 @@
 
   <!-- define NuGet package versions -->
   <ItemGroup>
-    <PackageVersion Include="GitVersion.MsBuild" Version="6.7.0" />
+    <PackageVersion Include="GitVersion.MsBuild" Version="6.8.2" />
   </ItemGroup>
 
   <!-- import packages for all projects -->
