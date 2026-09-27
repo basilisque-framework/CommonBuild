@@ -65,6 +65,37 @@ The following commands can be executed in order from the repository root:
     dotnet test --solution tests/Basilisque.CommonBuild.Tests.slnx -c Release --no-build
 
 ## Notes
+### GitHub Actions
+Both CI and manual builds use the shared workflow's optional `verificationScript`
+hook to run `.github/scripts/Test-Integration.ps1` after the producer has been packed.
+The script builds, publishes, and packs the test solution, then runs all tests on
+`net8.0` and `net10.0`. Both SDKs are explicitly installed by the callers.
+
+The script reads the exact version from the producer package and passes it as
+`BAS_CB_PackageVersionUnderTest` to every test-solution command. A separate NuGet
+cache under `tests/artifacts/ci-nuget` prevents reuse of an older package with the
+same version. A failed build, publish, pack, or test command fails the workflow,
+preventing subsequent tagging, release creation, and NuGet pushes.
+
+`runDotnetTest: false` disables only the shared workflow's earlier test step for
+the `src` solution; it does not disable this verification hook. This test run does
+not currently upload coverage to Sonar.
+
+Deploy the shared workflow extension to `CommonBuild-GitHubActions`'s `v1.0` branch
+first, then deploy the updated CommonBuild callers. The extension is opt-in and
+does not change the test behavior of other repositories.
+
+To reproduce the verification locally after packing the producer:
+
+```powershell
+pwsh -File .github/scripts/Test-Integration.ps1 -PackagePath "<path-to-current-nupkg>" -BuildType CI
+```
+
+On a clean CI checkout, the script selects the single producer package automatically.
+When older packages exist locally, `-PackagePath` is required to avoid selecting a
+stale version. The package must be in the local feed configured by `tests/NuGet.config`.
+
+### Local Artifacts
 - The commands are intended to be run from the repository root.
 - Package-count tests check the exact package version captured from each fixture build. Packages from older builds may remain in the output directory; they do not replace a missing current package.
 - For a clean rebuild, you can run a clean step first:
