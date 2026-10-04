@@ -35,8 +35,6 @@
       <DevelopmentDependency>true</DevelopmentDependency>
       <!-- do not pack this dll in the nupkg -->
       <IncludeBuildOutput>false</IncludeBuildOutput>
-      <!-- fixes NU5128 - be aware that this also prevents this package from having real NuGet dependencies -->
-      <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     </PropertyGroup>
   
   <ItemGroup>
