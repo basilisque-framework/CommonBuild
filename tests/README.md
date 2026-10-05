@@ -102,4 +102,3 @@ stale version. The package must be in the local feed configured by `tests/NuGet.
 
       dotnet clean src/Basilisque.CommonBuild.slnx -c Release
       dotnet clean tests/Basilisque.CommonBuild.Tests.slnx -c Release
-
