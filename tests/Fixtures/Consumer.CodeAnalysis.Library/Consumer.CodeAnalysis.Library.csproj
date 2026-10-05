@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks></TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <BAS_CB_ProjType_CodeAnalysis>true</BAS_CB_ProjType_CodeAnalysis>
+    <BAS_CB_Set_AssemblyName_VersionSuffix>true</BAS_CB_Set_AssemblyName_VersionSuffix>
+    <BAS_CB_Set_IncludeBuildOutput>false</BAS_CB_Set_IncludeBuildOutput>
+    <BAS_CB_CodeAnalysis_PackCS>false</BAS_CB_CodeAnalysis_PackCS>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

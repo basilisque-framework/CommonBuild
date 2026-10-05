@@ -19,6 +19,7 @@
     <File Path="Fixtures/Directory.Build.targets" />
     <Project Path="Fixtures/Consumer.Benchmarks/Consumer.Benchmarks.csproj" Id="b799aa43-e090-4ac3-92b4-1bf5d346d9a2" />
     <Project Path="Fixtures/Consumer.CodeAnalysis/Consumer.CodeAnalysis.csproj" Id="ebdf94b3-24a4-4e8b-97fb-571dc20dd50c" />
+    <Project Path="Fixtures/Consumer.CodeAnalysis.Library/Consumer.CodeAnalysis.Library.csproj" />
     <Project Path="Fixtures/Consumer.Shared/Consumer.Shared.csproj" Id="0cffc938-cba2-4e99-9297-70255d1d9cdf" />
     <Project Path="Fixtures/Consumer.Tests/Consumer.Tests.csproj" Id="23998935-b649-4bcc-ab2d-11973c2cea8b" />
   </Folder>

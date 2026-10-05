@@ -15,6 +15,7 @@
 -->
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <ProjectReference Include="../../Fixtures/Consumer.CodeAnalysis.Library/Consumer.CodeAnalysis.Library.csproj" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" GeneratePathProperty="true" />
     <AssemblyMetadata Include="RoslynPackagePath" Value="$(PkgMicrosoft_CodeAnalysis_CSharp)" />
     <None Include="../../Fixtures/Consumer.CodeAnalysis/FixtureDiagnosticAnalyzer.cs" Link="TestAssets/FixtureDiagnosticAnalyzer.cs" CopyToOutputDirectory="PreserveNewest" />

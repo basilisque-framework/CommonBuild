@@ -144,6 +144,11 @@
           DependsOnTargets="BAS_CB_SetVersionProperties"
           BeforeTargets="PrepareForBuild;GetTargetPath;GetTargetPathWithTargetPlatformMoniker;_GetPackageFiles;PrepareForPublish"
           Condition="'$(BAS_CB_Set_AssemblyName_VersionSuffix)' == 'true' AND '$(IsCrossTargetingBuild)' != 'true' AND ('$(BAS_CB_Use_GitVersion)' == 'true' OR '$(BAS_CB_Set_Versions)' == 'true')">
+    <ItemGroup Condition="'$(OutputType)' != 'winmdobj'">
+      <!-- The SDK captures these output items during evaluation, before versioning runs. -->
+      <_BAS_CB_PreviousBuiltOutput Include="@(BuiltProjectOutputGroupKeyOutput)" Condition="'%(BuiltProjectOutputGroupKeyOutput.TargetPath)' == '$(TargetFileName)'" />
+      <_BAS_CB_PreviousSymbolsOutput Include="@(DebugSymbolsProjectOutputGroupOutput)" Condition="'%(DebugSymbolsProjectOutputGroupOutput.TargetPath)' == '$(TargetName).pdb'" />
+    </ItemGroup>
     <PropertyGroup>
       <AssemblyName Condition="'$(AssemblyName)' == ''">$(MSBuildProjectName)</AssemblyName>
       <AssemblyName>$(AssemblyName)-$(BAS_CB_Tmp_Version)</AssemblyName>
@@ -159,6 +164,20 @@
       <IntermediateRefAssembly Include="$(IntermediateOutputPath)refint\$(TargetFileName)" Condition="'$(ProduceReferenceAssembly)' == 'true'" />
       <_DebugSymbolsIntermediatePath Remove="@(_DebugSymbolsIntermediatePath)" />
       <_DebugSymbolsIntermediatePath Include="$(IntermediateOutputPath)$(TargetName).pdb" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(OutputType)' != 'winmdobj'">
+      <BuiltProjectOutputGroupKeyOutput Remove="@(_BAS_CB_PreviousBuiltOutput)" />
+      <BuiltProjectOutputGroupKeyOutput Include="@(_BAS_CB_PreviousBuiltOutput->'$(IntermediateOutputPath)$(TargetFileName)')">
+        <FinalOutputPath>$(TargetPath)</FinalOutputPath>
+        <TargetPath>$(TargetFileName)</TargetPath>
+      </BuiltProjectOutputGroupKeyOutput>
+      <_DebugSymbolsOutputPath Remove="@(_DebugSymbolsOutputPath)" />
+      <_DebugSymbolsOutputPath Include="@(_DebugSymbolsIntermediatePath->'$(OutDir)%(Filename)%(Extension)')" />
+      <DebugSymbolsProjectOutputGroupOutput Remove="@(_BAS_CB_PreviousSymbolsOutput)" />
+      <DebugSymbolsProjectOutputGroupOutput Include="@(_BAS_CB_PreviousSymbolsOutput->'$(IntermediateOutputPath)$(TargetName).pdb')">
+        <FinalOutputPath>@(_DebugSymbolsOutputPath->'%(FullPath)')</FinalOutputPath>
+        <TargetPath>$(TargetName).pdb</TargetPath>
+      </DebugSymbolsProjectOutputGroupOutput>
     </ItemGroup>
   </Target>
 
