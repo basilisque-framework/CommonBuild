@@ -19,6 +19,8 @@
   <Target Name="CaptureFixtureVersionMetadata" BeforeTargets="GetAssemblyAttributes" DependsOnTargets="BAS_CB_SetVersionProperties">
     <ItemGroup>
       <AssemblyMetadata Include="PackageVersion" Value="$(PackageVersion)" />
+      <AssemblyMetadata Include="GitVersion_VersionSourceDistance" Value="$(GitVersion_VersionSourceDistance)" />
+      <AssemblyMetadata Include="BAS_CB_VersionRevision" Value="$(BAS_CB_VersionRevision)" />
       <AssemblyMetadata Include="NeutralLanguage" Value="$(NeutralLanguage)" />
       <AssemblyMetadata Include="Company" Value="$(Company)" />
       <AssemblyMetadata Include="Product" Value="$(Product)" />

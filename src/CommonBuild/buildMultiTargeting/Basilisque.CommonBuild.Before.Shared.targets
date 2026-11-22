@@ -108,6 +108,8 @@
       <BAS_CB_VersionMajor Condition="'$(BAS_CB_VersionMajor)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_Major)</BAS_CB_VersionMajor>
       <BAS_CB_VersionMinor Condition="'$(BAS_CB_VersionMinor)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_Minor)</BAS_CB_VersionMinor>
       <BAS_CB_VersionBuild Condition="'$(BAS_CB_VersionBuild)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_Patch)</BAS_CB_VersionBuild>
+      <BAS_CB_VersionRevision Condition="'$(BAS_CB_VersionRevision)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_VersionSourceDistance)</BAS_CB_VersionRevision>
+      <!-- Backward compatibility with GitVersion versions that only expose the legacy property. -->
       <BAS_CB_VersionRevision Condition="'$(BAS_CB_VersionRevision)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_CommitsSinceVersionSource)</BAS_CB_VersionRevision>
       <BAS_CB_VersionRevisionPadded>$(BAS_CB_VersionRevision.PadLeft($(BAS_CB_Revision_TotalWidth), '0'))</BAS_CB_VersionRevisionPadded>
 

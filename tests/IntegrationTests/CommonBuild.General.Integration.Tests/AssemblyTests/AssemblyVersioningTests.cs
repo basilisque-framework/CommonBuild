@@ -98,6 +98,23 @@ internal class AssemblyVersioningTests
 
     [Test]
     [TestFixtureAssembliesDataGenerator]
+    public async Task GitVersionDistance_IsUsed_ForBuildRevision(Assembly assembly)
+    {
+        var metadata = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
+        var distance = metadata.FirstOrDefault(attribute => attribute.Key == "GitVersion_VersionSourceDistance")?.Value;
+        var revision = metadata.FirstOrDefault(attribute => attribute.Key == "BAS_CB_VersionRevision")?.Value;
+        var packageVersion = metadata.FirstOrDefault(attribute => attribute.Key == "PackageVersion")?.Value;
+
+        await Assert.That(distance).IsNotNull().And.IsNotEmpty();
+        await Assert.That(revision).IsEqualTo(distance);
+        await Assert.That(packageVersion).IsNotNull();
+
+        if (packageVersion!.Contains('-'))
+            await Assert.That(packageVersion.EndsWith(distance!.PadLeft(5, '0'), StringComparison.Ordinal)).IsTrue();
+    }
+
+    [Test]
+    [TestFixtureAssembliesDataGenerator]
     public async Task VersionBase_IsConsistent_WithCurrentBuild(Assembly assembly)
     {
         var referenceAssemblyVersion = _referenceAssembly.GetName().Version;
