@@ -138,7 +138,7 @@ If you do not set those properties, the values will be automatically determined 
 If you want to disable versioning at all, you can leave those properties empty and not add the GitVersion NuGet package.
 If you want to disable versioning despite having a GitVersion reference, you can set the MSBuild property BAS_CB_Use_GitVersion to false.
 
-GitVersion.MsBuild 7 requires a .NET 10 or later SDK to build, even when targeting an older framework. The revision uses `VersionSourceDistance`, with `CommitsSinceVersionSource` supported for older GitVersion versions. See the [GitVersion migration guide](https://gitversion.net/7.0/docs/migration/v6-to-v7) for other changes when upgrading from v6.
+GitVersion.MsBuild 7 requires a .NET 10 or later SDK. The revision uses `VersionSourceDistance`, with `CommitsSinceVersionSource` supported for older GitVersion versions. See the [GitVersion migration guide](https://gitversion.net/7.0/docs/migration/v6-to-v7) for other changes when upgrading from v6.
 
 The build type differentiates between release builds and different kinds of prerelease builds.
 Recommended values are:

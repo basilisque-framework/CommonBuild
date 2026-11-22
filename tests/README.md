@@ -69,7 +69,7 @@ The following commands can be executed in order from the repository root:
 Both CI and manual builds use the shared workflow's optional `verificationScript`
 hook to run `.github/scripts/Test-Integration.ps1` after the producer has been packed.
 The script builds, publishes, and packs the test solution, then runs all tests on
-`net8.0` and `net10.0`. Both SDKs are explicitly installed by the callers.
+`net10.0` and `net11.0`. Both SDKs are explicitly installed by the callers.
 
 The script reads the exact version from the producer package and passes it as
 `BAS_CB_PackageVersionUnderTest` to every test-solution command. A separate NuGet
