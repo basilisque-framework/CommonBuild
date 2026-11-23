@@ -35,6 +35,8 @@
     <DevelopmentDependency>true</DevelopmentDependency>
     <!-- do not pack this dll in the nupkg -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
+    <!-- This build-only package has no consumer dependencies. -->
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
   </PropertyGroup>
 
   <ItemGroup>

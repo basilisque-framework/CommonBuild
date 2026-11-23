@@ -26,7 +26,7 @@ internal class AssemblyTests
         var assembly = this.GetType().Assembly;
 
         var title = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title;
-        var assemblyName = assembly.GetName().Name;
+        var assemblyName = assembly.GetName().Name ?? throw new InvalidOperationException("The test assembly has no name.");
 
         await Assert.That(title).Matches(assemblyName);
     }
