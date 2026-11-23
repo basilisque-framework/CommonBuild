@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+using System.Threading;
+
 namespace CommonBuild.Integration.TestSupport.TestSetup;
 
 /// <summary>
@@ -21,7 +23,7 @@ namespace CommonBuild.Integration.TestSupport.TestSetup;
 /// </summary>
 public class UnpackNuGetPackages
 {
-    private static readonly object _syncRoot = new();
+    private static readonly Lock _syncRoot = new();
     private static bool _isPrepared;
 
     private static readonly string _packageArtifactsPath = System.IO.Path.Combine(
@@ -30,16 +32,14 @@ public class UnpackNuGetPackages
         "release"
     );
 
-    private static readonly string _unpackedPackagesPath = System.IO.Path.Combine(
+    /// <summary>
+    /// Gets the path where package contents are unpacked for test inspection.
+    /// </summary>
+    public static string UnpackedPackagesPath { get; } = System.IO.Path.Combine(
         Utils.AssemblyMetadataUtils.ArtifactsPath,
         "unpacked-packages",
         $"pid-{Environment.ProcessId}"
     );
-
-    /// <summary>
-    /// Gets the path where package contents are unpacked for test inspection.
-    /// </summary>
-    public static string UnpackedPackagesPath => _unpackedPackagesPath;
 
     /// <summary>
     /// Ensures that all package artifacts are unpacked exactly once for the current test process.
@@ -93,12 +93,12 @@ public class UnpackNuGetPackages
         if (!System.IO.Directory.Exists(_packageArtifactsPath))
             throw new System.IO.DirectoryNotFoundException($"Package artifacts path not found: '{_packageArtifactsPath}'.");
 
-        System.IO.Directory.CreateDirectory(_unpackedPackagesPath);
+        System.IO.Directory.CreateDirectory(UnpackedPackagesPath);
 
         foreach (var packageFilePath in System.IO.Directory.EnumerateFiles(_packageArtifactsPath, "*.nupkg", System.IO.SearchOption.TopDirectoryOnly))
         {
             var packageDirectoryName = System.IO.Path.GetFileNameWithoutExtension(packageFilePath);
-            var packageExtractPath = System.IO.Path.Combine(_unpackedPackagesPath, packageDirectoryName);
+            var packageExtractPath = System.IO.Path.Combine(UnpackedPackagesPath, packageDirectoryName);
 
             System.IO.Directory.CreateDirectory(packageExtractPath);
 
@@ -108,12 +108,11 @@ public class UnpackNuGetPackages
                 overwriteFiles: true
             );
         }
-
     }
 
     private static void cleanup()
     {
-        if (System.IO.Directory.Exists(_unpackedPackagesPath))
-            System.IO.Directory.Delete(_unpackedPackagesPath, recursive: true);
+        if (System.IO.Directory.Exists(UnpackedPackagesPath))
+            System.IO.Directory.Delete(UnpackedPackagesPath, recursive: true);
     }
 }

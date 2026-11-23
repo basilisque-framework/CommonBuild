@@ -22,7 +22,7 @@ namespace CommonBuild.General.Integration.Tests.PackageTests;
 
 internal class IsPackableTests
 {
-    private static string _artifactsPath = System.IO.Path.Combine(
+    private static readonly string _artifactsPath = System.IO.Path.Combine(
         CommonBuild.Integration.TestSupport.Utils.AssemblyMetadataUtils.ArtifactsPath,
         "package",
         "release"//CommonBuild.Integration.TestSupport.Utils.AssemblyMetadataUtils.BuildConfiguration.ToLower() //default 'dotnet pack' is always 'release'
@@ -31,7 +31,7 @@ internal class IsPackableTests
     [Test]
     public async Task ArtifactsPackageDirectory_Contains_TheRightAmountOfPackageFiles()
     {
-        var expectedFileCount = FixtureInfo.TestFixtureInfos.Where(fi => fi.IsPackable).Count();
+        var expectedFileCount = FixtureInfo.TestFixtureInfos.Count(fi => fi.IsPackable);
 
         var fixturePackageNames = FixtureInfo.TestFixtureInfos
             .Select(getPackageFileName)
@@ -60,7 +60,7 @@ internal class IsPackableTests
     private static string getPackageFileName(ITestInfo info)
     {
         var packageVersion = info.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
-            .Single(attribute => attribute.Key == "PackageVersion").Value;
+            .Single(static attribute => attribute.Key == "PackageVersion").Value;
 
         if (string.IsNullOrWhiteSpace(packageVersion))
             throw new InvalidOperationException("The fixture package version must not be empty.");

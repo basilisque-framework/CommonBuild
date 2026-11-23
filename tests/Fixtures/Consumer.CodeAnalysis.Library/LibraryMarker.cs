@@ -1,4 +1,4 @@
-namespace Consumer.CodeAnalysis.Library;
+﻿namespace Consumer.CodeAnalysis.Library;
 
 /// <summary>
 /// Identifies the versioned library fixture used to test normal NuGet build output.

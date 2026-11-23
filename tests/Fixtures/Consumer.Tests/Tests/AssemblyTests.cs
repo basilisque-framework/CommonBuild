@@ -25,8 +25,8 @@ internal class AssemblyTests
     {
         var assembly = this.GetType().Assembly;
 
-        string? title = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title;
-        string? assemblyName = assembly.GetName().Name;
+        var title = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title;
+        var assemblyName = assembly.GetName().Name;
 
         await Assert.That(title).Matches(assemblyName);
     }

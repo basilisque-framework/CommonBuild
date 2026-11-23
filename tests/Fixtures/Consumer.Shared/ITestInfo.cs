@@ -37,6 +37,6 @@ public interface ITestInfo
 #if NETSTANDARD2_0
     System.Reflection.Assembly Assembly { get; }
 #else
-    System.Reflection.Assembly Assembly => this.GetType().Assembly;
+    System.Reflection.Assembly Assembly => GetType().Assembly;
 #endif
 }

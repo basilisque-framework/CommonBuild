@@ -1,4 +1,4 @@
-/*
+﻿/*
    Copyright 2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ namespace CommonBuild.CodeAnalysis.Integration.Tests.PackageTests;
 
 internal class AnalyzerLoadingTests
 {
-    private const string _packageId = "PackageLoad.CodeAnalysis";
+    private const string PackageId = "PackageLoad.CodeAnalysis";
 
     [Test]
     public async Task Ensure_Installed_Analyzer_Package_Reports_Diagnostic_In_Consumer_Build()
@@ -47,23 +47,23 @@ internal class AnalyzerLoadingTests
                 new XElement("TreatWarningsAsErrors", true),
                 new XElement("WarningsNotAsErrors", "CBTEST001")),
             new XElement("ItemGroup",
-                new XElement("PackageReference", new XAttribute("Include", _packageId), new XAttribute("Version", "7.3.1")))))
+                new XElement("PackageReference", new XAttribute("Include", PackageId), new XAttribute("Version", "7.3.1")))))
             .Save(consumerProject);
         await File.WriteAllTextAsync(Path.Combine(consumerDirectory, "Consumer.cs"), "public sealed class Consumer { }");
 
-        var result = await workspace.RunDotnet("build", consumerProject, "-c", "Release", "--disable-build-servers", "-p:UseSharedCompilation=false");
+        var (ExitCode, Output) = await workspace.RunDotnet("build", consumerProject, "-c", "Release", "--disable-build-servers", "-p:UseSharedCompilation=false");
 
-        await Assert.That(result.ExitCode).IsEqualTo(0).Because(result.Output);
-        await Assert.That(result.Output).Contains("CBTEST001");
-        await Assert.That(result.Output).Contains($"{_packageId}-7.3.1");
+        await Assert.That(ExitCode).IsEqualTo(0).Because(Output);
+        await Assert.That(Output).Contains("CBTEST001");
+        await Assert.That(Output).Contains($"{PackageId}-7.3.1");
 
         var assets = System.Text.Json.JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(consumerDirectory, "obj", "project.assets.json")));
         using (assets)
         {
-            var packageFiles = assets.RootElement.GetProperty("libraries").GetProperty($"{_packageId}/7.3.1").GetProperty("files")
-                .EnumerateArray().Select(entry => entry.GetString() ?? throw new InvalidDataException("Package file path is null.")).ToArray();
+            var packageFiles = assets.RootElement.GetProperty("libraries").GetProperty($"{PackageId}/7.3.1").GetProperty("files")
+                .EnumerateArray().Select(static entry => entry.GetString() ?? throw new InvalidDataException("Package file path is null.")).ToArray();
             await Assert.That(packageFiles).Contains("lib/netstandard2.0/_._");
-            await Assert.That(packageFiles).Contains($"analyzers/dotnet/cs/{_packageId}-7.3.1.dll");
+            await Assert.That(packageFiles).Contains($"analyzers/dotnet/cs/{PackageId}-7.3.1.dll");
         }
     }
 
@@ -89,22 +89,22 @@ internal class AnalyzerLoadingTests
             await Assert.That(secondAnalyzers.Length).IsEqualTo(1);
             var firstAssembly = firstAnalyzers[0].GetType().Assembly;
             var secondAssembly = secondAnalyzers[0].GetType().Assembly;
-            await Assert.That(firstAssembly.GetName().Name).IsEqualTo($"{_packageId}-7.3.1");
-            await Assert.That(secondAssembly.GetName().Name).IsEqualTo($"{_packageId}-7.3.2");
+            await Assert.That(firstAssembly.GetName().Name).IsEqualTo($"{PackageId}-7.3.1");
+            await Assert.That(secondAssembly.GetName().Name).IsEqualTo($"{PackageId}-7.3.2");
             await Assert.That(ReferenceEquals(firstAssembly, secondAssembly)).IsFalse();
             await Assert.That(ReferenceEquals(AssemblyLoadContext.GetLoadContext(firstAssembly), loader)).IsTrue();
             await Assert.That(ReferenceEquals(AssemblyLoadContext.GetLoadContext(secondAssembly), loader)).IsTrue();
 
             var compilation = CSharpCompilation.Create("AnalyzerConsumer",
-                new[] { CSharpSyntaxTree.ParseText("public sealed class Consumer { }") },
-                new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) },
+                [CSharpSyntaxTree.ParseText("public sealed class Consumer { }")],
+                [MetadataReference.CreateFromFile(typeof(object).Assembly.Location)],
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
             var diagnostics = await compilation.WithAnalyzers(firstAnalyzers.AddRange(secondAnalyzers)).GetAnalyzerDiagnosticsAsync();
 
             await Assert.That(diagnostics.Length).IsEqualTo(2).Because(string.Join(Environment.NewLine, diagnostics));
             await Assert.That(diagnostics.All(diagnostic => diagnostic.Id == "CBTEST001")).IsTrue();
             await Assert.That(diagnostics.Select(diagnostic => diagnostic.GetMessage()).OrderBy(message => message).ToArray())
-                .IsEquivalentTo(new[] { $"Analyzer '{_packageId}-7.3.1' executed", $"Analyzer '{_packageId}-7.3.2' executed" });
+                .IsEquivalentTo([$"Analyzer '{PackageId}-7.3.1' executed", $"Analyzer '{PackageId}-7.3.2' executed"]);
         }
         finally
         {
@@ -124,7 +124,10 @@ internal class AnalyzerLoadingTests
             return LoadFromStream(stream);
         }
 
-        protected override Assembly? Load(AssemblyName assemblyName) => null;
+        protected override Assembly? Load(AssemblyName assemblyName)
+        {
+            return null;
+        }
     }
 
     private sealed class PackageWorkspace : IDisposable
@@ -140,7 +143,7 @@ internal class AnalyzerLoadingTests
             var commonBuildPath = AssemblyMetadataUtils.CommonBuildNuGetPackagePath;
             _commonBuildVersion = readPackageVersion(Path.Combine(commonBuildPath, "basilisque.commonbuild.nuspec"));
             var roslynPath = typeof(AnalyzerLoadingTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
-                .Single(attribute => attribute.Key == "RoslynPackagePath").Value!;
+                .Single(static attribute => attribute.Key == "RoslynPackagePath").Value!;
             _roslynVersion = readPackageVersion(Path.Combine(roslynPath, "microsoft.codeanalysis.csharp.nuspec"));
             Directory.CreateDirectory(Path.Combine(Root, "feed"));
             new XDocument(new XElement("configuration",
@@ -157,7 +160,7 @@ internal class AnalyzerLoadingTests
         {
             var directory = Path.Combine(Root, $"version-{patchVersion}");
             Directory.CreateDirectory(directory);
-            var projectPath = Path.Combine(directory, $"{_packageId}.csproj");
+            var projectPath = Path.Combine(directory, $"{PackageId}.csproj");
             new XDocument(new XElement("Project", new XAttribute("Sdk", "Microsoft.NET.Sdk"),
                 new XElement("PropertyGroup",
                     new XElement("TargetFramework", "netstandard2.0"),
@@ -174,12 +177,12 @@ internal class AnalyzerLoadingTests
                 .Save(projectPath);
             File.Copy(Path.Combine(AppContext.BaseDirectory, "TestAssets", "FixtureDiagnosticAnalyzer.cs"), Path.Combine(directory, "FixtureDiagnosticAnalyzer.cs"));
 
-            var result = await RunDotnet("pack", projectPath, "-c", "Release", "-o", Path.Combine(Root, "feed"), "--disable-build-servers", "-p:UseSharedCompilation=false", "-p:TreatWarningsAsErrors=true");
-            await Assert.That(result.ExitCode).IsEqualTo(0).Because(result.Output);
+            var (ExitCode, Output) = await RunDotnet("pack", projectPath, "-c", "Release", "-o", Path.Combine(Root, "feed"), "--disable-build-servers", "-p:UseSharedCompilation=false", "-p:TreatWarningsAsErrors=true");
+            await Assert.That(ExitCode).IsEqualTo(0).Because(Output);
 
             var unpackedPath = Path.Combine(directory, "unpacked");
-            ZipFile.ExtractToDirectory(Path.Combine(Root, "feed", $"{_packageId}.7.3.{patchVersion}.nupkg"), unpackedPath);
-            return Path.Combine(unpackedPath, "analyzers", "dotnet", "cs", $"{_packageId}-7.3.{patchVersion}.dll");
+            ZipFile.ExtractToDirectory(Path.Combine(Root, "feed", $"{PackageId}.7.3.{patchVersion}.nupkg"), unpackedPath);
+            return Path.Combine(unpackedPath, "analyzers", "dotnet", "cs", $"{PackageId}-7.3.{patchVersion}.dll");
         }
 
         public async Task<(int ExitCode, string Output)> RunDotnet(params string[] arguments)
@@ -219,6 +222,9 @@ internal class AnalyzerLoadingTests
             return document.Root.Element(xmlNamespace + "metadata")!.Element(xmlNamespace + "version")!.Value;
         }
 
-        public void Dispose() => Directory.Delete(Root, recursive: true);
+        public void Dispose()
+        {
+            Directory.Delete(Root, recursive: true);
+        }
     }
 }

@@ -28,5 +28,5 @@ public class CodeAnalysisTestInfo : ITestInfo
     public bool IsPublishable => true;
 
     /// <inheritdoc />
-    public System.Reflection.Assembly Assembly => this.GetType().Assembly;
+    public System.Reflection.Assembly Assembly => GetType().Assembly;
 }

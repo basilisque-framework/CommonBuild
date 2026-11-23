@@ -23,24 +23,20 @@ namespace CommonBuild.Integration.TestSupport.Utils;
 /// </summary>
 public static class AssemblyMetadataUtils
 {
-    private static string _commonBuildNuGetPackagePath = getNuGetPackagePathFromMetadata("PkgBasilisque_CommonBuild");
-    private static string _artifactsPath = getValueFromAssemblyMetadata("ArtifactsPath");
-    private static string _buildConfiguration = getValueFromAssemblyMetadata("BuildConfiguration");
-
     /// <summary>
     /// Returns the path of the Basilisque.CommonBuild package under test
     /// </summary>
-    public static string CommonBuildNuGetPackagePath => _commonBuildNuGetPackagePath;
+    public static string CommonBuildNuGetPackagePath { get; } = getNuGetPackagePathFromMetadata("PkgBasilisque_CommonBuild");
 
     /// <summary>
     /// Returns the path of the artifacts folder for the Basilisque.CommonBuild package under test
     /// </summary>
-    public static string ArtifactsPath => _artifactsPath;
+    public static string ArtifactsPath { get; } = getValueFromAssemblyMetadata("ArtifactsPath");
 
     /// <summary>
     /// Returns the build configuration used for the Basilisque.CommonBuild package under test
     /// </summary>
-    public static string BuildConfiguration => _buildConfiguration;
+    public static string BuildConfiguration { get; } = getValueFromAssemblyMetadata("BuildConfiguration");
 
     private static string getNuGetPackagePathFromMetadata(string key)
     {

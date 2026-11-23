@@ -1,4 +1,4 @@
-/*
+﻿/*
    Copyright 2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,8 @@
    limitations under the License.
 */
 
-using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Immutable;
 
 namespace Consumer.CodeAnalysis;
 
@@ -33,17 +32,17 @@ public sealed class FixtureDiagnosticAnalyzer : DiagnosticAnalyzer
         "Testing",
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        customTags: new[] { WellKnownDiagnosticTags.CompilationEnd });
+        customTags: [WellKnownDiagnosticTags.CompilationEnd]);
 
     /// <inheritdoc />
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
 
     /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterCompilationAction(compilationContext => compilationContext.ReportDiagnostic(
+        context.RegisterCompilationAction(static compilationContext => compilationContext.ReportDiagnostic(
             Diagnostic.Create(_rule, Location.None, typeof(FixtureDiagnosticAnalyzer).Assembly.GetName().Name)));
     }
 }

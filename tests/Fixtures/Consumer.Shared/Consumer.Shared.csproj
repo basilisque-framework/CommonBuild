@@ -1,4 +1,4 @@
-﻿<!--
+<!--
    Copyright 2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
   <PropertyGroup>
     <TargetFrameworks>$(TargetFrameworks);netstandard2.0</TargetFrameworks>
   </PropertyGroup>
-  
+
   <!-- this is a support library and not a project to be tested -->
   <PropertyGroup>
     <IsPackable>false</IsPackable>

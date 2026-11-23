@@ -21,7 +21,7 @@ namespace CommonBuild.General.Integration.Tests.Copyright;
 
 internal class CopyrightTests
 {
-    private string? _copyright = typeof(CopyrightTests).Assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
+    private readonly string? _copyright = typeof(CopyrightTests).Assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
 
     [Test]
     public async Task Copyright_ShouldBeValid()

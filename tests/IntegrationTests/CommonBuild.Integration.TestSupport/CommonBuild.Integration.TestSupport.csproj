@@ -1,4 +1,4 @@
-﻿<!--
+<!--
    Copyright 2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@
     <IsPublishable>false</IsPublishable>
     <TestingPlatformCommandLineArguments>--ignore-exit-code 8</TestingPlatformCommandLineArguments>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <!-- save PkgBasilisque_CommonBuild variable in assembly metadata for runtime usage -->
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">

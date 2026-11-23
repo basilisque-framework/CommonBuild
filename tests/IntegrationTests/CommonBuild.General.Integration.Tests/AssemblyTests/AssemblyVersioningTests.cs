@@ -50,7 +50,7 @@ internal class AssemblyVersioningTests
 
         await Assert.That(parts.Length).IsEqualTo(3);
 
-        var digits = parts.Select(part => int.TryParse(part, out var value) ? value : -1).ToArray();
+        var digits = parts.Select(static part => int.TryParse(part, out var value) ? value : -1).ToArray();
 
         await Assert.That(digits[0]).IsGreaterThan(0);
         await Assert.That(digits[1]).IsGreaterThanOrEqualTo(0);
@@ -78,7 +78,7 @@ internal class AssemblyVersioningTests
 
         await Assert.That(semVerSegments.Length).IsEqualTo(3);
 
-        var semVerDigits = semVerSegments.Select(part => int.TryParse(part, out var value) ? value : -1).ToArray();
+        var semVerDigits = semVerSegments.Select(static part => int.TryParse(part, out var value) ? value : -1).ToArray();
 
         await Assert.That(semVerDigits[0]).IsGreaterThan(0);
         await Assert.That(semVerDigits[1]).IsGreaterThanOrEqualTo(0);
@@ -101,9 +101,9 @@ internal class AssemblyVersioningTests
     public async Task GitVersionDistance_IsUsed_ForBuildRevision(Assembly assembly)
     {
         var metadata = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
-        var distance = metadata.FirstOrDefault(attribute => attribute.Key == "GitVersion_VersionSourceDistance")?.Value;
-        var revision = metadata.FirstOrDefault(attribute => attribute.Key == "BAS_CB_VersionRevision")?.Value;
-        var packageVersion = metadata.FirstOrDefault(attribute => attribute.Key == "PackageVersion")?.Value;
+        var distance = metadata.FirstOrDefault(static attribute => attribute.Key == "GitVersion_VersionSourceDistance")?.Value;
+        var revision = metadata.FirstOrDefault(static attribute => attribute.Key == "BAS_CB_VersionRevision")?.Value;
+        var packageVersion = metadata.FirstOrDefault(static attribute => attribute.Key == "PackageVersion")?.Value;
 
         await Assert.That(distance).IsNotNull().And.IsNotEmpty();
         await Assert.That(revision).IsEqualTo(distance);
@@ -155,7 +155,7 @@ internal class AssemblyVersioningTests
         if (prereleaseSeparatorIndex < 0)
             return version;
 
-        return version.Substring(0, prereleaseSeparatorIndex);
+        return version[..prereleaseSeparatorIndex];
     }
 
     private static string getVersionBase(string version)

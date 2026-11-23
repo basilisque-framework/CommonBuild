@@ -16,7 +16,7 @@
 <Project>
   <!-- import the targets file that is shared between single and multi targeting builds -->
   <Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.Before.Shared.targets" />
-  
+
   <!-- Log all properties that are set by the Basilisque.CommonBuild project -->
   <Target Name="LogBasilisqueCommonBuildProperties" AfterTargets="PrepareForBuild" Condition="'$(BAS_CB_Log_Properties)' == 'true'">
     <PropertyGroup>
@@ -53,7 +53,7 @@
     </PropertyGroup>
     <Message Importance="High" Text="$(__BAS_Log_Msg)" />
   </Target>
-  
+
   <!-- Target for reading items and item metadata -->
   <!-- properties vs items vs item metadata: https://stackoverflow.com/a/2816244 -->
   <!-- item metadata can only be reliably accessed in a target when you want to use it in conditions for properties -->
@@ -62,7 +62,7 @@
       <BAS_CB_AllPackageReferences>;@(PackageReference->'%(Identity)');</BAS_CB_AllPackageReferences>
     </PropertyGroup>
   </Target>
-  
+
   <!-- define/init some variables -->
   <PropertyGroup>
     <BAS_CB_Set_Copyright Condition="'$(BAS_CB_Set_Copyright)' == '' AND '$(Copyright)' == ''">true</BAS_CB_Set_Copyright>
@@ -74,7 +74,7 @@
     <ImplicitUsings Condition="'$(BAS_CB_Set_ImplicitUsings)' == 'true'">disable</ImplicitUsings>
     <LangVersion Condition="'$(BAS_CB_Set_LangVersion)' == 'true' AND '$(TargetFramework)'=='netstandard2.0'">latest</LangVersion>
   </PropertyGroup>
-  
+
   <!-- set copyright -->
   <Choose>
     <When Condition="'$(BAS_CB_Set_Copyright)' == 'true'">
@@ -113,13 +113,13 @@
     <Using Include="System.Threading.Tasks" />
     <Using Include="Microsoft.CodeAnalysis" Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'" />
   </ItemGroup>
-  
+
   <!-- .CodeAnalysis projects -->
   <PropertyGroup Condition="'$(BAS_CB_ProjType_CodeAnalysis)' == 'true'">
     <!-- do not pack an analyzer project as normal lib dependency... -->
     <IncludeBuildOutput Condition="'$(BAS_CB_Set_IncludeBuildOutput)' == 'true'">false</IncludeBuildOutput>
   </PropertyGroup>
-  
+
   <!-- Target for handling items and item metadata -->
   <Target Name="HandleItemMetadata" AfterTargets="PrepareForBuild">
     <!-- .Tests projects -->
@@ -127,7 +127,7 @@
       <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" Condition="$(BAS_CB_AllPackageReferences.Contains(';MSTest.TestFramework;'))" />
     </ItemGroup>
   </Target>
-  
+
   <!-- import the targets file that is shared between single and multi targeting builds -->
   <Import Project="$(MSBuildThisFileDirectory)../buildMultiTargeting/Basilisque.CommonBuild.After.Shared.targets" />
 </Project>

@@ -37,7 +37,7 @@ internal class BuildPropertiesTests
 
         await Assert.That(DateTime.Now).IsGreaterThan(DateTime.MinValue);
         await Assert.That(new List<int>()).IsNotNull();
-        await Assert.That(new List<int>().Where(i => true).Any()).IsFalse();
+        await Assert.That(new List<int>().Any(static i => true)).IsFalse();
         await Assert.That(Task.CompletedTask).ThrowsNothing();
     }
 

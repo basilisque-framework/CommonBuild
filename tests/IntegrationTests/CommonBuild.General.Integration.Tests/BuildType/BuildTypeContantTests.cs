@@ -21,7 +21,7 @@ namespace CommonBuild.General.Integration.Tests.BuildType;
 
 internal class BuildTypeContantTests
 {
-    private string? _defineConstants = typeof(CheckBuildVersionTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(attribute => attribute.Key == "DefineConstants")?.Value;
+    private readonly string? _defineConstants = typeof(CheckBuildVersionTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(static attribute => attribute.Key == "DefineConstants")?.Value;
 
     [Test]
     public async Task Ensure_DefineConstants_MSBuildVariable_Contains_BuildType()

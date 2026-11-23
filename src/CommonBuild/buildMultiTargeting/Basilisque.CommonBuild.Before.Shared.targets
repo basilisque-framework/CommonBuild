@@ -57,10 +57,10 @@
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
     <SonarQubeTestProject Condition="'$(BAS_CB_Set_SonarQubeTestProject)' == 'true'">true</SonarQubeTestProject>
-    
+
     <RunSettingsFilePath Condition="'$(BAS_CB_Set_RunSettingsFilePath)' == 'true' AND '$(RunSettingsFilePath)' == ''">$(MSBuildThisFileDirectory)CommonBuild.MSTest.runsettings</RunSettingsFilePath>
   </PropertyGroup>
-  
+
   <!-- .Benchmarks projects -->
   <PropertyGroup Condition="'$(BAS_CB_ProjType_Benchmarks)' == 'true'">
     <IsPackable>false</IsPackable>

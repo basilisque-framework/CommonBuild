@@ -17,16 +17,16 @@
 using CommonBuild.Integration.TestSupport.Fixtures;
 using Consumer.Shared;
 
-namespace CommonBuild.General.Integration.Tests.PackageTests;
+namespace CommonBuild.General.Integration.Tests.PublishTests;
 
 internal class IsPublishableTests
 {
-    private static string _artifactsPath = System.IO.Path.Combine(CommonBuild.Integration.TestSupport.Utils.AssemblyMetadataUtils.ArtifactsPath, "publish");
+    private static readonly string _artifactsPath = System.IO.Path.Combine(CommonBuild.Integration.TestSupport.Utils.AssemblyMetadataUtils.ArtifactsPath, "publish");
 
     [Test]
     public async Task ArtifactsPublishDirectory_Contains_TheRightAmountOfPackageSubdirectories()
     {
-        var expectedSubdirectoryCount = FixtureInfo.TestFixtureInfos.Where(fi => fi.IsPublishable).Count();
+        var expectedSubdirectoryCount = FixtureInfo.TestFixtureInfos.Count(static fi => fi.IsPublishable);
 
         var actualSubdirectoryCount = System.IO.Directory.EnumerateDirectories(_artifactsPath).Count();
 
@@ -41,7 +41,7 @@ internal class IsPublishableTests
 
         await Assert.That(expectedName).IsNotNull();
 
-        var matchingSubdirectoriesCount = System.IO.Directory.EnumerateDirectories(_artifactsPath, expectedName!).Count();
+        var matchingSubdirectoriesCount = System.IO.Directory.EnumerateDirectories(_artifactsPath, expectedName).Count();
 
         var expectedSubdirectoriesCount = info.IsPublishable ? 1 : 0;
 

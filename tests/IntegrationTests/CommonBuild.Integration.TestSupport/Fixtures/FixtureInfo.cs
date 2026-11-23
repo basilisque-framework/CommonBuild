@@ -26,14 +26,14 @@ namespace CommonBuild.Integration.TestSupport.Fixtures;
 /// </summary>
 public static class FixtureInfo
 {
-    private static List<ITestInfo> _testFixtureInfos = new()
-    {
+    private static readonly List<ITestInfo> _testFixtureInfos =
+    [
         new BenchmarksTestInfo(),
         new CodeAnalysisTestInfo(),
         new TestsTestInfo()
-    };
+    ];
 
-    private static List<System.Reflection.Assembly> _testFixtureAssemblies = _testFixtureInfos.Select(ti => ti.Assembly).ToList();
+    private static readonly List<System.Reflection.Assembly> _testFixtureAssemblies = [.. _testFixtureInfos.Select(static ti => ti.Assembly)];
 
     /// <summary>
     /// A list of test info instances for all test fixture assemblies

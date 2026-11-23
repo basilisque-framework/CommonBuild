@@ -24,11 +24,11 @@ namespace CommonBuild.General.Integration.Tests.AssemblyTests;
 internal class CheckBuildVersionTests
 {
     // get the version of this integration test assembly because this is built with the same version information than the rest of the repository
-    private System.Version _thisAssemblyVersion = typeof(CheckBuildVersionTests).Assembly.GetName().Version!;
-    private string? _thisAssemblyFileVersion = typeof(CheckBuildVersionTests).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
-    private string? _thisAssemblyInformationalVersion = typeof(CheckBuildVersionTests).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-    private string? _thisAssemblyPackageVersion = typeof(CheckBuildVersionTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(attribute => attribute.Key == "PackageVersion")?.Value;
-    private string? _defineConstants = typeof(CheckBuildVersionTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(attribute => attribute.Key == "DefineConstants")?.Value;
+    private readonly Version _thisAssemblyVersion = typeof(CheckBuildVersionTests).Assembly.GetName().Version!;
+    private readonly string? _thisAssemblyFileVersion = typeof(CheckBuildVersionTests).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+    private readonly string? _thisAssemblyInformationalVersion = typeof(CheckBuildVersionTests).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+    private readonly string? _thisAssemblyPackageVersion = typeof(CheckBuildVersionTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(static attribute => attribute.Key == "PackageVersion")?.Value;
+    private readonly string? _defineConstants = typeof(CheckBuildVersionTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().FirstOrDefault(static attribute => attribute.Key == "DefineConstants")?.Value;
 
     [Test]
     public async Task Ensure_CurrentBuild_AssemblyVersion_Contains_VersionInformation()
@@ -40,7 +40,7 @@ internal class CheckBuildVersionTests
         // ensure the version is greater than 1
         // (At the time of writing this code the repo is already at version 2 and therefore never will be at version 1 or lower.
         // So this test can ensure that the build has set at lease some version information and not the default value.)
-        await Assert.That(_thisAssemblyVersion!.Major).IsGreaterThan(1);
+        await Assert.That(_thisAssemblyVersion.Major).IsGreaterThan(1);
     }
 
     [Test]
@@ -71,7 +71,7 @@ internal class CheckBuildVersionTests
 
         await Assert.That(fileVersionParts.Length).IsEqualTo(3);
 
-        var fileVersionDigits = fileVersionParts.Select(part => int.TryParse(part, out var digit) ? digit : -1).ToArray();
+        var fileVersionDigits = fileVersionParts.Select(static part => int.TryParse(part, out var digit) ? digit : -1).ToArray();
 
         await Assert.That(fileVersionDigits[0]).IsGreaterThan(0);
         await Assert.That(fileVersionDigits[1]).IsGreaterThanOrEqualTo(0);
@@ -87,7 +87,7 @@ internal class CheckBuildVersionTests
 
         await Assert.That(packageVersionParts.Length).IsEqualTo(3);
 
-        var packageVersionDigits = packageVersionParts.Select(part => int.TryParse(part, out var digit) ? digit : -1).ToArray();
+        var packageVersionDigits = packageVersionParts.Select(static part => int.TryParse(part, out var digit) ? digit : -1).ToArray();
 
         await Assert.That(packageVersionDigits[0]).IsGreaterThan(0);
         await Assert.That(packageVersionDigits[1]).IsGreaterThanOrEqualTo(0);
@@ -105,7 +105,7 @@ internal class CheckBuildVersionTests
 
         await Assert.That(versionParts.Length).IsEqualTo(3);
 
-        var versionDigits = versionParts.Select(part => int.TryParse(part, out var digit) ? digit : -1).ToArray();
+        var versionDigits = versionParts.Select(static part => int.TryParse(part, out var digit) ? digit : -1).ToArray();
 
         await Assert.That(versionDigits[0]).IsGreaterThan(0);
         await Assert.That(versionDigits[1]).IsGreaterThanOrEqualTo(0);
@@ -158,22 +158,22 @@ internal class CheckBuildVersionTests
     {
         var index = versionInformation.IndexOf('-');
         if (index >= 0)
-            return versionInformation.Substring(0, index);
+            versionInformation[..index];
 
         return versionInformation;
     }
 
     private string getBuildTypeFromDefineConstants()
     {
-        if (string.IsNullOrWhiteSpace(_defineConstants))
-            throw new Exception("Build property 'DefineConstants' not found.");
-
-        if (_defineConstants.Contains("BUILD_TYPE_RELEASE", StringComparison.Ordinal)) return "Release";
-        if (_defineConstants.Contains("BUILD_TYPE_RC", StringComparison.Ordinal)) return "RC";
-        if (_defineConstants.Contains("BUILD_TYPE_PREVIEW", StringComparison.Ordinal)) return "Preview";
-        if (_defineConstants.Contains("BUILD_TYPE_CI", StringComparison.Ordinal)) return "CI";
-        if (_defineConstants.Contains("BUILD_TYPE_ALPHA", StringComparison.Ordinal)) return "Alpha";
-
-        throw new Exception("Could not determine build type from DefineConstants.");
+        return _defineConstants switch
+        {
+            var constants when string.IsNullOrWhiteSpace(constants) => throw new Exception("Build property 'DefineConstants' not found."),
+            string constants when constants.Contains("BUILD_TYPE_RELEASE", StringComparison.Ordinal) => "Release",
+            string constants when constants.Contains("BUILD_TYPE_RC", StringComparison.Ordinal) => "RC",
+            string constants when constants.Contains("BUILD_TYPE_PREVIEW", StringComparison.Ordinal) => "Preview",
+            string constants when constants.Contains("BUILD_TYPE_CI", StringComparison.Ordinal) => "CI",
+            string constants when constants.Contains("BUILD_TYPE_ALPHA", StringComparison.Ordinal) => "Alpha",
+            _ => throw new Exception("Could not determine build type from DefineConstants.")
+        };
     }
 }

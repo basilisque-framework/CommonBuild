@@ -26,7 +26,7 @@ internal class AssemblyPropertyTests
     [TestFixtureAssembliesDataGenerator]
     public async Task NeutralLanguage_IsSetTo_enUS(Assembly assembly)
     {
-        string? neutralLanguage = assembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>()?.CultureName;
+        var neutralLanguage = assembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>()?.CultureName;
 
         await Assert.That(neutralLanguage).IsEqualTo("en-US");
     }
@@ -35,8 +35,8 @@ internal class AssemblyPropertyTests
     [TestFixtureAssembliesDataGenerator]
     public async Task Title_IsSetTo_UnversionedAssemblyName(Assembly assembly)
     {
-        string? title = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title;
-        string assemblyName = FixtureInfo.GetProjectName(assembly);
+        var title = assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title;
+        var assemblyName = FixtureInfo.GetProjectName(assembly);
 
         await Assert.That(title).IsEqualTo(assemblyName);
     }
@@ -45,7 +45,7 @@ internal class AssemblyPropertyTests
     [TestFixtureAssembliesDataGenerator]
     public async Task Company_IsSetTo_Authors(Assembly assembly)
     {
-        string? company = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company;
+        var company = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company;
 
         await Assert.That(company).IsEqualTo("Alexander Stärk");
     }
@@ -54,8 +54,8 @@ internal class AssemblyPropertyTests
     [TestFixtureAssembliesDataGenerator]
     public async Task Product_IsSetTo_UnversionedAssemblyName(Assembly assembly)
     {
-        string? product = assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product;
-        string assemblyName = FixtureInfo.GetProjectName(assembly);
+        var product = assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product;
+        var assemblyName = FixtureInfo.GetProjectName(assembly);
 
         await Assert.That(product).IsEqualTo(assemblyName);
     }
