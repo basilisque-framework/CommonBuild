@@ -158,7 +158,7 @@ internal class CheckBuildVersionTests
     {
         var index = versionInformation.IndexOf('-');
         if (index >= 0)
-            versionInformation[..index];
+            return versionInformation[..index];
 
         return versionInformation;
     }
