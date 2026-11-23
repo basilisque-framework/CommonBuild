@@ -7,7 +7,6 @@ root = true
 [*.{yml,yaml,ps1,psm1,psd1}]
 charset = utf-8
 indent_style = space
-end_of_line = crlf
 insert_final_newline = false
 trim_trailing_whitespace = true
 
@@ -20,7 +19,6 @@ indent_size = 4
 ###### Markdown ######
 [*.md]
 charset = utf-8
-end_of_line = crlf
 insert_final_newline = false
 # Two trailing spaces can represent a hard line break.
 trim_trailing_whitespace = false
@@ -42,7 +40,6 @@ indent_style = space
 tab_width = 4
 
 # New line preferences
-end_of_line = crlf
 insert_final_newline = false
 trim_trailing_whitespace = true
 
@@ -323,6 +320,5 @@ indent_style = space
 tab_width = 2
 
 # New line preferences
-end_of_line = crlf
 insert_final_newline = false
 trim_trailing_whitespace = true
