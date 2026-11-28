@@ -16,9 +16,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <!-- preserve build time variables for runtime usage -->
-    <AssemblyMetadata Include="PackageVersion" Value="$(PackageVersion)" />
     <AssemblyMetadata Include="DefineConstants" Value="$(DefineConstants)" />
     <AssemblyMetadata Include="Nullable" Value="$(Nullable)" />
     <AssemblyMetadata Include="ImplicitUsings" Value="$(ImplicitUsings)" />
   </ItemGroup>
+  <Target Name="CaptureTestPackageVersion" BeforeTargets="GetAssemblyAttributes" DependsOnTargets="BAS_CB_SetVersionProperties">
+    <ItemGroup>
+      <AssemblyMetadata Include="PackageVersion" Value="$(PackageVersion)" />
+    </ItemGroup>
+  </Target>
 </Project>

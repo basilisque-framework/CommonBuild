@@ -73,10 +73,10 @@ __.props / .targets__
   | GenerateDocumentationFile | true                        | not for .Tests-projects and .Benchmarks-projects          |
   | LangVersion               | latest                      | will only be set when TargetFramework is netstandard2.0<br/>(mainly for nullable reference types in C# 8, raw string literals in C# 11 and extension members in C# 14)   |
   | Global Usings             | System<br/>System.Collections.Generic<br/>System.Linq<br/>System.Threading.Tasks  | The flag for this setting is named BAS_CB_Add_GlobalUsings   |
-  | AssemblyVersion           | Major.Minor                 | see [versioning](#versioning)                             |
-  | FileVersion               | Major.Minor(.Build)         | see [versioning](#versioning)                             |
-  | InformationalVersion      | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
-  | PackageVersion            | Major.Minor(.Build)(-Suffix(Revision)) | see [versioning](#versioning)                  |
+  | AssemblyVersion           | Major.Minor.Patch.0          | see [versioning](#versioning)                            |
+  | FileVersion               | Major.Minor.Patch.0          | see [versioning](#versioning)                            |
+  | InformationalVersion      | Major.Minor.Patch[-label.number]+SHA | see [versioning](#versioning)                    |
+  | PackageVersion            | Major.Minor.Patch[-label.number] | see [versioning](#versioning)                        |
 <!--
 - <a name="servicesConfig"></a>__*.Service__
    - ???
@@ -107,7 +107,7 @@ __.props / .targets__
   |-------------------- |-------------------------- | --------------------------------------------------------- |
   | Global Usings       | Microsoft.CodeAnalysis    |                                                           |
   | IncludeBuildOutput  | false                     | do not pack analyzers/source generators as lib dependency |
-  | AssemblyName        | \<AssemblyName>-Major.Minor(.Build)(-Suffix(Revision)) | Version is appended to assembly name to fix loading of dependencies in Visual Studio. Can be disabled by settings BAS_CB_Set_AssemblyName_VersionSuffix to false |
+  | AssemblyName        | \<AssemblyName>-Major.Minor.Patch[-label.number] | Version is appended to assembly name to fix loading of dependencies in Visual Studio. Can be disabled by settings BAS_CB_Set_AssemblyName_VersionSuffix to false |
 
   Analyzers and Source Generators will be packed to the analyzer directory of the NuGet package instead of being packed as normal lib dependency. Can be disabled by setting BAS_CB_CodeAnalysis_PackCS to false.
 
@@ -129,54 +129,25 @@ max process-level parallelization; but parallelization on thread level is not en
 when no tests are found in the test project, it is treated as error. So e.g. when, due to an error, no tests are found in your test project, your test run will fail.
 - excludes \*.Tests.dll, \*.Benchmarks.dll and Microsoft.\*.dll projects from code coverage
 
-<a name="versioning"></a>__Versioning__  
-You can use [GitVersion](https://gitversion.net/) to version the target project by simply adding a [NuGet dependency](https://www.nuget.org/packages/GitVersion.MsBuild) to it or you can provide the parameter values manually like shown below.  
-Either way this library is consistently setting the version properties in the target project.
+<a name="versioning"></a>
+### Versioning
 
-The version information is built from the properties BAS_CB_BuildType, BAS_CB_VersionMajor, BAS_CB_VersionMinor, BAS_CB_VersionBuild and BAS_CB_VersionRevision.
-If you do not set those properties, the values will be automatically determined using GitVersion.
-If you want to disable versioning at all, you can leave those properties empty and not add the GitVersion NuGet package.
-If you want to disable versioning despite having a GitVersion reference, you can set the MSBuild property BAS_CB_Use_GitVersion to false.
+Add a direct, private reference to `GitVersion.MsBuild` to use CommonBuild's GitVersion profile. Projects without GitVersion keep their own MSBuild or SDK versioning.
 
-GitVersion.MsBuild 7 requires a .NET 10 or later SDK. The revision uses `VersionSourceDistance`, with `CommitsSinceVersionSource` supported for older GitVersion versions. See the [GitVersion migration guide](https://gitversion.net/7.0/docs/migration/v6-to-v7) for other changes when upgrading from v6.
+- Local builds use `alpha`, including checkouts of a stable tag. CI selects `ci`, `preview`, `rc` or `release` through `BAS_CB_BuildType`, for example `dotnet build -p:BAS_CB_BuildType=ci`.
+- Versions come from reachable stable tags and commit messages. Preview and RC tags mark published builds and are excluded from version calculation. An ordinary commit defaults to a patch increment on `main` and release branches. Use `+semver: feature` for a minor release or `+semver: breaking` for a major release. For a new repository, set `BAS_CB_NextVersion` to `1.0.0` in `Directory.Build.props` until the first stable tag exists.
+- Use `feature/*` and `bugfix/*` for work branches. Their type and name appear in the prerelease label. PR builds use the PR number. Publish previews, release candidates and stable releases from `main` or `release/<major>.<minor>`. A stable build on a release branch must match that major/minor line.
+- A CI package might have version `2.0.1-ci.3`. Its `AssemblyVersion` and `FileVersion` are `2.0.1.0`. The SDK appends the commit SHA to `InformationalVersion`, and analyzer assembly names and DLL filenames include the package version.
 
-The build type differentiates between release builds and different kinds of prerelease builds.
-Recommended values are:
-| Value   | Usage                                           |
-|-------- |------------------------------------------------ |
-| Alpha   | Local builds                                    |
-| CI      | Continuous integration builds or nightly builds |
-| Preview | Public preview builds                           |
-| RC      | Release candidates                              |
-| Release | Release builds                                  |
+A `GitVersion.yml` in the target repository completely replaces the bundled profile and controls labels and deployment modes. Use `BAS_CB_GitVersionConfig` to select an explicit config file or `BAS_CB_Use_GitVersion=false` to let GitVersion manage its own configuration and outputs.
 
-But you can use any other string. The only fixed value is 'Release'. This removes the prerelease suffix and the revision from the InformationalVersion and the PackageVersion. Any other string will be used as suffix including the revision number.  
-Be aware, that the suffixes will be ordered alphabetically e.g. by NuGet. So for example version 1.0-RC is considered higher than a version 1.0-Preview, because it is further back in the alphabet.
+### Migrating versioning from earlier CommonBuild releases
 
-This is how the version properties are being set:
-| Property              | Value                                       |
-|---------------------- |-------------------------------------------- |
-| AssemblyVersion       | Major.Minor                                 |
-| FileVersion           | Major.Minor(.Build)                         |
-| InformationalVersion  | Major.Minor(.Build)(-Suffix(Revision).Sha)  |
-| PackageVersion        | Major.Minor(.Build)(-Suffix(Revision))      |
+- Remove `BAS_CB_VersionMajor`, `BAS_CB_VersionMinor`, `BAS_CB_VersionBuild`, `BAS_CB_VersionRevision`, `BAS_CB_Revision_TotalWidth` and `BAS_CB_Set_Versions`. Without GitVersion, set the standard MSBuild `Version` or `PackageVersion`. Use `BAS_CB_NextVersion` for an explicit next version with GitVersion.
+- Move to a fresh major/minor/patch before publishing in the dotted format, or update affected prerelease dependency ranges. For example, `2.0.0-rc.36` sorts below `2.0.0-RC00035`.
+- The assembly version now includes the patch number. Update any consumers that bind to the previous exact assembly identity.
+- Switch the reusable workflow and the CommonBuild package together for preview, RC and stable runs.
 
-You can specify the necessary properties directly in your project or you can set them using dotnet build (MSBuild) parameters:
-
-When using GitVersion:
-    dotnet build MySolution.sln -p:BAS_CB_BuildType=CI
-
-When not using GitVersion:
-    dotnet build MySolution.sln -p:BAS_CB_VersionMajor=2 -p:BAS_CB_VersionMinor=1 -p:BAS_CB_VersionBuild=0 -p:BAS_CB_VersionRevision=1043 -p:BAS_CB_BuildType=CI
-
-Typically you would set them on the build server using parameters. Local builds in the IDE won't have any parameters set.
-When nothing else is specified, build type 'Alpha' is used as fallback. By doing so, all local builds will be in this category.
-The purpose for this is, that almost all other build types (suffixes) would be considered higher than a local build, because A is right at the beginning of the alphabet.
-
-Major and Minor are set to 1.0 when empty and GitVersion doesn't return a version. Build and Revision are omitted from the version when empty.
-
-The Revision is padded to 5 digits. This is done to ensure that the version is always the same length, which is important for NuGet.
-You can set the property BAS_CB_Revision_TotalWidth to change the padding length. The default is 5. Setting it to 0 will disable the padding.
 
 ### Logging
 If you want to log the properties, that are set by this project, you can set the property BAS_CB_Log_Properties to true. This will log the current value of all these properties after the _PrepareForBuild_ target.

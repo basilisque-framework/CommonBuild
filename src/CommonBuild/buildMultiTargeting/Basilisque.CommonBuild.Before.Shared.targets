@@ -24,13 +24,8 @@
   BAS_CB_ProjType_Benchmarks = '$(BAS_CB_ProjType_Benchmarks)'
   BAS_CB_Set_IsPackable = '$(BAS_CB_Set_IsPackable)'
   BAS_CB_Set_RunSettingsFilePath = '$(BAS_CB_Set_RunSettingsFilePath)'
-  BAS_CB_Set_Versions = '$(BAS_CB_Set_Versions)'
   BAS_CB_Use_GitVersion = '$(BAS_CB_Use_GitVersion)'
   BAS_CB_BuildType = '$(BAS_CB_BuildType)'
-  BAS_CB_VersionMajor = '$(BAS_CB_VersionMajor)'
-  BAS_CB_VersionMinor = '$(BAS_CB_VersionMinor)'
-  BAS_CB_VersionBuild = '$(BAS_CB_VersionBuild)'
-  BAS_CB_VersionRevision = '$(BAS_CB_VersionRevision)'
   BAS_CB_Set_SonarQubeTestProject = '$(BAS_CB_Set_SonarQubeTestProject)'
   PackageVersion = '$(PackageVersion)'
   IsPackable = '$(IsPackable)'
@@ -88,64 +83,71 @@
       <FileWrites Include="$(IntermediateOutputPath)Basilisque.CommonBuild/_._" Condition="'$(IncludeBuildOutput)' == 'false'" />
     </ItemGroup>
   </Target>
-  <Target Name="BAS_CB_SetVersionPropertiesWithGitVersion"
-          DependsOnTargets="GetVersion"
-          Condition="'$(BAS_CB_Use_GitVersion)' == 'true' AND '$(ExcludeRestorePackageImports)' != 'true'">
-    <!-- Read GitVersion values in build/pack nodes where GitVersion targets are available. -->
-  </Target>
-  <Target Name="BAS_CB_SetVersionPropertiesWithoutGitVersion" Condition="'$(BAS_CB_Use_GitVersion)' != 'true'">
-    <!-- When GitVersion is not used there is no specific target this should be executed after. But it should be executed -->
-  </Target>
-  <Target Name="BAS_CB_SetVersionProperties"
-          DependsOnTargets="BAS_CB_SetVersionPropertiesWithoutGitVersion;BAS_CB_SetVersionPropertiesWithGitVersion"
-          BeforeTargets="BeforeCompile;CoreCompile;GetAssemblyVersion;GenerateNuspec;_GetOutputItemsFromPack;EnsureWixToolsetInstalled"
-          Condition="'$(BAS_CB_Use_GitVersion)' == 'true' OR '$(BAS_CB_Set_Versions)' == 'true'">
+  <PropertyGroup Condition="'$(DisableGitVersionTask)' == 'false' AND '$(GitVersion_ToolArgments)' != ''">
+    <_BAS_CB_GitVersionAvailable>true</_BAS_CB_GitVersionAvailable>
+  </PropertyGroup>
+
+  <Target Name="BAS_CB_ConfigureGitVersion" BeforeTargets="RunGitVersion"
+          Condition="'$(_BAS_CB_GitVersionAvailable)' == 'true' AND '$(BAS_CB_Use_GitVersion)' != 'false'">
     <PropertyGroup>
-      <!-- ensure total revision width is not empty -->
-      <BAS_CB_Revision_TotalWidth Condition="'$(BAS_CB_Revision_TotalWidth)' == ''">5</BAS_CB_Revision_TotalWidth>
-
-      <!-- get values from GitVersion -->
-      <BAS_CB_VersionMajor Condition="'$(BAS_CB_VersionMajor)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_Major)</BAS_CB_VersionMajor>
-      <BAS_CB_VersionMinor Condition="'$(BAS_CB_VersionMinor)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_Minor)</BAS_CB_VersionMinor>
-      <BAS_CB_VersionBuild Condition="'$(BAS_CB_VersionBuild)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_Patch)</BAS_CB_VersionBuild>
-      <BAS_CB_VersionRevision Condition="'$(BAS_CB_VersionRevision)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_VersionSourceDistance)</BAS_CB_VersionRevision>
-      <!-- Backward compatibility with GitVersion versions that only expose the legacy property. -->
-      <BAS_CB_VersionRevision Condition="'$(BAS_CB_VersionRevision)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true'">$(GitVersion_CommitsSinceVersionSource)</BAS_CB_VersionRevision>
-      <BAS_CB_VersionRevisionPadded>$(BAS_CB_VersionRevision.PadLeft($(BAS_CB_Revision_TotalWidth), '0'))</BAS_CB_VersionRevisionPadded>
-
-      <!-- ensure build type and versions are not empty -->
-      <BAS_CB_BuildType Condition="'$(BAS_CB_BuildType)' == ''">Alpha</BAS_CB_BuildType>
-      <BAS_CB_VersionMajor Condition="'$(BAS_CB_VersionMajor)' == ''">1</BAS_CB_VersionMajor>
-      <BAS_CB_VersionMinor Condition="'$(BAS_CB_VersionMinor)' == ''">0</BAS_CB_VersionMinor>
-
-      <!-- init version with MAJOR.MINOR -->
-      <BAS_CB_Tmp_VersionShort>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</BAS_CB_Tmp_VersionShort>
-
-      <!-- add .BUILD if not empty  -->
-      <BAS_CB_Tmp_VersionShort Condition="'$(BAS_CB_VersionBuild)' != ''">$(BAS_CB_Tmp_VersionShort).$(BAS_CB_VersionBuild)</BAS_CB_Tmp_VersionShort>
-
-      <!-- add SUFFIX and REVISION -->
-      <BAS_CB_Tmp_Version>$(BAS_CB_Tmp_VersionShort)</BAS_CB_Tmp_Version>
-      <BAS_CB_Tmp_Version Condition="'$(BAS_CB_BuildType)' != 'Release'">$(BAS_CB_Tmp_Version)-$(BAS_CB_BuildType)$(BAS_CB_VersionRevisionPadded)</BAS_CB_Tmp_Version>
-      <BAS_CB_Tmp_InfoVersion>$(BAS_CB_Tmp_Version)</BAS_CB_Tmp_InfoVersion>
-
-      <!-- set versions -->
-      <AssemblyVersion>$(BAS_CB_VersionMajor).$(BAS_CB_VersionMinor)</AssemblyVersion>
-      <FileVersion>$(BAS_CB_Tmp_VersionShort)</FileVersion>
-      <InformationalVersion>$(BAS_CB_Tmp_InfoVersion)</InformationalVersion>
-      <PackageVersion>$(BAS_CB_Tmp_Version)</PackageVersion>
-
-      <!-- set git repository properties -->
-      <RepositoryType Condition=" '$(RepositoryType)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true' ">git</RepositoryType>
-      <RepositoryBranch Condition=" '$(RepositoryBranch)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true' ">$(GitVersion_BranchName)</RepositoryBranch>
-      <RepositoryCommit Condition=" '$(RepositoryCommit)' == '' AND '$(BAS_CB_Use_GitVersion)' == 'true' ">$(GitVersion_Sha)</RepositoryCommit>
+      <_BAS_CB_Channel>$(BAS_CB_BuildType.ToLowerInvariant())</_BAS_CB_Channel>
+      <_BAS_CB_CustomGitVersionConfig Condition="'$(BAS_CB_GitVersionConfig)' != ''">$(BAS_CB_GitVersionConfig)</_BAS_CB_CustomGitVersionConfig>
+      <_BAS_CB_CustomGitVersionConfig Condition="'$(_BAS_CB_CustomGitVersionConfig)' == ''">$([MSBuild]::GetPathOfFileAbove('GitVersion.yml', '$(MSBuildProjectDirectory)'))</_BAS_CB_CustomGitVersionConfig>
+      <_BAS_CB_CustomGitVersionConfig Condition="'$(_BAS_CB_CustomGitVersionConfig)' == ''">$([MSBuild]::GetPathOfFileAbove('GitVersion.yaml', '$(MSBuildProjectDirectory)'))</_BAS_CB_CustomGitVersionConfig>
+      <_BAS_CB_CustomGitVersionConfig Condition="'$(_BAS_CB_CustomGitVersionConfig)' == ''">$([MSBuild]::GetPathOfFileAbove('.GitVersion.yml', '$(MSBuildProjectDirectory)'))</_BAS_CB_CustomGitVersionConfig>
+      <_BAS_CB_CustomGitVersionConfig Condition="'$(_BAS_CB_CustomGitVersionConfig)' == ''">$([MSBuild]::GetPathOfFileAbove('.GitVersion.yaml', '$(MSBuildProjectDirectory)'))</_BAS_CB_CustomGitVersionConfig>
+      <_BAS_CB_GitVersionConfig>$(_BAS_CB_CustomGitVersionConfig)</_BAS_CB_GitVersionConfig>
+      <_BAS_CB_GitVersionConfig Condition="'$(_BAS_CB_GitVersionConfig)' == ''">$(MSBuildThisFileDirectory)Basilisque.GitVersion.yml</_BAS_CB_GitVersionConfig>
     </PropertyGroup>
+    <Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(_BAS_CB_Channel)', '^(alpha|ci|preview|rc|release)$'))"
+           Text="BAS_CB_BuildType must be alpha, ci, preview, rc or release." />
+    <Error Condition="'$(BAS_CB_NextVersion)' != '' AND !$([System.Text.RegularExpressions.Regex]::IsMatch('$(BAS_CB_NextVersion)', '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'))"
+           Text="BAS_CB_NextVersion must be a major.minor.patch version." />
+    <PropertyGroup>
+      <!-- GitVersion 7.0 assembles its command line during props evaluation. Add our arguments
+           immediately before execution, after all project and NuGet imports have been read. -->
+      <GitVersion_ToolArgments>$(GitVersion_ToolArgments) --config &quot;$(_BAS_CB_GitVersionConfig)&quot;</GitVersion_ToolArgments>
+      <GitVersion_ToolArgments Condition="'$(BAS_CB_NextVersion)' != ''">$(GitVersion_ToolArgments) --override-config calculation.next-version=$(BAS_CB_NextVersion)</GitVersion_ToolArgments>
+      <GitVersion_ToolArgments Condition="'$(_BAS_CB_CustomGitVersionConfig)' == '' AND '$(_BAS_CB_Channel)' == 'release'">$(GitVersion_ToolArgments) --override-config calculation.branches.main.mode=ContinuousDeployment --override-config calculation.branches.release.mode=ContinuousDeployment</GitVersion_ToolArgments>
+      <!-- GitVersion sets the version properties, the .NET SDK generates the attributes and adds the SHA. -->
+      <GenerateAssemblyFileVersionAttribute Condition="'$(UpdateAssemblyInfo)' == 'true'">true</GenerateAssemblyFileVersionAttribute>
+      <GenerateAssemblyInformationalVersionAttribute Condition="'$(UpdateAssemblyInfo)' == 'true'">true</GenerateAssemblyInformationalVersionAttribute>
+      <GenerateAssemblyVersionAttribute Condition="'$(UpdateAssemblyInfo)' == 'true'">true</GenerateAssemblyVersionAttribute>
+      <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(_BAS_CB_CustomGitVersionConfig)' == '' AND '$(_BAS_CB_Channel)' != 'release'">
+      <GitVersion_ToolArgments>$(GitVersion_ToolArgments) --override-config calculation.branches.main.label=$(_BAS_CB_Channel) --override-config calculation.branches.release.label=$(_BAS_CB_Channel)</GitVersion_ToolArgments>
+      <GitVersion_ToolArgments>$(GitVersion_ToolArgments) --override-config &quot;calculation.branches.feature.label=$(_BAS_CB_Channel).feature.{BranchName}&quot;</GitVersion_ToolArgments>
+      <GitVersion_ToolArgments>$(GitVersion_ToolArgments) --override-config &quot;calculation.branches.bugfix.label=$(_BAS_CB_Channel).bugfix.{BranchName}&quot;</GitVersion_ToolArgments>
+      <GitVersion_ToolArgments>$(GitVersion_ToolArgments) --override-config &quot;calculation.branches.pull-request.label=$(_BAS_CB_Channel).pr{Number}&quot;</GitVersion_ToolArgments>
+      <GitVersion_ToolArgments>$(GitVersion_ToolArgments) --override-config &quot;calculation.branches.unknown.label=$(_BAS_CB_Channel).branch.{BranchName}&quot;</GitVersion_ToolArgments>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="BAS_CB_SetVersionProperties"
+          DependsOnTargets="GetVersion"
+          BeforeTargets="BeforeCompile;CoreCompile;GetAssemblyVersion;GenerateNuspec;_GetOutputItemsFromPack;EnsureWixToolsetInstalled"
+          Condition="'$(_BAS_CB_GitVersionAvailable)' == 'true' AND '$(ExcludeRestorePackageImports)' != 'true'" />
+
+  <Target Name="BAS_CB_ValidateGitVersion" AfterTargets="BAS_CB_SetVersionProperties"
+          Condition="'$(_BAS_CB_Channel)' != ''">
+    <PropertyGroup>
+      <RepositoryType Condition="'$(RepositoryType)' == ''">git</RepositoryType>
+      <_BAS_CB_ReleaseBranchLine>$([System.Text.RegularExpressions.Regex]::Replace('$(GitVersion_BranchName)', '^release/', ''))</_BAS_CB_ReleaseBranchLine>
+      <_BAS_CB_IsReleaseBranch>$([System.Text.RegularExpressions.Regex]::IsMatch('$(GitVersion_BranchName)', '^release/(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'))</_BAS_CB_IsReleaseBranch>
+    </PropertyGroup>
+    <Error Condition="'$(_BAS_CB_Channel)' != 'alpha' AND '$(_BAS_CB_Channel)' != 'ci' AND '$(GitVersion_BranchName)' != 'main' AND '$(GitVersion_BranchName)' != 'master' AND '$(_BAS_CB_IsReleaseBranch)' != 'true'"
+           Text="Build type '$(_BAS_CB_Channel)' is only allowed on main or release/&lt;major&gt;.&lt;minor&gt;. Current branch: $(GitVersion_BranchName)." />
+    <Error Condition="'$(_BAS_CB_Channel)' == 'release' AND '$(_BAS_CB_IsReleaseBranch)' == 'true' AND '$(_BAS_CB_ReleaseBranchLine)' != '$(GitVersion_Major).$(GitVersion_Minor)'"
+           Text="Version $(GitVersion_SemVer) does not belong to the $(GitVersion_BranchName) release line." />
+    <Error Condition="'$(_BAS_CB_Channel)' == 'release' AND '$(GitVersion_PreReleaseLabel)' != ''"
+           Text="Release build resolved to prerelease version $(GitVersion_SemVer)." />
   </Target>
 
   <Target Name="BAS_CB_SetAssemblyNameVersionSuffix"
           DependsOnTargets="BAS_CB_SetVersionProperties"
           BeforeTargets="PrepareForBuild;GetTargetPath;GetTargetPathWithTargetPlatformMoniker;_GetPackageFiles;PrepareForPublish"
-          Condition="'$(BAS_CB_Set_AssemblyName_VersionSuffix)' == 'true' AND '$(IsCrossTargetingBuild)' != 'true' AND ('$(BAS_CB_Use_GitVersion)' == 'true' OR '$(BAS_CB_Set_Versions)' == 'true')">
+          Condition="'$(BAS_CB_Set_AssemblyName_VersionSuffix)' == 'true' AND '$(IsCrossTargetingBuild)' != 'true'">
     <ItemGroup Condition="'$(OutputType)' != 'winmdobj'">
       <!-- The SDK captures these output items during evaluation, before versioning runs. -->
       <_BAS_CB_PreviousBuiltOutput Include="@(BuiltProjectOutputGroupKeyOutput)" Condition="'%(BuiltProjectOutputGroupKeyOutput.TargetPath)' == '$(TargetFileName)'" />
@@ -153,7 +155,9 @@
     </ItemGroup>
     <PropertyGroup>
       <AssemblyName Condition="'$(AssemblyName)' == ''">$(MSBuildProjectName)</AssemblyName>
-      <AssemblyName>$(AssemblyName)-$(BAS_CB_Tmp_Version)</AssemblyName>
+      <_BAS_CB_AnalyzerVersion>$(PackageVersion)</_BAS_CB_AnalyzerVersion>
+      <_BAS_CB_AnalyzerVersion Condition="'$(_BAS_CB_AnalyzerVersion)' == ''">$(Version)</_BAS_CB_AnalyzerVersion>
+      <AssemblyName>$(AssemblyName)-$(_BAS_CB_AnalyzerVersion)</AssemblyName>
       <TargetName>$(AssemblyName)</TargetName>
       <TargetFileName>$(TargetName)$(TargetExt)</TargetFileName>
       <TargetPath>$(TargetDir)$(TargetFileName)</TargetPath>
@@ -183,7 +187,7 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="BAS_CB_LogVersionProperties" AfterTargets="BAS_CB_SetVersionProperties" Condition="('$(BAS_CB_Use_GitVersion)' == 'true' OR '$(BAS_CB_Set_Versions)' == 'true') AND '$(BAS_CB_Log_Properties)' == 'true'">
+  <Target Name="BAS_CB_LogVersionProperties" AfterTargets="BAS_CB_SetVersionProperties" Condition="'$(BAS_CB_Log_Properties)' == 'true'">
     <Message Importance="High" Text="==BAS_CB_Versions ($(MSBuildProjectName))==" />
     <Message Importance="High" Text="AssemblyVersion = $(AssemblyVersion)" />
     <Message Importance="High" Text="FileVersion = $(FileVersion)" />

@@ -57,7 +57,7 @@ The configuration is based on conventions regarding the names of the target proj
 Obviously not all applications need all of those project types. So e.g. if you don't need data access, then just do not create a project named like it. But if you do need data access, then let the project name end with _.DataAccess_. That is the intention behind the configuration in Basilisque.CommonBuild.
 
 ### Provided Configuration
-The package provides many different default configurations and versioning.
+The package provides many different default configurations and includes a configuration for GitVersion.
 For detailed information, please have a look at the GitHub page:  
 [![GitHub](https://img.shields.io/badge/GitHub-Project-%23004880.svg?logo=github)](https://github.com/basilisque-framework/CommonBuild)
 

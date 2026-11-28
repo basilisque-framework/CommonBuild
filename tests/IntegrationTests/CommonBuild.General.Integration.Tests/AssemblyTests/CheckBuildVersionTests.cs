@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,31 +51,26 @@ internal class CheckBuildVersionTests
     }
 
     [Test]
-    public async Task Ensure_CurrentBuild_AssemblyVersion_HasNotMoreThan2Digits()
+    public async Task Ensure_CurrentBuild_AssemblyVersion_Matches_FileVersion()
     {
-        // semver has 3 digits, major.minor.patch
-        // Patch means backwards compatible bug fixes, so it is not used in the assembly version to make them load without problems in patches.
-
-        await Assert.That(_thisAssemblyVersion.Major).IsGreaterThan(0);
-        await Assert.That(_thisAssemblyVersion.Minor).IsGreaterThanOrEqualTo(0);
-        await Assert.That(_thisAssemblyVersion.Build).IsEqualTo(0);
-        await Assert.That(_thisAssemblyVersion.Revision).IsEqualTo(0);
+        await Assert.That(_thisAssemblyVersion.ToString()).IsEqualTo(_thisAssemblyFileVersion);
     }
 
     [Test]
-    public async Task Ensure_CurrentBuild_FileVersion_HasExactly3Digits()
+    public async Task Ensure_CurrentBuild_FileVersion_HasMajorMinorAndPatch()
     {
         await Assert.That(_thisAssemblyFileVersion).IsNotNull();
 
         var fileVersionParts = _thisAssemblyFileVersion!.Split('.');
 
-        await Assert.That(fileVersionParts.Length).IsEqualTo(3);
+        await Assert.That(fileVersionParts.Length).IsEqualTo(4);
 
         var fileVersionDigits = fileVersionParts.Select(static part => int.TryParse(part, out var digit) ? digit : -1).ToArray();
 
         await Assert.That(fileVersionDigits[0]).IsGreaterThan(0);
         await Assert.That(fileVersionDigits[1]).IsGreaterThanOrEqualTo(0);
         await Assert.That(fileVersionDigits[2]).IsGreaterThanOrEqualTo(0);
+        await Assert.That(fileVersionDigits[3]).IsEqualTo(0);
     }
 
     [Test]
@@ -83,7 +78,7 @@ internal class CheckBuildVersionTests
     {
         await Assert.That(_thisAssemblyPackageVersion).IsNotNull();
 
-        var packageVersionParts = _thisAssemblyPackageVersion!.Split('.');
+        var packageVersionParts = removePrereleaseInformation(_thisAssemblyPackageVersion!).Split('.');
 
         await Assert.That(packageVersionParts.Length).IsEqualTo(3);
 
@@ -124,6 +119,7 @@ internal class CheckBuildVersionTests
     public async Task Ensure_CurrentBuild_PackageAndInformationalVersion_FollowBuildTypeRules()
     {
         var (informationalVersionBase, _) = await getInformationalVersionParts();
+        await Assert.That(_thisAssemblyPackageVersion).IsEqualTo(informationalVersionBase);
         var buildType = getBuildTypeFromDefineConstants();
 
         if (buildType == "Release")
@@ -132,15 +128,11 @@ internal class CheckBuildVersionTests
             return;
         }
 
-        var suffix = $"-{buildType}";
+        var suffix = $"-{buildType.ToLowerInvariant()}.";
         var separatorIndex = informationalVersionBase.IndexOf(suffix, StringComparison.Ordinal);
-
         await Assert.That(separatorIndex).IsGreaterThan(0);
-
-        var revisionPart = informationalVersionBase[(separatorIndex + suffix.Length)..];
-
-        await Assert.That(revisionPart.Length).IsEqualTo(5);
-        await Assert.That(revisionPart.All(char.IsDigit)).IsTrue();
+        var number = informationalVersionBase.Split('.')[^1];
+        await Assert.That(int.TryParse(number, out var revision) && number == revision.ToString()).IsTrue();
     }
 
     private async Task<(string versionInformation, string fullGitHash)> getInformationalVersionParts()

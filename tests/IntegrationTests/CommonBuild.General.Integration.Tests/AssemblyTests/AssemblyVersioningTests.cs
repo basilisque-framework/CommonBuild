@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ internal class AssemblyVersioningTests
 
     [Test]
     [TestFixtureAssembliesDataGenerator]
-    public async Task AssemblyVersion_HasMajorAndMinorOnly(Assembly assembly)
+    public async Task AssemblyVersion_HasMajorMinorAndPatch(Assembly assembly)
     {
         var version = assembly.GetName().Version;
 
@@ -34,13 +34,13 @@ internal class AssemblyVersioningTests
 
         await Assert.That(version!.Major).IsGreaterThan(0);
         await Assert.That(version.Minor).IsGreaterThanOrEqualTo(0);
-        await Assert.That(version.Build).IsEqualTo(0);
+        await Assert.That(version.Build).IsGreaterThanOrEqualTo(0);
         await Assert.That(version.Revision).IsEqualTo(0);
     }
 
     [Test]
     [TestFixtureAssembliesDataGenerator]
-    public async Task FileVersion_HasExactlyThreeNumericSegments(Assembly assembly)
+    public async Task FileVersion_HasMajorMinorAndPatch(Assembly assembly)
     {
         var fileVersion = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
 
@@ -48,13 +48,14 @@ internal class AssemblyVersioningTests
 
         var parts = fileVersion!.Split('.');
 
-        await Assert.That(parts.Length).IsEqualTo(3);
+        await Assert.That(parts.Length).IsEqualTo(4);
 
         var digits = parts.Select(static part => int.TryParse(part, out var value) ? value : -1).ToArray();
 
         await Assert.That(digits[0]).IsGreaterThan(0);
         await Assert.That(digits[1]).IsGreaterThanOrEqualTo(0);
         await Assert.That(digits[2]).IsGreaterThanOrEqualTo(0);
+        await Assert.That(digits[3]).IsEqualTo(0);
     }
 
     [Test]
@@ -98,19 +99,14 @@ internal class AssemblyVersioningTests
 
     [Test]
     [TestFixtureAssembliesDataGenerator]
-    public async Task GitVersionDistance_IsUsed_ForBuildRevision(Assembly assembly)
+    public async Task PackageVersion_Matches_GitVersion_SemVer(Assembly assembly)
     {
         var metadata = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
-        var distance = metadata.FirstOrDefault(static attribute => attribute.Key == "GitVersion_VersionSourceDistance")?.Value;
-        var revision = metadata.FirstOrDefault(static attribute => attribute.Key == "BAS_CB_VersionRevision")?.Value;
+        var semVer = metadata.FirstOrDefault(static attribute => attribute.Key == "GitVersion_SemVer")?.Value;
         var packageVersion = metadata.FirstOrDefault(static attribute => attribute.Key == "PackageVersion")?.Value;
 
-        await Assert.That(distance).IsNotNull().And.IsNotEmpty();
-        await Assert.That(revision).IsEqualTo(distance);
-        await Assert.That(packageVersion).IsNotNull();
-
-        if (packageVersion!.Contains('-'))
-            await Assert.That(packageVersion.EndsWith(distance!.PadLeft(5, '0'), StringComparison.Ordinal)).IsTrue();
+        await Assert.That(semVer).IsNotNull().And.IsNotEmpty();
+        await Assert.That(packageVersion).IsEqualTo(semVer);
     }
 
     [Test]
@@ -125,6 +121,7 @@ internal class AssemblyVersioningTests
 
         await Assert.That(fixtureAssemblyVersion!.Major).IsEqualTo(referenceAssemblyVersion!.Major);
         await Assert.That(fixtureAssemblyVersion.Minor).IsEqualTo(referenceAssemblyVersion.Minor);
+        await Assert.That(fixtureAssemblyVersion.Build).IsEqualTo(referenceAssemblyVersion.Build);
 
         var referenceFileVersion = _referenceAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
         var fixtureFileVersion = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;

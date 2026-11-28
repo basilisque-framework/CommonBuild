@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2026 Alexander Stärk
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -145,13 +145,14 @@ internal class AnalyzerLoadingTests
             var roslynPath = typeof(AnalyzerLoadingTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                 .Single(static attribute => attribute.Key == "RoslynPackagePath").Value!;
             _roslynVersion = readPackageVersion(Path.Combine(roslynPath, "microsoft.codeanalysis.csharp.nuspec"));
+            var restoredPackages = Path.GetFullPath(Path.Combine(roslynPath, "..", ".."));
             Directory.CreateDirectory(Path.Combine(Root, "feed"));
             new XDocument(new XElement("configuration",
                 new XElement("packageSources",
                     new XElement("clear"),
                     new XElement("add", new XAttribute("key", "fixtures"), new XAttribute("value", Path.Combine(Root, "feed"))),
                     new XElement("add", new XAttribute("key", "commonbuild"), new XAttribute("value", commonBuildPath)),
-                    new XElement("add", new XAttribute("key", "nuget.org"), new XAttribute("value", "https://api.nuget.org/v3/index.json"))),
+                    new XElement("add", new XAttribute("key", "restored"), new XAttribute("value", restoredPackages))),
                 new XElement("config", new XElement("add", new XAttribute("key", "globalPackagesFolder"), new XAttribute("value", Path.Combine(Root, "packages"))))))
                 .Save(Path.Combine(Root, "NuGet.Config"));
         }
@@ -164,11 +165,7 @@ internal class AnalyzerLoadingTests
             new XDocument(new XElement("Project", new XAttribute("Sdk", "Microsoft.NET.Sdk"),
                 new XElement("PropertyGroup",
                     new XElement("TargetFramework", "netstandard2.0"),
-                    new XElement("BAS_CB_Use_GitVersion", false),
-                    new XElement("BAS_CB_BuildType", "Release"),
-                    new XElement("BAS_CB_VersionMajor", 7),
-                    new XElement("BAS_CB_VersionMinor", 3),
-                    new XElement("BAS_CB_VersionBuild", patchVersion),
+                    new XElement("Version", $"7.3.{patchVersion}"),
                     new XElement("EnforceExtendedAnalyzerRules", true),
                     new XElement("NoWarn", "RS2008")),
                 new XElement("ItemGroup",
